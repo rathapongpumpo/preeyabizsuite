@@ -1,17 +1,21 @@
 {
-  "functions": {
-    "api/index.php": {
-      "runtime": "vercel-php@0.6.0"
-    }
-  },
-  "routes": [
+  "version": 2,
+  "rewrites": [
     {
-      "src": "/assets/(.*)",
-      "dest": "/public/assets/$1"
+      "source": "/external/ecommerce/:path*",
+      "destination": "https://ecommerce-codex-demo.vercel.app/:path*"
     },
     {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
+      "source": "/external/tilt/:path*",
+      "destination": "https://tilt-signal-arcade-bar.vercel.app/:path*"
+    },
+    {
+      "source": "/assets/:path*",
+      "destination": "/public/assets/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
