@@ -560,7 +560,7 @@
                 <span class="chip">📚 ${c.lessons.length} บทเรียน</span>
                 <span class="chip">⏱ ~${totalDuration} นาที</span>
               </div>
-              <div class="summary-line" style="margin-top:14px">
+              <div class="summary-line" style="margin-top:auto;padding-top:14px">
                 <strong style="font-size:20px">${money(c.price)}</strong>
                 ${badge('เข้าเรียนได้ทันที', 'success')}
               </div>
