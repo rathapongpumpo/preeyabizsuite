@@ -542,7 +542,7 @@
             const owned = true; // All demo courses unlocked
             const totalDuration = (c.lessons || []).reduce((acc, l) => acc + (l.duration ? parseInt(l.duration) || 10 : 10), 0);
             return `<article class="course-card">
-              ${c.thumbnail ? `<div class="course-art-thumb"><img src="${esc(c.thumbnail)}" alt="${esc(c.title)}"><span class="play-badge">▶</span></div>` : `<div class="course-art">${i + 1}</div>`}
+              ${c.thumbnail ? `<div class="course-art-thumb" data-course-action="learn" data-course="${c.id}" style="cursor:pointer" title="คลิกเพื่อเข้าเรียนดูคลิปวิดีโอ"><img src="${esc(c.thumbnail)}" alt="${esc(c.title)}"><span class="play-badge">▶</span></div>` : `<div class="course-art" data-course-action="learn" data-course="${c.id}" style="cursor:pointer">${i + 1}</div>`}
               <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
                 <span class="badge success">${esc(c.category)}</span>
                 <small class="muted">โดย ${esc(c.channel || 'Lore Universe')}</small>
