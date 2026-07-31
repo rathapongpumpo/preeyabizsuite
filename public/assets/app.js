@@ -428,64 +428,71 @@
 
   const courseSeed = {
     role: 'student', view: 'home', cart: [], orders: [],
-    owned: ['C-101', 'C-102', 'C-103', 'C-104', 'C-105', 'C-106', 'C-201'],
-    progress: {}, selected: 'C-101', selectedLesson: 0, search: '', category: 'All',
+    owned: ['C-116', 'C-115', 'C-114', 'C-113', 'C-112', 'C-111', 'C-110', 'C-108', 'C-201'],
+    progress: {}, selected: 'C-116', selectedLesson: 0, search: '', category: 'All',
     courses: [
       {
-        id: 'C-101', title: 'รามเกียรติ์ | EP.1 - กำเนิดทศกัณฐ์และปฐมบทกรุงลงกา', price: 990, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
-        thumbnail: 'https://img.youtube.com/vi/g4mZ6P6E_m0/hqdefault.jpg',
-        description: 'ศึกษาที่มาและกำเนิดของทศกัณฐ์ วงศ์ยักษ์แห่งกรุงลงกา อภินิหารนนทกกับนิ้วเพชร และการอวตารของพระนารายณ์',
+        id: 'C-116', title: 'รามเกียรติ์ EP.16 : ตอน ศึกทรพี | The Battle of Monkey King', price: 990, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/eyoIidiahyo/hqdefault.jpg',
+        description: 'การต่อสู้ระหว่างพาลีกับควายทรพีในถ้ำ การเข้าใจผิดของสุครีพ และปฐมบทศึกแห่งพญาวานร',
         lessons: [
-          { title: 'ปฐมบท: กำเนิดทศกัณฐ์และวงศ์ยักษ์แห่งลงกา', youtubeId: 'g4mZ6P6E_m0', duration: '15:20', summary: 'เจาะลึกพงศาวดารยักษ์ ต้นตระกูลของทศกัณฐ์ และกำเนิดกรุงลงกาตามตำนานรามเกียรติ์' },
-          { title: 'นนทกกับนิ้วเพชร: จุดเริ่มต้นแห่งแรงเคียดแค้น', youtubeId: 'g4mZ6P6E_m0', duration: '12:45', summary: 'เรื่องราวของนนทกผู้ล้างเท้าเทวดาที่ได้รับพรนิ้วเพชรชี้ตายจากพระอิศวร จนเกิดความแค้นต่อนางฟ้าเทวดา' },
-          { title: 'พระนารายณ์อวตารปราบนนทกและคำสัตย์แห่งชาติภพ', youtubeId: 'g4mZ6P6E_m0', duration: '14:10', summary: 'พระนารายณ์แปลงกายเป็นนางสุพรรณอัปสรมาล่อลวงนนทกร่ายรำ จนชี้ขาตนเองขาด และคำตั้งจิตเกิดเป็นทศกัณฐ์' }
+          { title: 'บทที่ 1: ศึกทรพีปะทะพาลีในถ้ำ (คลิปจริงจาก Lore Universe)', youtubeId: 'eyoIidiahyo', duration: '18:24', summary: 'รับชมวิดีโอฉบับเต็มศึกทรพีจากช่อง Lore Universe' }
         ]
       },
       {
-        id: 'C-102', title: 'รามเกียรติ์ | EP.2 - เมขลา-รามสูร & พาลีสุครีพยกเขาพระสุเมรุ', price: 850, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
-        thumbnail: 'https://img.youtube.com/vi/FWNUMRAnMAz/hqdefault.jpg',
-        description: 'ตำนานการต่อสู้ระหว่างนางมณีเมขลาและรามสูรผู้ถือขวานเพชร พร้อมอภินิหารพาลีสุครีพในการยกเขาพระสุเมรุ',
+        id: 'C-115', title: 'รามเกียรติ์ EP.15 : ตอน ศึกรามสูร | The Battle of Thunder Yaksha', price: 890, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/-iwoWmormk8/hqdefault.jpg',
+        description: 'ศึกอสูรรามสูรผู้ถือขวานเพชรไล่ล่าดวงแก้วมณีของนางเมขลาและอภินิหารฟ้าผ่า',
         lessons: [
-          { title: 'เมขลาและรามสูร: ที่มาของฟ้าแลบและฟ้าผ่า', youtubeId: 'FWNUMRAnMAz', duration: '11:30', summary: 'การชิงดวงแก้วมณีของนางเมขลา และขวานเพชรขว้างกระทบเกิดเป็นฟ้าแลบฟ้าผ่า' },
-          { title: 'พาลีสุครีพยกเขาพระสุเมรุและพรแห่งเขาไกรลาส', youtubeId: 'FWNUMRAnMAz', duration: '16:05', summary: 'เรื่องราวของสองวานรพี่น้อง พาลีและสุครีพ ในภารกิจช่วยยกเขาพระสุเมรุให้กลับคืนตั้งตรง' },
-          { title: 'ศึกปราบตรีบูรัม: มหาอภินิหารแห่งทวยเทพ', youtubeId: 'FWNUMRAnMAz', duration: '13:50', summary: 'การปราบอสูรตรีบูรัมผู้มีเมืองสามจดฟ้าด้วยศรทรงอนันตฤทธิ์ของพระอิศวร' }
+          { title: 'บทที่ 1: ศึกรามสูรขว้างขวานเพชร (คลิปจริงจาก Lore Universe)', youtubeId: '-iwoWmormk8', duration: '16:45', summary: 'รับชมวิดีโอฉบับเต็มศึกรามสูรจากช่อง Lore Universe' }
         ]
       },
       {
-        id: 'C-103', title: 'รามเกียรติ์ | EP.3 - มหาศึกถล่มวังบาดาล & ทศกัณฐ์ครองเมือง', price: 920, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
-        thumbnail: 'https://img.youtube.com/vi/En0ynUfYzJb/hqdefault.jpg',
-        description: 'การยกทัพถล่มเมืองบาดาลของทศกัณฐ์ ชัยชนะในการแผ่ขยายอำนาจยักษ์ และฤกษ์ขึ้นครองราชย์กรุงลงกา',
+        id: 'C-114', title: 'รามเกียรติ์ EP.14 : ตอน ศึกประลองยกคันศรมหาโลหะโมลี', price: 950, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/NZk5j9HbtGM/hqdefault.jpg',
+        description: 'พิธีเสี่ยงทายยกคันศรมหาโลหะโมลี ณ เมืองมิถิลา และการพบกันครั้งแรกของพระรามและนางสีดา',
         lessons: [
-          { title: 'ทศกัณฐ์ถล่มวังบาดาลและอิทธิฤทธิ์ท้าวนาคราช', youtubeId: 'En0ynUfYzJb', duration: '14:15', summary: 'มหาสงครามแย่งชิงความยิ่งใหญ่ระหว่างทศกัณฐ์กับเหล่าวายะนาคในวังบาดาล' },
-          { title: 'ทศกัณฐ์ขึ้นครองกรุงลงกาและพิธีถอดดวงใจ', youtubeId: 'En0ynUfYzJb', duration: '17:40', summary: 'เบื้องหลังอภินิหารอมตะของทศกัณฐ์โดยนำดวงใจไปฝากไว้กับพระฤาษีกอบุตม์' }
+          { title: 'บทที่ 1: พระรามยกคันศรชิงนางสีดา (คลิปจริงจาก Lore Universe)', youtubeId: 'NZk5j9HbtGM', duration: '20:10', summary: 'รับชมวิดีโอฉบับเต็มยกคันศรจากช่อง Lore Universe' }
         ]
       },
       {
-        id: 'C-104', title: 'รามเกียรติ์ | EP.4 - ศึกชิงนางมณโฑ & กำเนิดองคต', price: 890, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
-        thumbnail: 'https://img.youtube.com/vi/fmbRr7MqC-J/hqdefault.jpg',
-        description: 'เรื่องราวของนางมณโฑมเหสีคู่บุญทศกัณฐ์ การแย่งชิงของพาลี และการกำเนิดขององคตวานรยอดขุนพล',
+        id: 'C-113', title: 'รามเกียรติ์ EP.13 : ตอน ศึกกากนาสูร | The Battle of Gaknasura', price: 950, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/Eq84d0GHo1c/hqdefault.jpg',
+        description: 'พระรามและพระลักษมณ์ออกปราบกาใหญ่กากนาสูรผู้มาก่อกวนพิธีหุงข้าวทิพย์ของพระฤาษี',
         lessons: [
-          { title: 'กำเนิดนางมณโฑและพิธีหุงกบสร้างมเหสี', youtubeId: 'fmbRr7MqC-J', duration: '13:10', summary: 'ประวัติกบตัวน้อยที่กตัญญูจนฤาษีชุบชีวิตให้กลายเป็นนางสวรรค์มณโฑ' },
-          { title: 'พาลีชิงนางมณโฑและการกำเนิดองคต', youtubeId: 'fmbRr7MqC-J', duration: '15:25', summary: 'พาลีใช้อิทธิฤทธิ์ชิงนางมณโฑระหว่างทาง จนเกิดบุตรชายคือนครองคต' }
+          { title: 'บทที่ 1: ศึกกากนาสูรและศรพรหมมาสตร์ (คลิปจริงจาก Lore Universe)', youtubeId: 'Eq84d0GHo1c', duration: '17:35', summary: 'รับชมวิดีโอฉบับเต็มศึกกากนาสูรจากช่อง Lore Universe' }
         ]
       },
       {
-        id: 'C-105', title: 'รามเกียรติ์ | EP.8 - ศึกทรพา ทรพี & ไมยราพถอดดวงใจ', price: 990, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
-        thumbnail: 'https://img.youtube.com/vi/Hvi6nuyM3DF/hqdefault.jpg',
-        description: 'ศึกอกตัญญูระหว่างควายทรพากับทรพี และการถอดดวงใจเป็นแมลงวันของไมยราพเจ้าแห่งเมืองบาดาล',
+        id: 'C-112', title: 'รามเกียรติ์ EP.12 : ตอน คำสาปแห่งลงกา! เมื่อทศกัณฐ์ทิ้งลูก', price: 920, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/xiHQQGosHbo/hqdefault.jpg',
+        description: 'กำเนิดนางสีดา ชะตากรรมลูกทศกัณฐ์ที่ถูกนำไปลอยน้ำ และคำสาปที่จะนำความพินาศมาสู่กรุงลงกา',
         lessons: [
-          { title: 'กำเนิดทรพาและอภินิหารทรพีฆ่าพ่อ', youtubeId: 'Hvi6nuyM3DF', duration: '16:30', summary: 'ที่มาของคำว่า "ทรพี" จากควายลูกที่ท้าทายฆ่าพ่อตนเองเพื่อความเป็นใหญ่' },
-          { title: 'ศึกทรพีปะทะพาลีในถ้ำและโลหิตสีใส', youtubeId: 'Hvi6nuyM3DF', duration: '18:10', summary: 'พาลีลงไปสู้กับทรพีในถ้ำจนเลือดไหลข้นปากถ้ำ เป็นเหตุให้สุครีพเข้าใจผิดว่าพาลีสิ้นชีพ' },
-          { title: 'ไมยราพถอดดวงใจสะกดทัพพระราม', youtubeId: 'Hvi6nuyM3DF', duration: '14:45', summary: 'เล่ห์กลยักษ์บาดาลไมยราพเป่ายาสะกดกองทัพและอุ้มพระรามลงบาดาล' }
+          { title: 'บทที่ 1: กำเนิดนางสีดาและลอยแพลอยน้ำ (คลิปจริงจาก Lore Universe)', youtubeId: 'xiHQQGosHbo', duration: '19:15', summary: 'รับชมวิดีโอฉบับเต็มคำสาปลงกาจากช่อง Lore Universe' }
         ]
       },
       {
-        id: 'C-106', title: 'รามเกียรติ์ | EP.13 - ศึกกากนาสูร & กำเนิดพระราม', price: 950, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
-        thumbnail: 'https://img.youtube.com/vi/HMy0cfaovxl/hqdefault.jpg',
-        description: 'พระนารายณ์อวตารลงมาเป็นพระรามแห่งอโยธยา พร้อมปฐมศึกแรกของพระรามพระลักษมณ์ในการปราบกากนาสูร',
+        id: 'C-111', title: 'รามเกียรติ์ EP.11 : ตอน มหาเทพจุติ | The incarnation of Narayana', price: 990, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/K4T9ZDzJsss/hqdefault.jpg',
+        description: 'การอวตารของพระนารายณ์ลงมาเกิดเป็นพระราม บุตรท้าวทศรถแห่งกรุงอโยธยา',
         lessons: [
-          { title: 'พิธีหุงข้าวทิพย์และการอวตารของพระนารายณ์', youtubeId: 'HMy0cfaovxl', duration: '15:50', summary: 'ท้าวทศรถจัดพิธีหุงข้าวทิพย์เพื่อขอบุตร เกิดเป็นสี่กุมาร พระราม พระลักษมณ์ พระพรต พระสัตรุด' },
-          { title: 'ศึกกากนาสูร: การทดสอบศรครั้งแรกของพระราม', youtubeId: 'HMy0cfaovxl', duration: '13:20', summary: 'นางยักษ์กากนาสูรแปลงเป็นกาใหญ่ก่อกวนพิธีฤาษี พระรามทรงแผลงศรพรหมมาสตร์ประหาร' }
+          { title: 'บทที่ 1: มหาเทพนารายณ์อวตาร (คลิปจริงจาก Lore Universe)', youtubeId: 'K4T9ZDzJsss', duration: '21:05', summary: 'รับชมวิดีโอฉบับเต็มมหาเทพจุติตามตำนานจากช่อง Lore Universe' }
+        ]
+      },
+      {
+        id: 'C-110', title: 'รามเกียรติ์ EP.10 : ตอน ศึกปฑูตทันต์ถล่มสวรรค์', price: 880, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/V6ba51ybrAA/hqdefault.jpg',
+        description: 'การบุกสวรรค์ของเหล่ายักษ์และการต่อสู้กับเทวดา',
+        lessons: [
+          { title: 'บทที่ 1: ศึกปฑูตทันต์ (คลิปจริงจาก Lore Universe)', youtubeId: 'V6ba51ybrAA', duration: '15:40', summary: 'รับชมวิดีโอฉบับเต็มศึกปฑูตทันต์จากช่อง Lore Universe' }
+        ]
+      },
+      {
+        id: 'C-108', title: 'รามเกียรติ์ EP.8 : ตอน กำเนิดทรพาและไมยราพ (ถอดดวงใจ)', price: 990, category: 'วรรณคดีไทย / ตำนาน', channel: 'Lore Universe',
+        thumbnail: 'https://img.youtube.com/vi/Lz8lZAyUXq0/hqdefault.jpg',
+        description: 'กำเนิดทรพาผู้พิฆาตพ่อ และไมยราพเจ้าแห่งเมืองบาดาลผู้มีอิทธิฤทธิ์ถอดดวงใจ',
+        lessons: [
+          { title: 'บทที่ 1: กำเนิดทรพาและพิธีถอดดวงใจไมยราพ (คลิปจริงจาก Lore Universe)', youtubeId: 'Lz8lZAyUXq0', duration: '22:15', summary: 'รับชมวิดีโอฉบับเต็มจากช่อง Lore Universe' }
         ]
       },
       {
