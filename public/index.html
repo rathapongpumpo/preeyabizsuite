@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PreeyaBizSuite | Interactive Business Demo Suite</title>
+    <meta name="description" content="PreeyaBizSuite Interactive business demo platform">
+    <meta name="theme-color" content="#081411">
+    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/assets/app.css">
+    <script>
+      window.DEMO_PROJECTS = {
+        "/": {
+          "title": "PreeyaBizSuite | Interactive Business Demo Suite",
+          "short": "PreeyaBizSuite Portal",
+          "description": "รวมเดโมระบบธุรกิจ Interactive สำหรับให้ลูกค้าทดลองใช้งานก่อนเริ่มพัฒนาจริง",
+          "audience": "ผู้สนใจระบบธุรกิจและลูกค้าที่ต้องการทดลอง workflow",
+          "impact": "เห็นแนวทางหน้าจอและการทำงานก่อนเริ่มพัฒนาระบบจริง",
+          "highlights": ["9 เดโม", "Interactive", "Local Storage", "PHP & JS"],
+          "visible": false
+        },
+        "/business-suite": {
+          "title": "Sales Flow CRM",
+          "short": "ระบบขายและดูแลลูกค้า",
+          "category": "CRM / Sales workflow",
+          "description": "รับลูกค้า ติดตามดีล ออกใบเสนอราคา เตรียมสัญญา และปิดการขาย",
+          "audience": "ทีมขาย บริษัทบริการ และบริษัทรับงานโปรเจกต์",
+          "impact": "เห็นสถานะลูกค้าและสิ่งที่ต้องทำต่อเพื่อปิดการขาย",
+          "highlights": ["Pipeline", "Quotation", "Contract", "Sales overview"],
+          "visible": true,
+          "featured": true,
+          "accent": "teal"
+        },
+        "/ecommerce-storefront": {
+          "title": "OAI Apparel Storefront",
+          "short": "เว็บร้านค้าออนไลน์",
+          "category": "E-Commerce storefront",
+          "description": "หน้าร้านแฟชั่น แคตตาล็อกสินค้า ตะกร้า และ product detail",
+          "audience": "แบรนด์สินค้า ร้านค้าออนไลน์ และ retail",
+          "impact": "ทดลอง flow ตั้งแต่เลือกสินค้าจนถึงตะกร้า",
+          "highlights": ["Catalog", "Cart drawer", "Campaign hero", "Responsive"],
+          "visible": true,
+          "featured": true,
+          "accent": "amber",
+          "external": "ecommerce"
+        },
+        "/tilt-signal-arcade-bar": {
+          "title": "Tilt Signal Arcade Bar",
+          "short": "เว็บโปรโมตร้าน / อีเวนต์",
+          "category": "Brand landing page",
+          "description": "Landing page แนว cinematic สำหรับร้าน บาร์ สถานที่ และแคมเปญ",
+          "audience": "ร้านอาหาร บาร์ venue event และ entertainment brand",
+          "impact": "สื่อภาพลักษณ์แบรนด์และประสบการณ์ได้ชัดเจน",
+          "highlights": ["Cinematic hero", "Brand story", "Booking CTA", "Editorial layout"],
+          "visible": true,
+          "featured": true,
+          "accent": "violet",
+          "external": "tilt"
+        },
+        "/usa-thai-shipping": {
+          "title": "Thai Shipping Suite",
+          "short": "ระบบขนส่งและติดตามพัสดุ",
+          "category": "Logistics suite",
+          "description": "จัดการพัสดุจากหลังบ้านและให้ลูกค้าติดตาม timeline",
+          "audience": "ธุรกิจชิปปิ้ง ขนส่ง และ fulfillment",
+          "impact": "ลดขั้นตอนการแจ้งสถานะและรวมข้อมูลพัสดุไว้จุดเดียว",
+          "highlights": ["Admin portal", "Tracking", "Timeline", "Customer portal"],
+          "visible": true,
+          "accent": "cyan"
+        },
+        "/course": {
+          "title": "EduFlow Course Platform",
+          "short": "ระบบขายคอร์สออนไลน์",
+          "category": "Education",
+          "description": "ขายคอร์ส จัดการคำสั่งซื้อ ผู้เรียน และความคืบหน้า",
+          "audience": "สถาบันสอน creator และทีมอบรม",
+          "impact": "เห็นทั้งฝั่งผู้เรียนและผู้ดูแลระบบ",
+          "highlights": ["Catalog", "Orders", "Learning portal", "Progress"],
+          "visible": true,
+          "accent": "blue"
+        },
+        "/warehouse-management": {
+          "title": "Nexus Warehouse Management",
+          "short": "ระบบคลังสินค้า",
+          "category": "Operations",
+          "description": "ดู stock รับเข้า เบิกออก supplier รายงาน และแจ้งเตือน",
+          "audience": "คลังสินค้า ค้าปลีก และกระจายสินค้า",
+          "impact": "เห็นภาพรวม stock และ operation หลังบ้าน",
+          "highlights": ["Inventory", "Inbound / Outbound", "Reports", "Alerts"],
+          "visible": true,
+          "accent": "lime"
+        },
+        "/project-management": {
+          "title": "NexusFlow Project / Kanban",
+          "short": "บอร์ดจัดการงาน",
+          "category": "Productivity",
+          "description": "จัดการหลายโปรเจกต์ ลาก task ค้นหา และเพิ่มงาน",
+          "audience": "เอเจนซี่ ทีมซอฟต์แวร์ และ operation",
+          "impact": "มองเห็นสถานะงานของทีมและงานที่ต้องเร่ง",
+          "highlights": ["Kanban", "Drag & drop", "Search", "Task modal"],
+          "visible": true,
+          "accent": "slate"
+        },
+        "/pos-system-smart": {
+          "title": "SmartPOS",
+          "short": "ระบบ POS ร้านอาหาร",
+          "category": "Retail / F&B",
+          "description": "จุดขาย หน้าครัว dashboard และ kiosk ในระบบเดียว",
+          "audience": "คาเฟ่ ร้านอาหาร และร้านค้าหน้าร้าน",
+          "impact": "ทดลอง flow ตั้งแต่รับ order จนถึงครัวและรายงาน",
+          "highlights": ["POS", "KDS", "Dashboard", "Kiosk"],
+          "visible": true,
+          "featured": true,
+          "accent": "orange"
+        },
+        "/e-signature": {
+          "title": "Lite E-Signature",
+          "short": "ระบบเซ็นเอกสารออนไลน์",
+          "category": "Document workflow",
+          "description": "อ่านสัญญา วาดลายเซ็น บันทึกหลักฐาน และดาวน์โหลด PDF",
+          "audience": "ฝ่ายขาย HR งานสัญญา และ back office",
+          "impact": "ลดขั้นตอนการส่งเอกสารและติดตามการลงนาม",
+          "highlights": ["Signature pad", "PDF", "Audit detail", "Contract"],
+          "visible": true,
+          "accent": "emerald"
+        }
+      };
+    </script>
+</head>
+<body>
+    <div id="app" class="portal-root" aria-live="polite"></div>
+    <script src="/assets/app.js"></script>
+</body>
+</html>

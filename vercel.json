@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/external/ecommerce/:path*",
@@ -10,12 +10,8 @@
       "destination": "https://tilt-signal-arcade-bar.vercel.app/:path*"
     },
     {
-      "source": "/assets/:path*",
-      "destination": "/public/assets/:path*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/((?!assets/|.*\\..*).*)",
+      "destination": "/public/index.html"
     }
   ]
 }
