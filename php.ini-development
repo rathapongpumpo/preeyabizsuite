@@ -1,0 +1,7 @@
+display_errors=On
+display_startup_errors=On
+error_reporting=E_ALL
+default_charset=UTF-8
+session.cookie_httponly=1
+session.cookie_samesite=Lax
+allow_url_fopen=Off
