@@ -78,10 +78,10 @@
 
   function setTheme(theme) {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem('preeya_php_demo_v1:theme', theme);
+    localStorage.setItem('preeya_php_demo_v2:theme', theme);
   }
 
-  setTheme(localStorage.getItem('preeya_php_demo_v1:theme') || 'dark');
+  setTheme(localStorage.getItem('preeya_php_demo_v2:theme') || 'light');
 
   const infoButton = document.getElementById('project-info-button');
   const info = document.getElementById('project-info');
