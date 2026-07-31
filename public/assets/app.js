@@ -18,7 +18,7 @@
   const today = () => new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium' }).format(new Date());
 
   function store(name, seed) {
-    const key = `preeya_php_demo_v1:${name}`;
+    const key = `preeya_php_demo_v2:${name}`;
     let data;
     try {
       data = JSON.parse(localStorage.getItem(key) || 'null');
