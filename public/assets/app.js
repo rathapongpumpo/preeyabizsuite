@@ -64,14 +64,22 @@
   const today = () => new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium' }).format(new Date());
 
   function store(name, seed) {
-    const key = `preeya_php_demo_v3:${name}`;
+    const key = `preeya_php_demo_v5:${name}`;
     let data;
     try {
       data = JSON.parse(localStorage.getItem(key) || 'null');
     } catch {
       data = null;
     }
-    if (!data || typeof data !== 'object') data = clone(seed);
+    if (!data || typeof data !== 'object') {
+      data = clone(seed);
+    } else {
+      for (const k in seed) {
+        if (data[k] === undefined || (Array.isArray(seed[k]) && !Array.isArray(data[k]))) {
+          data[k] = clone(seed[k]);
+        }
+      }
+    }
     return {
       key,
       data,
@@ -1743,13 +1751,37 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
   }
 
   const posProducts = [
-    { id: 'P1', name: 'Espresso', cat: 'Coffee', price: 65 }, { id: 'P2', name: 'Americano', cat: 'Coffee', price: 75 }, { id: 'P3', name: 'Cappuccino', cat: 'Coffee', price: 90 },
-    { id: 'P4', name: 'Thai Tea', cat: 'Tea', price: 70 }, { id: 'P5', name: 'Matcha Latte', cat: 'Tea', price: 110 }, { id: 'P6', name: 'Croissant', cat: 'Bakery', price: 85 },
-    { id: 'P7', name: 'Chocolate Cake', cat: 'Bakery', price: 125 }, { id: 'P8', name: 'Club Sandwich', cat: 'Food', price: 145 }, { id: 'P9', name: 'Caesar Salad', cat: 'Food', price: 155 }, { id: 'P10', name: 'Pasta Carbonara', cat: 'Food', price: 195 }
+    { id: 'P1', name: 'Espresso Single Shot', cat: 'Coffee', price: 65, hasModifiers: true },
+    { id: 'P2', name: 'Iced Americano', cat: 'Coffee', price: 75, hasModifiers: true },
+    { id: 'P3', name: 'Cappuccino Premium', cat: 'Coffee', price: 90, hasModifiers: true },
+    { id: 'P4', name: 'Thai Milk Tea (ชาไทย)', cat: 'Tea', price: 70, hasModifiers: true },
+    { id: 'P5', name: 'Uji Matcha Latte', cat: 'Tea', price: 110, hasModifiers: true },
+    { id: 'P6', name: 'Butter Croissant', cat: 'Bakery', price: 85, hasModifiers: false },
+    { id: 'P7', name: 'Dark Chocolate Cake', cat: 'Bakery', price: 125, hasModifiers: false },
+    { id: 'P8', name: 'Club Sandwich Supreme', cat: 'Food', price: 145, hasModifiers: false },
+    { id: 'P9', name: 'Caesar Chicken Salad', cat: 'Food', price: 155, hasModifiers: false },
+    { id: 'P10', name: 'Spaghetti Carbonara', cat: 'Food', price: 195, hasModifiers: false }
   ];
-  const smartPosSeed = { view: 'pos', cart: {}, kioskCart: {}, kioskStage: 'welcome', orders: [], search: '', category: 'All' };
 
-    function renderSmartPos() {
+  const smartPosSeed = {
+    view: 'pos', orderType: 'Dine-in', selectedTable: 'T-01', search: '', category: 'All',
+    cart: [],
+    tables: [
+      { id: 'T-01', name: 'โต๊ะ T-01 (โซน A)', status: 'Occupied', currentOrder: 'ORD-5501' },
+      { id: 'T-02', name: 'โต๊ะ T-02 (โซน A)', status: 'Free', currentOrder: null },
+      { id: 'T-03', name: 'โต๊ะ T-03 (โซน B)', status: 'Billing', currentOrder: 'ORD-5498' },
+      { id: 'T-04', name: 'โต๊ะ T-04 (โซน B)', status: 'Free', currentOrder: null },
+      { id: 'T-05', name: 'โต๊ะ T-05 (Outdoor)', status: 'Free', currentOrder: null },
+      { id: 'T-06', name: 'โต๊ะ T-06 (Outdoor)', status: 'Occupied', currentOrder: 'ORD-5503' }
+    ],
+    orders: [
+      { id: 'ORD-5498', table: 'T-03', type: 'Dine-in', items: [{ name: 'Iced Americano', qty: 2, price: 75, details: 'หวาน 50%' }, { name: 'Butter Croissant', qty: 1, price: 85, details: '' }], status: 'ready', method: 'PromptPay QR', total: 251.45, at: '11:20' },
+      { id: 'ORD-5501', table: 'T-01', type: 'Dine-in', items: [{ name: 'Uji Matcha Latte', qty: 1, price: 110, details: 'หวาน 25%, Oat Milk (+20฿)' }], status: 'cooking', method: 'Cash', total: 139.10, at: '11:35' },
+    ],
+    shift: { float: 2000, cashCollected: 4500, qrCollected: 6800, cardCollected: 3200 }
+  };
+
+  function renderSmartPos() {
     const s = store('smartpos', smartPosSeed);
     const save = () => { s.save(); renderSmartPos(); };
     const views = [
