@@ -64,7 +64,7 @@
   const today = () => new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium' }).format(new Date());
 
   function store(name, seed) {
-    const key = `preeya_php_demo_v2:${name}`;
+    const key = `preeya_php_demo_v3:${name}`;
     let data;
     try {
       data = JSON.parse(localStorage.getItem(key) || 'null');
@@ -862,36 +862,538 @@
   }
 
   const wmsSeed = {
-    view: 'dashboard', search: '', inventory: [
-      { sku: 'EL-001', name: 'Wireless Barcode Scanner', category: 'Electronics', stock: 24, location: 'A-01', price: 2890 },
-      { sku: 'EL-002', name: 'Thermal Label Printer', category: 'Electronics', stock: 7, location: 'A-02', price: 4590 },
-      { sku: 'FU-001', name: 'Industrial Shelf 5 Tier', category: 'Furniture', stock: 18, location: 'B-01', price: 7200 },
-      { sku: 'ST-001', name: 'Shipping Label A6', category: 'Stationery', stock: 160, location: 'C-01', price: 320 },
-      { sku: 'ST-002', name: 'Packing Tape Clear', category: 'Stationery', stock: 9, location: 'C-02', price: 85 },
-      { sku: 'NW-001', name: 'Gigabit Switch 24 Port', category: 'Networking', stock: 4, location: 'D-01', price: 5900 },
-      { sku: 'NW-002', name: 'CAT6 Cable 305m', category: 'Networking', stock: 0, location: 'D-02', price: 3100 },
-      { sku: 'EL-003', name: 'Handheld Terminal', category: 'Electronics', stock: 12, location: 'A-03', price: 12900 },
+    view: 'dashboard', search: '', category: 'All', zone: 'All',
+    inventory: [
+      { sku: 'EL-001', name: 'Wireless Barcode Scanner', category: 'Electronics', stock: 24, minStock: 10, location: 'Zone A-01', price: 2890, supplier: 'SUP-001 Nexus Tech Supply' },
+      { sku: 'EL-002', name: 'Thermal Label Printer', category: 'Electronics', stock: 7, minStock: 10, location: 'Zone A-02', price: 4590, supplier: 'SUP-001 Nexus Tech Supply' },
+      { sku: 'FU-001', name: 'Industrial Shelf 5 Tier', category: 'Furniture', stock: 18, minStock: 5, location: 'Zone B-01', price: 7200, supplier: 'SUP-002 Siam Steel & Racks' },
+      { sku: 'ST-001', name: 'Shipping Label A6 (Roll)', category: 'Stationery', stock: 160, minStock: 50, location: 'Zone C-01', price: 320, supplier: 'SUP-003 Pack & Print Co.' },
+      { sku: 'ST-002', name: 'Packing Tape Clear 2 inch', category: 'Stationery', stock: 9, minStock: 20, location: 'Zone C-02', price: 85, supplier: 'SUP-003 Pack & Print Co.' },
+      { sku: 'NW-001', name: 'Gigabit Switch 24 Port', category: 'Networking', stock: 4, minStock: 5, location: 'Zone D-01', price: 5900, supplier: 'SUP-001 Nexus Tech Supply' },
+      { sku: 'NW-002', name: 'CAT6 Cable 305m Box', category: 'Networking', stock: 2, minStock: 5, location: 'Zone D-02', price: 3100, supplier: 'SUP-001 Nexus Tech Supply' },
+      { sku: 'EL-003', name: 'Handheld PDA Terminal', category: 'Electronics', stock: 12, minStock: 5, location: 'Zone A-03', price: 12900, supplier: 'SUP-001 Nexus Tech Supply' },
+    ],
+    inboundOrders: [
+      { id: 'IN-1001', poNumber: 'PO-2026-081', supplier: 'SUP-001 Nexus Tech Supply', sku: 'EL-001', qty: 20, location: 'Zone A-01', status: 'Received', date: '01 ส.ค. 2569' },
+      { id: 'IN-1002', poNumber: 'PO-2026-084', supplier: 'SUP-003 Pack & Print Co.', sku: 'ST-002', qty: 50, location: 'Zone C-02', status: 'Pending', date: '03 ส.ค. 2569' },
+    ],
+    outboundOrders: [
+      { id: 'OUT-2041', orderNo: 'ORD-8819', customer: 'Bangkok Logistics Co.', sku: 'EL-001', qty: 4, status: 'Dispatched', picker: 'Preeya C.', date: '02 ส.ค. 2569' },
+      { id: 'OUT-2042', orderNo: 'ORD-8824', customer: 'Siam Retail Group', sku: 'FU-001', qty: 2, status: 'Picking', picker: 'Somchai N.', date: '03 ส.ค. 2569' },
+    ],
+    suppliers: [
+      { id: 'SUP-001', name: 'Nexus Tech Supply Ltd.', contact: 'คุณวิชัย (Sales)', phone: '02-771-8899', email: 'sales@nexustech.co.th', rating: '4.9 ★', leadTime: '2-3 วัน' },
+      { id: 'SUP-002', name: 'Siam Steel & Racks Co.', contact: 'คุณมารุต', phone: '02-441-2211', email: 'info@siamsteelracks.com', rating: '4.7 ★', leadTime: '5-7 วัน' },
+      { id: 'SUP-003', name: 'Pack & Print Logistics Supply', contact: 'คุณพิมพ์ใจ', phone: '081-992-3344', email: 'order@packprint.co.th', rating: '4.8 ★', leadTime: '1-2 วัน' },
+    ],
+    logs: [
+      { id: 'LOG-1', type: 'INBOUND', sku: 'EL-003', qty: 12, location: 'Zone A-03', note: 'รับสินค้าตาม PO-2026-078', date: '01 ส.ค. 2569 10:15', user: 'Preeya C.' },
+      { id: 'LOG-2', type: 'OUTBOUND', sku: 'EL-001', qty: 4, location: 'Zone A-01', note: 'จ่ายสินค้าตามคำสั่งซื้อ ORD-8819', date: '02 ส.ค. 2569 14:30', user: 'Somchai N.' },
     ]
   };
 
   function renderWms() {
-    const s = store('wms', wmsSeed); const save = () => { s.save(); renderWms(); };
-    const views = [['dashboard', 'Dashboard'], ['inventory', 'Inventory'], ['inbound', 'Inbound'], ['outbound', 'Outbound'], ['suppliers', 'Suppliers'], ['reports', 'Reports'], ['staff', 'Staff'], ['settings', 'Settings']];
-    const filtered = s.data.inventory.filter(x => `${x.name} ${x.sku}`.toLowerCase().includes((s.data.search || '').toLowerCase()));
+    const s = store('wms', wmsSeed);
+    const save = () => { s.save(); renderWms(); };
+    const views = [
+      ['dashboard', 'Dashboard'],
+      ['inventory', 'Inventory & Stock'],
+      ['inbound', `Inbound (${s.data.inboundOrders.filter(x => x.status === 'Pending').length})`],
+      ['outbound', `Outbound (${s.data.outboundOrders.filter(x => x.status === 'Picking').length})`],
+      ['suppliers', 'Suppliers'],
+      ['reports', 'Stock Ledger & Reports']
+    ];
+
+    const categories = ['All', 'Electronics', 'Furniture', 'Stationery', 'Networking'];
+    const filteredInventory = s.data.inventory.filter(x => {
+      const matchSearch = `${x.name} ${x.sku} ${x.location}`.toLowerCase().includes((s.data.search || '').toLowerCase());
+      const matchCat = s.data.category === 'All' || x.category === s.data.category;
+      return matchSearch && matchCat;
+    });
+
+    const lowStockItems = s.data.inventory.filter(x => x.stock <= x.minStock);
+    const totalValue = s.data.inventory.reduce((a, x) => a + x.stock * x.price, 0);
+
     let body = '';
+
     if (s.data.view === 'dashboard') {
-      const value = s.data.inventory.reduce((a, x) => a + x.stock * x.price, 0); body = `<div class="page-pad"><div class="grid cols-4">${[['SKU', s.data.inventory.length], ['Inventory value', money(value)], ['Low stock', s.data.inventory.filter(x => x.stock > 0 && x.stock <= 10).length], ['Out of stock', s.data.inventory.filter(x => x.stock === 0).length]].map(([a, b]) => `<article class="card stat-card"><small>${a}</small><strong>${b}</strong></article>`).join('')}</div><div class="grid cols-2" style="margin-top:16px"><section class="card"><h2>Stock status</h2>${['Electronics', 'Furniture', 'Stationery', 'Networking'].map(c => `<div class="summary-line"><span>${c}</span><strong>${s.data.inventory.filter(x => x.category === c).reduce((a, x) => a + x.stock, 0)} units</strong></div>`).join('')}</section><section class="card"><h2>Recent activities</h2><div class="timeline"><div class="timeline-item done"><strong>รับสินค้าเข้าคลัง</strong><p class="muted">EL-003 · 12 units</p></div><div class="timeline-item current"><strong>เตรียมรายการเบิกออก</strong><p class="muted">Order OUT-2041</p></div></div></section></div></div>`;
+      body = `<div class="page-pad">
+        <div class="grid cols-4">
+          <article class="card stat-card"><small>Total SKUs</small><strong>${s.data.inventory.length} SKUs</strong><small>ในคลังสินค้า</small></article>
+          <article class="card stat-card"><small>Total Inventory Value</small><strong>${money(totalValue)}</strong><small>มูลค่าสินค้ารวม</small></article>
+          <article class="card stat-card"><small>Low Stock Alert</small><strong style="color:var(--danger)">${lowStockItems.length} SKUs</strong><small>ต้องสั่งซื้อเพิ่ม</small></article>
+          <article class="card stat-card"><small>Pending Inbound</small><strong>${s.data.inboundOrders.filter(x => x.status === 'Pending').length} Orders</strong><small>รอรับเข้าคลัง</small></article>
+        </div>
+
+        ${lowStockItems.length ? `
+          <div class="notice danger" style="margin-top:16px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong style="color:var(--danger)">⚠️ แจ้งเตือนสินค้าต่ำกว่า Reorder Point (${lowStockItems.length} รายการ):</strong>
+              <span class="muted">${lowStockItems.map(x => `${x.sku} (${x.stock}/${x.minStock})`).join(', ')}</span>
+            </div>
+            <button class="btn small primary" data-wms-action="create-bulk-po">สร้าง PO สั่งซื้อด่วน 🛒</button>
+          </div>
+        ` : ''}
+
+        <div class="grid cols-2" style="margin-top:16px">
+          <section class="card">
+            <div class="card-head"><h2>สต็อกแยกตามหมวดหมู่</h2>${badge('Realtime')}</div>
+            ${['Electronics', 'Furniture', 'Stationery', 'Networking'].map(cat => {
+              const items = s.data.inventory.filter(x => x.category === cat);
+              const qty = items.reduce((a, x) => a + x.stock, 0);
+              const val = items.reduce((a, x) => a + x.stock * x.price, 0);
+              return `<div class="summary-line">
+                <div><strong>${cat}</strong><br><small class="muted">${items.length} SKUs</small></div>
+                <div style="text-align:right"><strong>${qty} ชิ้น</strong><br><small class="muted">${money(val)}</small></div>
+              </div>`;
+            }).join('')}
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <h2>กิจกรรมคลังล่าสุด (Stock Movement)</h2>
+              <button class="btn small" data-wms-view="reports">ดูทั้งหมด →</button>
+            </div>
+            <div class="timeline">
+              ${s.data.logs.slice(0, 5).map(l => `
+                <div class="timeline-item ${l.type === 'INBOUND' ? 'done' : 'current'}">
+                  <strong>${l.type === 'INBOUND' ? '📥 รับเข้า' : '📤 เบิกออก'}: ${esc(l.sku)} (${l.qty} ชิ้น)</strong>
+                  <p class="muted">${esc(l.note)} · ${esc(l.location)} · โดย ${esc(l.user)} (${esc(l.date)})</p>
+                </div>
+              `).join('') || '<p class="muted">ยังไม่มีประวัติการรับเข้า/เบิกออก</p>'}
+            </div>
+          </section>
+        </div>
+      </div>`;
     } else if (s.data.view === 'inventory') {
-      body = `<div class="page-pad"><section class="card"><div class="toolbar"><h2>Inventory</h2><input class="input" id="wms-search" style="max-width:360px" placeholder="ค้นหาชื่อหรือ SKU" value="${esc(s.data.search)}"></div><div class="table-wrap"><table><thead><tr><th>SKU</th><th>Item</th><th>Category</th><th>Stock</th><th>Location</th><th>Price</th><th></th></tr></thead><tbody>${filtered.map(x => `<tr><td><code>${esc(x.sku)}</code></td><td><strong>${esc(x.name)}</strong></td><td>${esc(x.category)}</td><td>${badge(String(x.stock), x.stock === 0 ? 'danger' : x.stock <= 10 ? 'warning' : 'success')}</td><td>${esc(x.location)}</td><td>${money(x.price)}</td><td><button class="btn small" data-stock="${x.sku}" data-delta="-1">−</button> <button class="btn small" data-stock="${x.sku}" data-delta="1">+</button></td></tr>`).join('') || '<tr><td colspan="7">ไม่พบสินค้า</td></tr>'}</tbody></table></div></section></div>`;
+      body = `<div class="page-pad">
+        <section class="card">
+          <div class="toolbar">
+            <div class="tabs" style="margin:0">
+              ${categories.map(cat => `<button class="tab ${s.data.category === cat ? 'active' : ''}" data-wms-cat="${esc(cat)}">${esc(cat)}</button>`).join('')}
+            </div>
+            <div style="display:flex;gap:8px">
+              <input class="input" id="wms-search" style="max-width:280px" placeholder="ค้นหา SKU, ชื่อ หรือ Zone..." value="${esc(s.data.search)}">
+              <button class="btn primary small" data-wms-add-sku>+ เพิ่ม SKU ใหม่</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>ชื่อสินค้า</th>
+                  <th>หมวดหมู่</th>
+                  <th>Location Zone</th>
+                  <th>คงเหลือ (Min)</th>
+                  <th>ราคา/หน่วย</th>
+                  <th>มูลค่ารวม</th>
+                  <th>จัดการสต็อก</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filteredInventory.map(x => `
+                  <tr>
+                    <td><code>${esc(x.sku)}</code></td>
+                    <td><strong>${esc(x.name)}</strong><br><small class="muted">ซัพพลายเออร์: ${esc(x.supplier || '-')}</small></td>
+                    <td>${badge(x.category)}</td>
+                    <td><span class="chip">${esc(x.location)}</span></td>
+                    <td>
+                      <strong style="font-size:16px;color:${x.stock === 0 ? 'var(--danger)' : x.stock <= x.minStock ? 'var(--warning)' : 'inherit'}">
+                        ${x.stock}
+                      </strong>
+                      <small class="muted"> / ${x.minStock}</small>
+                      ${x.stock <= x.minStock ? badge('สั่งซื้อเพิ่ม', 'warning') : ''}
+                    </td>
+                    <td>${money(x.price)}</td>
+                    <td><strong>${money(x.stock * x.price)}</strong></td>
+                    <td>
+                      <div style="display:flex;gap:4px">
+                        <button class="btn small" data-wms-adjust="${x.sku}" data-delta="-1" title="เบิกจ่าย">−</button>
+                        <button class="btn small" data-wms-adjust="${x.sku}" data-delta="1" title="รับเข้า">+</button>
+                        <button class="btn small primary" data-wms-po="${x.sku}" title="สั่งซื้อเพิ่ม">PO</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('') || '<tr><td colspan="8" class="muted" style="text-align:center">ไม่พบสินค้าตามเงื่อนไขที่ค้นหา</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>`;
+    } else if (s.data.view === 'inbound') {
+      body = `<div class="page-pad">
+        <section class="card">
+          <div class="card-head">
+            <div><p class="eyebrow">Inbound Operations</p><h2>รายการรับสินค้าเข้าคลัง (Inbound PO Receipts)</h2></div>
+            <button class="btn primary small" data-wms-new-inbound>+ สร้างใบรับสินค้าเข้าคลัง</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>PO Number</th>
+                  <th>ซัพพลายเออร์</th>
+                  <th>SKU สินค้า</th>
+                  <th>จำนวน</th>
+                  <th>จัดเก็บเข้า Zone</th>
+                  <th>วันที่สั่ง/รับ</th>
+                  <th>สถานะ</th>
+                  <th>การดำเนินการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.data.inboundOrders.map(o => `
+                  <tr>
+                    <td><code>${esc(o.poNumber)}</code></td>
+                    <td><strong>${esc(o.supplier)}</strong></td>
+                    <td><code>${esc(o.sku)}</code></td>
+                    <td><strong>${o.qty} ชิ้น</strong></td>
+                    <td><span class="chip">${esc(o.location)}</span></td>
+                    <td>${esc(o.date)}</td>
+                    <td>${badge(o.status, o.status === 'Received' ? 'success' : 'warning')}</td>
+                    <td>
+                      <button class="btn small primary" data-wms-confirm-inbound="${o.id}" ${o.status === 'Received' ? 'disabled' : ''}>
+                        ${o.status === 'Received' ? 'รับสินค้าแล้ว ✓' : 'ยืนยันรับสินค้าเข้าคลัง'}
+                      </button>
+                    </td>
+                  </tr>
+                `).join('') || '<tr><td colspan="8" class="muted">ยังไม่มีรายการ Inbound</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>`;
+    } else if (s.data.view === 'outbound') {
+      body = `<div class="page-pad">
+        <section class="card">
+          <div class="card-head">
+            <div><p class="eyebrow">Outbound Operations</p><h2>รายการเบิกจ่ายและจัดส่งสินค้า (Outbound Pick List)</h2></div>
+            <button class="btn primary small" data-wms-new-outbound>+ สร้างใบเบิกจ่ายสินค้า</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order No.</th>
+                  <th>ลูกค้า / ผู้เบิก</th>
+                  <th>SKU สินค้า</th>
+                  <th>จำนวนเบิก</th>
+                  <th>ผู้จัดสินค้า (Picker)</th>
+                  <th>วันที่</th>
+                  <th>สถานะ</th>
+                  <th>การดำเนินการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.data.outboundOrders.map(o => `
+                  <tr>
+                    <td><code>${esc(o.orderNo)}</code></td>
+                    <td><strong>${esc(o.customer)}</strong></td>
+                    <td><code>${esc(o.sku)}</code></td>
+                    <td><strong>${o.qty} ชิ้น</strong></td>
+                    <td>${esc(o.picker)}</td>
+                    <td>${esc(o.date)}</td>
+                    <td>${badge(o.status, o.status === 'Dispatched' ? 'success' : 'warning')}</td>
+                    <td>
+                      <button class="btn small primary" data-wms-confirm-outbound="${o.id}" ${o.status === 'Dispatched' ? 'disabled' : ''}>
+                        ${o.status === 'Dispatched' ? 'จัดส่งแล้ว ✓' : 'ยืนยันเบิกจ่ายสินค้า'}
+                      </button>
+                    </td>
+                  </tr>
+                `).join('') || '<tr><td colspan="8" class="muted">ยังไม่มีรายการ Outbound</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>`;
+    } else if (s.data.view === 'suppliers') {
+      body = `<div class="page-pad">
+        <section class="card">
+          <div class="card-head"><h2>รายชื่อคู่ค้าและซัพพลายเออร์ (Suppliers Directory)</h2></div>
+          <div class="grid cols-3" style="margin-top:14px">
+            ${s.data.suppliers.map(sup => `
+              <article class="card">
+                <div class="card-head">
+                  <h3>${esc(sup.name)}</h3>
+                  ${badge(sup.rating, 'success')}
+                </div>
+                <div class="summary-line"><span>ผู้ติดต่อ</span><strong>${esc(sup.contact)}</strong></div>
+                <div class="summary-line"><span>โทรศัพท์</span><strong>${esc(sup.phone)}</strong></div>
+                <div class="summary-line"><span>อีเมล</span><small class="muted">${esc(sup.email)}</small></div>
+                <div class="summary-line"><span>Lead Time จัดส่ง</span><strong>${esc(sup.leadTime)}</strong></div>
+              </article>
+            `).join('')}
+          </div>
+        </section>
+      </div>`;
     } else {
-      const content = { inbound: ['Inbound receiving', 'Barcode input, supplier, quantity, location และ putaway queue'], outbound: ['Outbound picking', 'Order search, requester/date และ picking list'], suppliers: ['Suppliers', 'SUP-001 Nexus Supply · rating 4.8 · Active'], reports: ['Reports', 'Turnover 4.2x · Accuracy 99.8% · Capacity 76%'], staff: ['Warehouse staff', 'EMP-001 Preeya C. · Manager · Active'], settings: ['Settings', 'Warehouse: Bangkok Main · Notifications enabled'] }[s.data.view];
-      body = `<div class="page-pad"><section class="card"><p class="eyebrow">NexusWMS</p><h2>${content[0]}</h2><p class="muted">${content[1]}</p><div class="notice">หน้าจอนี้คงสถานะ mock ตาม baseline ของระบบเดิม</div></section></div>`;
+      body = `<div class="page-pad">
+        <section class="card">
+          <div class="card-head">
+            <div><p class="eyebrow">Stock Ledger & Audit Trail</p><h2>สมุดบัญชีเคลื่อนไหวคลังสินค้า (Stock Ledger Log)</h2></div>
+            ${badge(`${s.data.logs.length} รายการบันทึก`)}
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่-เวลา</th>
+                  <th>ประเภท</th>
+                  <th>SKU</th>
+                  <th>จำนวน</th>
+                  <th>Location Zone</th>
+                  <th>ผู้บันทึก</th>
+                  <th>หมายเหตุ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.data.logs.map(l => `
+                  <tr>
+                    <td><code>${esc(l.date)}</code></td>
+                    <td>${badge(l.type, l.type === 'INBOUND' ? 'success' : 'danger')}</td>
+                    <td><code>${esc(l.sku)}</code></td>
+                    <td><strong>${l.qty > 0 ? '+' : ''}${l.qty} ชิ้น</strong></td>
+                    <td><span class="chip">${esc(l.location)}</span></td>
+                    <td>${esc(l.user)}</td>
+                    <td>${esc(l.note)}</td>
+                  </tr>
+                `).join('') || '<tr><td colspan="7" class="muted">ยังไม่มีประวัติ Ledger Log</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>`;
     }
-    app.innerHTML = `<div class="app-shell">${appHeader('NexusWMS', 'Preeya C. / Warehouse Manager', views, s.data.view, `<button class="btn small danger" data-wms-reset>รีเซ็ต</button>`)}${body}</div>`;
+
+    app.innerHTML = `<div class="app-shell">${appHeader('NexusWMS', 'ระบบจัดการคลังสินค้าและสต็อก (Warehouse Management)', views, s.data.view, `<button class="btn small danger" data-wms-reset>รีเซ็ตคลัง</button>`)}${body}</div>`;
+
+    // Event Listeners
     app.querySelectorAll('[data-tab]').forEach(el => el.addEventListener('click', () => { s.data.view = el.dataset.tab; save(); }));
-    app.querySelector('[data-wms-reset]')?.addEventListener('click', () => { if (confirm('คืนข้อมูลคลังเริ่มต้น?')) { s.reset(); renderWms(); } });
+    app.querySelectorAll('[data-wms-view]').forEach(el => el.addEventListener('click', () => { s.data.view = el.dataset.wmsView; save(); }));
+    app.querySelector('[data-wms-reset]')?.addEventListener('click', () => { if (confirm('ล้างข้อมูลสต็อกและคืนค่าเริ่มต้น?')) { s.reset(); renderWms(); } });
+
+    app.querySelectorAll('[data-wms-cat]').forEach(el => el.addEventListener('click', () => { s.data.category = el.dataset.wmsCat; save(); }));
     app.querySelector('#wms-search')?.addEventListener('input', (e) => { s.data.search = e.target.value; s.save(); renderWms(); document.querySelector('#wms-search')?.focus(); });
-    app.querySelectorAll('[data-stock]').forEach(el => el.addEventListener('click', () => { const item = s.data.inventory.find(x => x.sku === el.dataset.stock); if (item) item.stock = Math.max(0, item.stock + Number(el.dataset.delta)); save(); }));
+
+    // Stock Adjustments
+    app.querySelectorAll('[data-wms-adjust]').forEach(el => el.addEventListener('click', () => {
+      const sku = el.dataset.wmsAdjust;
+      const delta = Number(el.dataset.delta);
+      const item = s.data.inventory.find(x => x.sku === sku);
+      if (item) {
+        if (delta < 0 && item.stock <= 0) { toast('สินค้าหมดสต็อก ไม่สามารถเบิกออกได้'); return; }
+        item.stock = Math.max(0, item.stock + delta);
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: delta > 0 ? 'INBOUND' : 'OUTBOUND',
+          sku: item.sku,
+          qty: Math.abs(delta),
+          location: item.location,
+          note: delta > 0 ? 'ปรับเพิ่มสต็อกด้วยมือ' : 'ปรับลด/เบิกจ่ายด้วยมือ',
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: 'Preeya C.'
+        });
+        save();
+        toast(`อัปเดตสต็อก ${item.sku} เรียบร้อยแล้ว`);
+      }
+    }));
+
+    // Single PO
+    app.querySelectorAll('[data-wms-po]').forEach(el => el.addEventListener('click', () => {
+      const item = s.data.inventory.find(x => x.sku === el.dataset.wmsPo);
+      if (!item) return;
+      const newPO = {
+        id: id('IN'),
+        poNumber: `PO-${Date.now().toString().slice(-4)}`,
+        supplier: item.supplier || 'SUP-001 Nexus Tech Supply',
+        sku: item.sku,
+        qty: Math.max(20, item.minStock * 2),
+        location: item.location,
+        status: 'Pending',
+        date: today()
+      };
+      s.data.inboundOrders.unshift(newPO);
+      s.data.view = 'inbound';
+      save();
+      toast(`สร้างใบสั่งซื้อ PO (${newPO.poNumber}) สำหรับ ${item.sku} เรียบร้อย`);
+    }));
+
+    // Bulk PO
+    app.querySelector('[data-wms-action="create-bulk-po"]')?.addEventListener('click', () => {
+      lowStockItems.forEach(item => {
+        s.data.inboundOrders.unshift({
+          id: id('IN'),
+          poNumber: `PO-BULK-${Math.floor(1000 + Math.random() * 9000)}`,
+          supplier: item.supplier || 'SUP-001 Nexus Tech Supply',
+          sku: item.sku,
+          qty: Math.max(20, item.minStock * 3),
+          location: item.location,
+          status: 'Pending',
+          date: today()
+        });
+      });
+      s.data.view = 'inbound';
+      save();
+      toast(`สร้างใบ PO สั่งซื้อด่วนสำหรับสินค้าใกล้หมด ${lowStockItems.length} รายการแล้ว`);
+    });
+
+    // New Inbound Receipt Modal
+    app.querySelector('[data-wms-new-inbound]')?.addEventListener('click', () => {
+      const wrap = modal('สร้างใบรับสินค้าเข้าคลัง (Inbound PO)', `
+        <form id="inbound-form" class="form-grid">
+          <div class="field"><label>PO Number</label><input class="input" name="poNumber" value="PO-2026-${Math.floor(100 + Math.random() * 900)}" required></div>
+          <div class="field"><label>ซัพพลายเออร์</label><select class="select" name="supplier">${s.data.suppliers.map(x => `<option>${esc(x.name)}</option>`).join('')}</select></div>
+          <div class="field"><label>เลือก SKU สินค้า</label><select class="select" name="sku">${s.data.inventory.map(x => `<option value="${x.sku}">${x.sku} - ${esc(x.name)}</option>`).join('')}</select></div>
+          <div class="field"><label>จำนวนรับเข้า (ชิ้น)</label><input class="input" type="number" name="qty" value="20" min="1" required></div>
+          <div class="field"><label>จัดเก็บเข้า Zone Location</label><input class="input" name="location" value="Zone A-01" required></div>
+          <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">สร้างใบรับสินค้า</button></div>
+        </form>
+      `);
+      wrap.querySelector('form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        s.data.inboundOrders.unshift({
+          id: id('IN'),
+          poNumber: String(f.get('poNumber')),
+          supplier: String(f.get('supplier')),
+          sku: String(f.get('sku')),
+          qty: Number(f.get('qty')) || 1,
+          location: String(f.get('location')),
+          status: 'Pending',
+          date: today()
+        });
+        save();
+        wrap.remove();
+        toast('สร้างใบรับสินค้าเรียบร้อย');
+      });
+    });
+
+    // Confirm Inbound Receipt
+    app.querySelectorAll('[data-wms-confirm-inbound]').forEach(el => el.addEventListener('click', () => {
+      const order = s.data.inboundOrders.find(x => x.id === el.dataset.wmsConfirmInbound);
+      if (order && order.status === 'Pending') {
+        order.status = 'Received';
+        const item = s.data.inventory.find(x => x.sku === order.sku);
+        if (item) item.stock += order.qty;
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: 'INBOUND',
+          sku: order.sku,
+          qty: order.qty,
+          location: order.location,
+          note: `รับสินค้าตาม ${order.poNumber} จาก ${order.supplier}`,
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: 'Preeya C.'
+        });
+        save();
+        toast(`รับสินค้าเข้าคลังเรียบร้อยแล้ว เพิ่มสต็อก ${order.sku} +${order.qty} ชิ้น`);
+      }
+    }));
+
+    // New Outbound Dispatch Modal
+    app.querySelector('[data-wms-new-outbound]')?.addEventListener('click', () => {
+      const wrap = modal('สร้างใบเบิกจ่ายสินค้า (Outbound Pick List)', `
+        <form id="outbound-form" class="form-grid">
+          <div class="field"><label>Order No.</label><input class="input" name="orderNo" value="ORD-${Math.floor(1000 + Math.random() * 9000)}" required></div>
+          <div class="field"><label>ชื่อลูกค้า / ผู้เบิก</label><input class="input" name="customer" placeholder="เช่น บริษัท สยามโลจิสติกส์" required></div>
+          <div class="field"><label>เลือก SKU สินค้า</label><select class="select" name="sku">${s.data.inventory.map(x => `<option value="${x.sku}">${x.sku} - ${esc(x.name)} (คงเหลือ ${x.stock})</option>`).join('')}</select></div>
+          <div class="field"><label>จำนวนเบิก (ชิ้น)</label><input class="input" type="number" name="qty" value="1" min="1" required></div>
+          <div class="field"><label>ผู้เบิก/จัดสินค้า (Picker)</label><input class="input" name="picker" value="Preeya C." required></div>
+          <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">สร้างรายการเบิกจ่าย</button></div>
+        </form>
+      `);
+      wrap.querySelector('form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        const sku = String(f.get('sku'));
+        const qty = Number(f.get('qty')) || 1;
+        const item = s.data.inventory.find(x => x.sku === sku);
+        if (item && item.stock < qty) { toast(`สต็อกคงเหลือไม่พอ (${item.stock} ชิ้น)`); return; }
+        s.data.outboundOrders.unshift({
+          id: id('OUT'),
+          orderNo: String(f.get('orderNo')),
+          customer: String(f.get('customer')),
+          sku,
+          qty,
+          picker: String(f.get('picker')),
+          status: 'Picking',
+          date: today()
+        });
+        save();
+        wrap.remove();
+        toast('สร้างรายการเบิกจ่ายสินค้าเรียบร้อย');
+      });
+    });
+
+    // Confirm Outbound Dispatch
+    app.querySelectorAll('[data-wms-confirm-outbound]').forEach(el => el.addEventListener('click', () => {
+      const order = s.data.outboundOrders.find(x => x.id === el.dataset.wmsConfirmOutbound);
+      if (order && order.status === 'Picking') {
+        const item = s.data.inventory.find(x => x.sku === order.sku);
+        if (item && item.stock < order.qty) { toast(`สต็อกคงเหลือไม่พอ (${item.stock} ชิ้น)`); return; }
+        order.status = 'Dispatched';
+        if (item) item.stock = Math.max(0, item.stock - order.qty);
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: 'OUTBOUND',
+          sku: order.sku,
+          qty: -order.qty,
+          location: item?.location || 'Zone A-01',
+          note: `จ่ายสินค้าตาม ${order.orderNo} ส่งให้ ${order.customer}`,
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: order.picker || 'Preeya C.'
+        });
+        save();
+        toast(`เบิกจ่ายสินค้าเรียบร้อยแล้ว หักสต็อก ${order.sku} -${order.qty} ชิ้น`);
+      }
+    }));
+
+    // Add New SKU Modal
+    app.querySelector('[data-wms-add-sku]')?.addEventListener('click', () => {
+      const wrap = modal('เพิ่ม SKU สินค้าใหม่ในคลัง', `
+        <form id="sku-form" class="form-grid">
+          <div class="field"><label>SKU Code</label><input class="input" name="sku" placeholder="เช่น EL-004" required></div>
+          <div class="field"><label>ชื่อสินค้า</label><input class="input" name="name" required placeholder="เช่น Barcode Printer A4"></div>
+          <div class="field"><label>หมวดหมู่</label><select class="select" name="category"><option>Electronics</option><option>Furniture</option><option>Stationery</option><option>Networking</option></select></div>
+          <div class="field"><label>Zone Location</label><input class="input" name="location" value="Zone A-04" required></div>
+          <div class="field"><label>จำนวนสต็อกเริ่มต้น</label><input class="input" type="number" name="stock" value="10" min="0" required></div>
+          <div class="field"><label>จุดแจ้งเตือน (Min Stock)</label><input class="input" type="number" name="minStock" value="5" min="1" required></div>
+          <div class="field"><label>ราคา/หน่วย (บาท)</label><input class="input" type="number" name="price" value="1500" required></div>
+          <div class="field"><label>ซัพพลายเออร์</label><select class="select" name="supplier">${s.data.suppliers.map(x => `<option>${esc(x.name)}</option>`).join('')}</select></div>
+          <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">บันทึก SKU</button></div>
+        </form>
+      `);
+      wrap.querySelector('form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        const newSku = {
+          sku: String(f.get('sku')).trim().toUpperCase(),
+          name: String(f.get('name')).trim(),
+          category: String(f.get('category')),
+          location: String(f.get('location')).trim(),
+          stock: Number(f.get('stock')) || 0,
+          minStock: Number(f.get('minStock')) || 5,
+          price: Number(f.get('price')) || 0,
+          supplier: String(f.get('supplier'))
+        };
+        s.data.inventory.unshift(newSku);
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: 'INBOUND',
+          sku: newSku.sku,
+          qty: newSku.stock,
+          location: newSku.location,
+          note: `เพิ่ม SKU ใหม่ลงในคลังสินค้า`,
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: 'Preeya C.'
+        });
+        save();
+        wrap.remove();
+        toast(`เพิ่ม SKU (${newSku.sku}) เรียบร้อยแล้ว`);
+      });
+    });
   }
 
   const kanbanSeed = {

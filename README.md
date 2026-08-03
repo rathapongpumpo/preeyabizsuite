@@ -22,12 +22,18 @@
 
 ต้องใช้ PHP 8.2+ พร้อม extensions `curl`, `json`, `mbstring` และ `openssl`
 
+วิธีง่ายที่สุดบน Windows: ดับเบิลคลิก `start-demo.bat`
+
+หรือเปิด PowerShell แล้วใช้คำสั่ง:
+
 ```powershell
 cd C:\Projects\demo-system
 php -S 127.0.0.1:8080 -t public router.php
 ```
 
 จากนั้นเปิด `http://127.0.0.1:8080`
+
+> ต้องมี `-t public` หากตัดส่วนนี้ออก CSS และ JavaScript จะตอบ 404
 
 ## การเก็บข้อมูลเดโม
 
