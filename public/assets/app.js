@@ -2,9 +2,32 @@
   'use strict';
 
   const app = document.getElementById('app');
-  const page = document.body.dataset.page || 'portal';
-  const route = document.body.dataset.route || '/';
+  const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
+  const staticPages = {
+    '/': 'portal',
+    '/business-suite': 'crm',
+    '/ecommerce-storefront': 'external-ecommerce',
+    '/tilt-signal-arcade-bar': 'external-tilt',
+    '/usa-thai-shipping': 'shipping-home',
+    '/usa-thai-shipping/admin': 'shipping-admin',
+    '/usa-thai-shipping/customer': 'shipping-customer',
+    '/course': 'course',
+    '/warehouse-management': 'wms',
+    '/project-management': 'kanban',
+    '/pos-system-smart': 'smartpos',
+    '/e-signature': 'esign',
+    '/dashboard-mini': 'dashboard',
+    '/pos-system': 'classicpos',
+  };
+  const page = document.body.dataset.page || staticPages[pathname] || 'portal';
+  const route = document.body.dataset.route || pathname;
   const projects = window.DEMO_PROJECTS || {};
+
+  if (!document.body.dataset.page && page !== 'portal' && app) {
+    document.body.dataset.page = page;
+    document.body.dataset.route = route;
+    app.className = 'demo-content';
+  }
 
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const esc = (value = '') => String(value).replace(/[&<>"']/g, (char) => ({
