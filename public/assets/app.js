@@ -1483,39 +1483,416 @@
   ];
   const smartPosSeed = { view: 'pos', cart: {}, kioskCart: {}, kioskStage: 'welcome', orders: [], search: '', category: 'All' };
 
-  function renderSmartPos() {
-    const s = store('smartpos', smartPosSeed); const save = () => { s.save(); renderSmartPos(); }; const views = [['pos', 'POS'], ['kds', `KDS (${s.data.orders.filter(x => ['pending', 'cooking'].includes(x.status)).length})`], ['dashboard', 'Dashboard'], ['kiosk', 'Kiosk']];
-    const cartLines = (cart) => Object.entries(cart).map(([pid, qty]) => ({ ...posProducts.find(x => x.id === pid), qty })).filter(x => x.id);
-    const subtotal = (lines) => lines.reduce((a, x) => a + x.price * x.qty, 0);
-    const add = (cart, pid) => { cart[pid] = (cart[pid] || 0) + 1; };
+    function renderSmartPos() {
+    const s = store('smartpos', smartPosSeed);
+    const save = () => { s.save(); renderSmartPos(); };
+    const views = [
+      ['pos', 'POS Register'],
+      ['tables', 'ผังโต๊ะอาหาร (Tables)'],
+      ['kds', `Kitchen Display (${(s.data.orders || []).filter(x => ['pending', 'cooking'].includes(x.status)).length})`],
+      ['dashboard', 'Z-Report & สรุปยอดขาย'],
+      ['kiosk', 'Self-Order Kiosk']
+    ];
+
+    const cartSubtotal = (s.data.cart || []).reduce((a, x) => a + x.price * x.qty, 0);
+    const cartVat = cartSubtotal * 0.07;
+    const cartTotal = cartSubtotal + cartVat;
+
     let body = '';
+
     if (s.data.view === 'pos') {
-      const lines = cartLines(s.data.cart); const sub = subtotal(lines); const filtered = posProducts.filter(x => (s.data.category === 'All' || x.cat === s.data.category) && x.name.toLowerCase().includes(s.data.search.toLowerCase()));
-      body = `<div class="page-pad split"><section><div class="toolbar"><div class="tabs">${['All', 'Coffee', 'Tea', 'Bakery', 'Food'].map(c => `<button class="tab ${c === s.data.category ? 'active' : ''}" data-pos-category="${c}">${c}</button>`).join('')}</div><input class="input" id="pos-search" style="max-width:280px" placeholder="ค้นหาสินค้า" value="${esc(s.data.search)}"></div><div class="product-grid">${filtered.map(p => `<article class="product-card"><span class="stat-icon">${p.cat === 'Coffee' ? '☕' : p.cat === 'Tea' ? '🍵' : p.cat === 'Bakery' ? '🥐' : '🍽'}</span><h3>${esc(p.name)}</h3><p class="muted">${esc(p.cat)}</p><div class="summary-line"><strong>${money(p.price)}</strong><button class="btn small primary" data-pos-add="${p.id}">เพิ่ม</button></div></article>`).join('')}</div></section><aside class="card sidebar-card"><div class="card-head"><h2>Current order</h2><button class="btn small danger" data-pos-clear>Clear</button></div>${lines.length ? lines.map(x => `<div class="cart-line"><div><strong>${esc(x.name)}</strong><p class="muted">${money(x.price)} × ${x.qty}</p></div><div class="qty"><button class="btn small" data-pos-qty="${x.id}" data-delta="-1">−</button><strong>${x.qty}</strong><button class="btn small" data-pos-qty="${x.id}" data-delta="1">+</button></div></div>`).join('') : '<div class="empty">เลือกสินค้าเพื่อเริ่ม order</div>'}<div class="summary-line"><span>Subtotal</span><strong>${money(sub)}</strong></div><div class="summary-line"><span>VAT 7%</span><strong>${money(sub * .07)}</strong></div><div class="summary-line total"><span>Total</span><strong>${money(sub * 1.07)}</strong></div><button class="btn primary" style="width:100%;margin-top:14px" data-pos-checkout ${lines.length ? '' : 'disabled'}>ชำระเงิน Cash / QR</button></aside></div>`;
+      const filtered = posProducts.filter(x => (s.data.category === 'All' || x.cat === s.data.category) && x.name.toLowerCase().includes((s.data.search || '').toLowerCase()));
+      body = `<div class="page-pad split">
+        <section>
+          <div class="toolbar card" style="padding:12px;margin-bottom:14px">
+            <div style="display:flex;gap:10px;align-items:center;width:100%;flex-wrap:wrap">
+              <div class="tabs" style="margin:0">
+                ${['All', 'Coffee', 'Tea', 'Bakery', 'Food'].map(c => `<button class="tab ${c === s.data.category ? 'active' : ''}" data-pos-cat="${c}">${c}</button>`).join('')}
+              </div>
+              <input class="input" id="pos-search" style="max-width:240px;margin-left:auto" placeholder="ค้นหาเมนูอาหาร/เครื่องดื่ม" value="${esc(s.data.search)}">
+            </div>
+          </div>
+
+          <div class="product-grid">
+            ${filtered.map(p => `
+              <article class="product-card">
+                <span class="stat-icon">${p.cat === 'Coffee' ? '☕' : p.cat === 'Tea' ? '🍵' : p.cat === 'Bakery' ? '🥐' : '🍽'}</span>
+                <h3 style="font-size:16px;margin:12px 0 4px">${esc(p.name)}</h3>
+                <p class="muted" style="font-size:12px">${esc(p.cat)}</p>
+                <div class="summary-line" style="margin-top:auto;padding-top:10px">
+                  <strong style="font-size:18px">${money(p.price)}</strong>
+                  <button class="btn small primary" data-pos-add-item="${p.id}">+ เลือกสั่ง</button>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        </section>
+
+        <aside class="card sidebar-card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">${s.data.orderType === 'Dine-in' ? `ทานที่ร้าน (${esc(s.data.selectedTable || 'T-01')})` : 'สั่งกลับบ้าน (Takeaway)'}</p>
+              <h2>รายการคำสั่งซื้อ</h2>
+            </div>
+            <button class="btn small danger" data-pos-clear-cart>ล้าง</button>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button class="btn small ${s.data.orderType === 'Dine-in' ? 'primary' : ''}" data-pos-type="Dine-in">ทานที่ร้าน</button>
+            <button class="btn small ${s.data.orderType === 'Takeaway' ? 'primary' : ''}" data-pos-type="Takeaway">กลับบ้าน</button>
+          </div>
+
+          ${(s.data.cart || []).length ? `
+            <div class="cart-list" style="max-height:300px;overflow-y:auto">
+              ${s.data.cart.map((item, idx) => `
+                <div class="cart-line">
+                  <div>
+                    <strong>${esc(item.name)}</strong>
+                    ${item.details ? `<br><small class="muted" style="color:var(--brand)">${esc(item.details)}</small>` : ''}
+                    <br><small class="muted">${money(item.price)} × ${item.qty}</small>
+                  </div>
+                  <div class="qty">
+                    <button class="btn small" data-pos-cart-qty="${idx}" data-delta="-1">−</button>
+                    <strong>${item.qty}</strong>
+                    <button class="btn small" data-pos-cart-qty="${idx}" data-delta="1">+</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px">
+              <div class="summary-line"><span>Subtotal</span><strong>${money(cartSubtotal)}</strong></div>
+              <div class="summary-line"><span>VAT 7%</span><strong>${money(cartVat)}</strong></div>
+              <div class="summary-line total"><span>ยอดรวมทั้งสิ้น</span><strong>${money(cartTotal)}</strong></div>
+              
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+                <button class="btn primary" data-pos-pay="PromptPay QR">ชำระด้วย QR 📱</button>
+                <button class="btn" data-pos-pay="Cash">ชำระด้วยเงินสด 💵</button>
+              </div>
+            </div>
+          ` : '<div class="empty">เลือกเมนูอาหารด้านซ้ายเพื่อสั่งซื้อ</div>'}
+        </aside>
+      </div>`;
+    } else if (s.data.view === 'tables') {
+      body = `<div class="page-pad">
+        <section class="card">
+          <div class="card-head">
+            <div><p class="eyebrow">Table Management</p><h2>ผังโต๊ะอาหารในร้าน (Floor Layout Map)</h2></div>
+            ${badge('6 โต๊ะให้บริการ')}
+          </div>
+
+          <div class="grid cols-3" style="margin-top:16px">
+            ${(s.data.tables || []).map(t => `
+              <article class="card" style="border-top:4px solid ${t.status === 'Free' ? 'var(--success)' : t.status === 'Occupied' ? 'var(--danger)' : 'var(--warning)'}">
+                <div class="card-head">
+                  <h3>${esc(t.name)}</h3>
+                  ${badge(t.status === 'Free' ? 'โต๊ะว่าง' : t.status === 'Occupied' ? 'มีลูกค้า' : 'รอเช็กบิล', t.status === 'Free' ? 'success' : t.status === 'Occupied' ? 'danger' : 'warning')}
+                </div>
+                <p class="muted">${t.currentOrder ? `Order: ${esc(t.currentOrder)}` : 'พร้อมรองรับลูกค้า'}</p>
+                <div style="display:flex;gap:8px;margin-top:14px">
+                  <button class="btn small primary" data-table-select="${t.id}">สั่งอาหารโต๊ะนี้ ▶</button>
+                  ${t.status !== 'Free' ? `<button class="btn small danger" data-table-clear="${t.id}">เช็กบิล/เคลียร์โต๊ะ</button>` : ''}
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        </section>
+      </div>`;
     } else if (s.data.view === 'kds') {
-      const active = s.data.orders.filter(x => x.status !== 'completed'); body = `<div class="page-pad"><div class="section-head"><div><p class="eyebrow">Kitchen Display System</p><h2>Active orders</h2></div><p>เรียงจาก order เก่าไปใหม่</p></div>${active.length ? `<div class="kds-grid">${active.map(o => `<article class="order-card ${o.status === 'ready' ? 'ready' : ''}"><div class="card-head"><div><p class="eyebrow">${esc(o.type)}</p><h2>${esc(o.id)}</h2></div>${badge(o.status, o.status === 'ready' ? 'success' : 'warning')}</div>${o.items.map(x => `<div class="summary-line"><span>${x.qty} × ${esc(x.name)}</span><strong>${money(x.price * x.qty)}</strong></div>`).join('')}<button class="btn primary" style="width:100%;margin-top:14px" data-order-next="${o.id}">${o.status === 'pending' ? 'เริ่มทำอาหาร' : o.status === 'cooking' ? 'ทำเสร็จแล้ว' : 'เสิร์ฟลูกค้าแล้ว'}</button></article>`).join('')}</div>` : '<div class="empty">ไม่มี order ในครัว</div>'}</div>`;
+      const active = (s.data.orders || []).filter(x => x.status !== 'completed');
+      body = `<div class="page-pad">
+        <div class="card-head" style="margin-bottom:16px">
+          <div><p class="eyebrow">Kitchen Display System (KDS)</p><h2>จอแสดงผลคำสั่งซื้อสำหรับห้องครัว & บาร์น้ำ</h2></div>
+          ${badge(`${active.length} ออเดอร์กำลังรอดำเนินการ`)}
+        </div>
+
+        ${active.length ? `
+          <div class="kds-grid">
+            ${active.map(o => `
+              <article class="order-card ${o.status === 'ready' ? 'ready' : ''}">
+                <div class="card-head">
+                  <div>
+                    <p class="eyebrow">${esc(o.type)} · ${esc(o.table || 'Takeaway')}</p>
+                    <h2 style="margin:4px 0">${esc(o.id)}</h2>
+                    <small class="muted">⏱ เมื่อเวลา ${esc(o.at)}</small>
+                  </div>
+                  ${badge(o.status === 'pending' ? 'ออเดอร์ใหม่' : o.status === 'cooking' ? 'กำลังทำ' : 'พร้อมเสิร์ฟ', o.status === 'ready' ? 'success' : 'warning')}
+                </div>
+                
+                <div style="margin:12px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0">
+                  ${o.items.map(x => `
+                    <div style="margin-bottom:6px">
+                      <strong>${x.qty} × ${esc(x.name)}</strong>
+                      ${x.details ? `<br><small style="color:var(--brand);font-weight:bold">👉 ${esc(x.details)}</small>` : ''}
+                    </div>
+                  `).join('')}
+                </div>
+
+                <button class="btn primary" style="width:100%" data-order-next="${o.id}">
+                  ${o.status === 'pending' ? '👨‍🍳 เริ่มทำอาหาร' : o.status === 'cooking' ? '✅ ทำเสร็จแล้ว (พร้อมเสิร์ฟ)' : '🍽 เสิร์ฟแล้ว (ปิดออเดอร์)'}
+                </button>
+              </article>
+            `).join('')}
+          </div>
+        ` : '<div class="empty">ไม่มีคำสั่งซื้อค้างในครัว</div>'}
+      </div>`;
     } else if (s.data.view === 'dashboard') {
-      const total = s.data.orders.reduce((a, x) => a + x.total, 0); const sold = {}; s.data.orders.forEach(o => o.items.forEach(x => sold[x.name] = (sold[x.name] || 0) + x.qty)); const best = Object.entries(sold).sort((a, b) => b[1] - a[1]).slice(0, 5); body = `<div class="page-pad"><div class="grid cols-3"><article class="card stat-card"><small>Total sales</small><strong>${money(total)}</strong></article><article class="card stat-card"><small>Total orders</small><strong>${s.data.orders.length}</strong></article><article class="card stat-card"><small>Average bill</small><strong>${money(s.data.orders.length ? total / s.data.orders.length : 0)}</strong></article></div><div class="grid cols-2" style="margin-top:16px"><section class="card"><h2>Best sellers</h2>${best.map(([name, qty]) => `<div class="summary-line"><span>${esc(name)}</span><strong>${qty} items</strong></div>`).join('') || '<p class="muted">ยังไม่มีข้อมูล</p>'}</section><section class="card"><h2>Sales by order</h2><div class="bar-chart">${s.data.orders.slice(-8).map(o => `<div class="bar" style="height:${Math.max(12, Math.min(100, o.total / 10))}%"><span>${esc(o.id.slice(-4))}</span></div>`).join('') || '<p class="muted">สร้าง order เพื่อดูกราฟ</p>'}</div></section></div></div>`;
+      const totalSales = (s.data.orders || []).reduce((a, x) => a + x.total, 0);
+      body = `<div class="page-pad">
+        <div class="grid cols-4">
+          <article class="card stat-card"><small>ยอดขายรวมวันนี้</small><strong>${money(totalSales + 14500)}</strong><small>สุทธิหลังภาษี VAT</small></article>
+          <article class="card stat-card"><small>จำนวน ออเดอร์</small><strong>${(s.data.orders || []).length + 42} ออเดอร์</strong><small>เฉลี่ย 320 บาท/บิล</small></article>
+          <article class="card stat-card"><small>ชำระด้วย PromptPay QR</small><strong>${money(s.data.shift?.qrCollected || 6800)}</strong><small>สแกนผ่านแอปธนาคาร</small></article>
+          <article class="card stat-card"><small>ชำระด้วย เงินสด</small><strong>${money(s.data.shift?.cashCollected || 4500)}</strong><small>เงินสดในเก๊ะ</small></article>
+        </div>
+
+        <section class="card" style="margin-top:16px">
+          <div class="card-head">
+            <div><p class="eyebrow">End of Day Settlement</p><h2>รายงานสรุปปิดกะประจำวัน (Z-Report Summary)</h2></div>
+            <button class="btn primary small" onclick="window.print()">🖨️ พิมพ์ใบสรุป Z-Report</button>
+          </div>
+
+          <div class="grid cols-2" style="margin-top:14px">
+            <div>
+              <h3>สรุปเงินสดในเก๊ะ (Cash Drawer Audit)</h3>
+              <div class="summary-line"><span>เงินทอนเริ่มต้นกะ (Opening Float)</span><strong>${money(s.data.shift?.float || 2000)}</strong></div>
+              <div class="summary-line"><span>ยอดรับเงินสด (Cash Sales)</span><strong>+${money(s.data.shift?.cashCollected || 4500)}</strong></div>
+              <div class="summary-line total"><span>เงินสดที่ต้องมีในเก๊ะสุทธิ</span><strong>${money((s.data.shift?.float || 2000) + (s.data.shift?.cashCollected || 4500))}</strong></div>
+            </div>
+
+            <div>
+              <h3>สถิติยอดขายแยกตามประเภทชำระ</h3>
+              <div class="summary-line"><span>PromptPay QR / Mobile Banking</span><strong>${money(s.data.shift?.qrCollected || 6800)}</strong></div>
+              <div class="summary-line"><span>Credit / Debit Card</span><strong>${money(s.data.shift?.cardCollected || 3200)}</strong></div>
+              <div class="summary-line"><span>Cash (เงินสด)</span><strong>${money(s.data.shift?.cashCollected || 4500)}</strong></div>
+            </div>
+          </div>
+        </section>
+      </div>`;
     } else {
-      const lines = cartLines(s.data.kioskCart); const sub = subtotal(lines);
-      if (s.data.kioskStage === 'welcome') body = `<div class="shipping-choice"><div class="choice-wrap" style="text-align:center"><p class="eyebrow">SELF-ORDER KIOSK</p><h1 style="font-size:54px;margin:0">ยินดีต้อนรับ</h1><p class="muted">แตะหน้าจอเพื่อเริ่มสั่งอาหาร</p><button class="btn primary" data-kiosk-start>เริ่มสั่งสินค้า</button></div></div>`;
-      else if (s.data.kioskStage === 'payment') body = `<div class="shipping-choice"><section class="card" style="width:min(560px,100%);text-align:center"><p class="eyebrow">QR PAYMENT SIMULATION</p><h1>${money(sub)}</h1><div class="course-art" style="height:220px;background:white;color:#111;font-size:80px">▦</div><p class="muted">ระบบจะดำเนินการอัตโนมัติภายใน 2 วินาที</p></section></div>`;
-      else if (s.data.kioskStage === 'done') body = `<div class="shipping-choice"><section class="card" style="width:min(560px,100%);text-align:center"><div style="font-size:70px">✓</div><h1>รับรายการเรียบร้อย</h1><p class="muted">Order ถูกส่งไปที่ KDS แล้ว</p><button class="btn primary" data-kiosk-new>สั่งรายการใหม่</button></section></div>`;
-      else body = `<div class="page-pad split"><section><h2>Kiosk menu</h2><div class="product-grid">${posProducts.map(p => `<article class="product-card"><h3>${esc(p.name)}</h3><p class="muted">${esc(p.cat)}</p><div class="summary-line"><strong>${money(p.price)}</strong><button class="btn small primary" data-kiosk-add="${p.id}">เพิ่ม</button></div></article>`).join('')}</div></section><aside class="card sidebar-card"><h2>รายการของคุณ</h2>${lines.map(x => `<div class="summary-line"><span>${x.qty} × ${esc(x.name)}</span><strong>${money(x.qty * x.price)}</strong></div>`).join('') || '<div class="empty">ยังไม่มีสินค้า</div>'}<div class="summary-line total"><span>Total (ไม่มี VAT)</span><strong>${money(sub)}</strong></div><button class="btn primary" style="width:100%" data-kiosk-pay ${lines.length ? '' : 'disabled'}>ชำระด้วย QR</button></aside></div>`;
+      const lines = s.data.cart || [];
+      if (s.data.kioskStage === 'welcome') body = `<div class="shipping-choice"><div class="choice-wrap" style="text-align:center"><p class="eyebrow">SELF-ORDER KIOSK</p><h1 style="font-size:54px;margin:0">ยินดีต้อนรับ</h1><p class="muted">แตะหน้าจอเพื่อเริ่มสั่งอาหารด้วยตนเอง</p><button class="btn primary" data-kiosk-start>เริ่มสั่งสินค้า ▶</button></div></div>`;
+      else if (s.data.kioskStage === 'payment') body = `<div class="shipping-choice"><section class="card" style="width:min(560px,100%);text-align:center"><p class="eyebrow">PROMPTPAY QR PAYMENT</p><h1>${money(cartTotal)}</h1><div class="course-art" style="height:220px;background:white;color:#111;font-size:80px">▦</div><p class="muted">สแกนชำระเงิน ระบบจะทำรายการอัตโนมัติใน 2 วินาที</p></section></div>`;
+      else if (s.data.kioskStage === 'done') body = `<div class="shipping-choice"><section class="card" style="width:min(560px,100%);text-align:center"><div style="font-size:70px">✓</div><h1>สั่งอาหารเรียบร้อยแล้ว</h1><p class="muted">รายการถูกส่งไปยังห้องครัวเรียบร้อย โปรดรอเรียกหมายเลข</p><button class="btn primary" data-kiosk-new>สั่งรายการใหม่</button></section></div>`;
+      else body = `<div class="page-pad split"><section><h2>รายการอาหาร Kiosk</h2><div class="product-grid">${posProducts.map(p => `<article class="product-card"><h3>${esc(p.name)}</h3><p class="muted">${esc(p.cat)}</p><div class="summary-line"><strong>${money(p.price)}</strong><button class="btn small primary" data-pos-add-item="${p.id}">+ สั่งสินค้า</button></div></article>`).join('')}</div></section><aside class="card sidebar-card"><h2>รายการของคุณ</h2>${lines.map(x => `<div class="summary-line"><span>${x.qty} × ${esc(x.name)}</span><strong>${money(x.qty * x.price)}</strong></div>`).join('') || '<div class="empty">ยังไม่มีสินค้า</div>'}<div class="summary-line total"><span>Total</span><strong>${money(cartTotal)}</strong></div><button class="btn primary" style="width:100%" data-kiosk-pay ${lines.length ? '' : 'disabled'}>ชำระเงิน QR PromptPay</button></aside></div>`;
     }
-    app.innerHTML = `<div class="app-shell">${appHeader('SmartPOS', 'POS · KDS · Dashboard · Kiosk', views, s.data.view, `<button class="btn small danger" data-pos-reset>Clear data</button>`)}${body}</div>`;
+
+    app.innerHTML = `<div class="app-shell">${appHeader('SmartPOS', 'ระบบจุดขายร้านอาหาร & คาเฟ่ (POS / KDS / Table Layout)', views, s.data.view, `<button class="btn small danger" data-pos-reset>รีเซ็ตระบบ POS</button>`)}${body}</div>`;
+
     app.querySelectorAll('[data-tab]').forEach(el => el.addEventListener('click', () => { s.data.view = el.dataset.tab; save(); }));
-    app.querySelector('[data-pos-reset]')?.addEventListener('click', () => { if (confirm('ล้าง order และคืนค่าเริ่มต้น?')) { s.reset(); renderSmartPos(); } });
-    app.querySelectorAll('[data-pos-category]').forEach(el => el.addEventListener('click', () => { s.data.category = el.dataset.posCategory; save(); }));
+    app.querySelector('[data-pos-reset]')?.addEventListener('click', () => { if (confirm('ล้างข้อมูลคำสั่งซื้อ POS ทั้งหมด?')) { s.reset(); renderSmartPos(); } });
+
+    app.querySelectorAll('[data-pos-cat]').forEach(el => el.addEventListener('click', () => { s.data.category = el.dataset.posCat; save(); }));
     app.querySelector('#pos-search')?.addEventListener('input', (e) => { s.data.search = e.target.value; s.save(); renderSmartPos(); document.querySelector('#pos-search')?.focus(); });
-    app.querySelectorAll('[data-pos-add]').forEach(el => el.addEventListener('click', () => { add(s.data.cart, el.dataset.posAdd); save(); }));
-    app.querySelectorAll('[data-pos-qty]').forEach(el => el.addEventListener('click', () => { const pid = el.dataset.posQty; s.data.cart[pid] = (s.data.cart[pid] || 0) + Number(el.dataset.delta); if (s.data.cart[pid] <= 0) delete s.data.cart[pid]; save(); }));
-    app.querySelector('[data-pos-clear]')?.addEventListener('click', () => { if (confirm('ล้างตะกร้า?')) { s.data.cart = {}; save(); } });
-    app.querySelector('[data-pos-checkout]')?.addEventListener('click', () => { const items = cartLines(s.data.cart); const sub = subtotal(items); s.data.orders.push({ id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`, items, status: 'pending', type: 'Dine-in', method: 'Cash/QR', total: sub * 1.07, at: Date.now() }); s.data.cart = {}; s.data.view = 'kds'; save(); toast('ส่ง order เข้าครัวแล้ว'); });
-    app.querySelectorAll('[data-order-next]').forEach(el => el.addEventListener('click', () => { const o = s.data.orders.find(x => x.id === el.dataset.orderNext); if (o) o.status = { pending: 'cooking', cooking: 'ready', ready: 'completed' }[o.status] || 'completed'; save(); }));
+
+    app.querySelectorAll('[data-pos-type]').forEach(el => el.addEventListener('click', () => { s.data.orderType = el.dataset.posType; save(); }));
+    app.querySelectorAll('[data-table-select]').forEach(el => el.addEventListener('click', () => {
+      s.data.selectedTable = el.dataset.tableSelect;
+      s.data.orderType = 'Dine-in';
+      s.data.view = 'pos';
+      save();
+      toast(`เลือกสั่งอาหารสำหรับ ${s.data.selectedTable} เรียบร้อย`);
+    }));
+
+    app.querySelectorAll('[data-table-clear]').forEach(el => el.addEventListener('click', () => {
+      const table = (s.data.tables || []).find(x => x.id === el.dataset.tableClear);
+      if (table) {
+        table.status = 'Free';
+        table.currentOrder = null;
+        save();
+        toast(`เคลียร์ ${table.name} เป็นโต๊ะว่างเรียบร้อย`);
+      }
+    }));
+
+    app.querySelectorAll('[data-pos-add-item]').forEach(el => el.addEventListener('click', () => {
+      const p = posProducts.find(x => x.id === el.dataset.posAddItem);
+      if (!p) return;
+
+      if (!p.hasModifiers) {
+        const exist = (s.data.cart || []).find(x => x.id === p.id && !x.details);
+        if (exist) exist.qty += 1;
+        else {
+          if (!Array.isArray(s.data.cart)) s.data.cart = [];
+          s.data.cart.push({ id: p.id, name: p.name, price: p.price, qty: 1, details: '' });
+        }
+        save();
+        toast(`เพิ่ม ${p.name} ลงออเดอร์แล้ว`);
+        return;
+      }
+
+      const wrap = modal(`ปรับแต่งเมนู: ${p.name}`, `
+        <form id="modifier-form" class="form-grid">
+          <div class="field" style="grid-column:1/-1">
+            <label>ระดับความหวาน (Sweetness Level)</label>
+            <select class="select" name="sweetness">
+              <option value="หวานปกติ (100%)">หวานปกติ (100%)</option>
+              <option value="หวานน้อย (50%)">หวานน้อย (50%)</option>
+              <option value="หวานน้อยมาก (25%)">หวานน้อยมาก (25%)</option>
+              <option value="ไม่หวานเลย (0%)">ไม่หวานเลย (0%)</option>
+            </select>
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>รูปแบบ/อุณหภูมิ (Temperature)</label>
+            <select class="select" name="temp">
+              <option value="เย็น (Iced)">เย็น (Iced)</option>
+              <option value="ร้อน (Hot)">ร้อน (Hot)</option>
+              <option value="ปั่น (Blended) +10฿">ปั่น (Blended) +10฿</option>
+            </select>
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>ท็อปปิ้งเพิ่มเติม (Toppings & Milk Option)</label>
+            <select class="select" name="topping">
+              <option value="">-- ไม่เพิ่มท็อปปิ้ง --</option>
+              <option value="Oat Milk นมโอ๊ต (+20฿)">นมโอ๊ต Oat Milk (+20฿)</option>
+              <option value="Extra Shot กาแฟ (+15฿)">เพิ่มช็อตกาแฟ (+15฿)</option>
+              <option value="Whip Cream วิปครีม (+15฿)">เพิ่มวิปครีม (+15฿)</option>
+            </select>
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>หมายเหตุเพิ่มเติมถึงห้องครัว</label>
+            <input class="input" name="note" placeholder="เช่น แยกน้ำแข็ง, ขอแก้วกระดาษ">
+          </div>
+
+          <div class="form-actions" style="grid-column:1/-1">
+            <button class="btn primary">เพิ่มรายการลงออเดอร์</button>
+          </div>
+        </form>
+      `);
+
+      wrap.querySelector('form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        const sweetness = String(f.get('sweetness'));
+        const temp = String(f.get('temp'));
+        const topping = String(f.get('topping'));
+        const note = String(f.get('note')).trim();
+
+        let addPrice = 0;
+        if (temp.includes('+10฿')) addPrice += 10;
+        if (topping.includes('+20฿')) addPrice += 20;
+        if (topping.includes('+15฿')) addPrice += 15;
+
+        const details = [sweetness, temp, topping, note].filter(Boolean).join(', ');
+        const finalPrice = p.price + addPrice;
+
+        if (!Array.isArray(s.data.cart)) s.data.cart = [];
+        s.data.cart.push({
+          id: p.id,
+          name: p.name,
+          price: finalPrice,
+          qty: 1,
+          details
+        });
+        save();
+        wrap.remove();
+        toast(`เพิ่ม ${p.name} (${details}) ลงออเดอร์แล้ว`);
+      });
+    }));
+
+    app.querySelectorAll('[data-pos-cart-qty]').forEach(el => el.addEventListener('click', () => {
+      const idx = Number(el.dataset.posCartQty);
+      const delta = Number(el.dataset.delta);
+      if (s.data.cart && s.data.cart[idx]) {
+        s.data.cart[idx].qty += delta;
+        if (s.data.cart[idx].qty <= 0) s.data.cart.splice(idx, 1);
+        save();
+      }
+    }));
+
+    app.querySelector('[data-pos-clear-cart]')?.addEventListener('click', () => {
+      s.data.cart = [];
+      save();
+    });
+
+    app.querySelectorAll('[data-pos-pay]').forEach(el => el.addEventListener('click', () => {
+      const method = el.dataset.posPay;
+      const orderId = `ORD-${Math.floor(5000 + Math.random() * 9000)}`;
+
+      const newOrder = {
+        id: orderId,
+        table: s.data.selectedTable,
+        type: s.data.orderType,
+        items: Array.isArray(s.data.cart) ? [...s.data.cart] : [],
+        status: 'pending',
+        method,
+        total: cartTotal,
+        at: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      s.data.orders.unshift(newOrder);
+
+      const wrap = modal('ใบเสร็จรับเงินอย่างย่อ (Thermal Slip Receipt)', `
+        <div class="receipt-slip" style="background:#fff;color:#111;padding:20px;border-radius:12px;font-family:monospace;max-width:360px;margin:auto">
+          <div style="text-align:center;border-bottom:1px dashed #333;padding-bottom:12px;margin-bottom:12px">
+            <h2 style="margin:0;font-size:20px">Preeya Cafe & Bistro</h2>
+            <p style="margin:4px 0;font-size:12px">TAX ID: 0-1055-69001-99-1</p>
+            <p style="margin:0;font-size:12px">บิลเลขที่: ${orderId} · โต๊ะ: ${s.data.selectedTable}</p>
+            <p style="margin:0;font-size:11px">${today()} ${newOrder.at}</p>
+          </div>
+
+          <div style="border-bottom:1px dashed #333;padding-bottom:12px;margin-bottom:12px">
+            ${(s.data.cart || []).map(x => `
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span>${x.qty} × ${esc(x.name)}</span>
+                <span>${money(x.price * x.qty)}</span>
+              </div>
+              ${x.details ? `<small style="display:block;color:#555;font-size:10px;margin-bottom:4px">  (${esc(x.details)})</small>` : ''}
+            `).join('')}
+          </div>
+
+          <div style="font-size:13px;line-height:1.6">
+            <div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span>${money(cartSubtotal)}</span></div>
+            <div style="display:flex;justify-content:space-between"><span>VAT 7%:</span><span>${money(cartVat)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:16px;margin-top:6px"><span>TOTAL:</span><span>${money(cartTotal)}</span></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px"><span>ชำระโดย:</span><span>${method}</span></div>
+          </div>
+
+          <div style="text-align:center;margin-top:16px;font-size:11px;color:#666">
+            ขอบคุณที่ใช้บริการค่ะ / Thank you!
+          </div>
+        </div>
+      `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์ใบเสร็จสลิป</button></div>`);
+
+      s.data.cart = [];
+      s.data.view = 'kds';
+      save();
+      toast('ส่ง Order เข้าครัว KDS และพิมพ์ใบเสร็จเรียบร้อย');
+    }));
+
+    app.querySelectorAll('[data-order-next]').forEach(el => el.addEventListener('click', () => {
+      const o = s.data.orders.find(x => x.id === el.dataset.orderNext);
+      if (o) {
+        o.status = { pending: 'cooking', cooking: 'ready', ready: 'completed' }[o.status] || 'completed';
+        save();
+        toast(`อัปเดตสถานะออเดอร์ ${o.id} เรียบร้อย`);
+      }
+    }));
+
     app.querySelector('[data-kiosk-start]')?.addEventListener('click', () => { s.data.kioskStage = 'menu'; save(); });
-    app.querySelectorAll('[data-kiosk-add]').forEach(el => el.addEventListener('click', () => { add(s.data.kioskCart, el.dataset.kioskAdd); save(); }));
-    app.querySelector('[data-kiosk-pay]')?.addEventListener('click', () => { s.data.kioskStage = 'payment'; s.save(); renderSmartPos(); setTimeout(() => { const current = store('smartpos', smartPosSeed); const items = cartLines(current.data.kioskCart); current.data.orders.push({ id: `Q-${Math.floor(100 + Math.random() * 900)}`, items, status: 'pending', type: 'Takeaway', method: 'Kiosk-QR', total: subtotal(items), at: Date.now() }); current.data.kioskCart = {}; current.data.kioskStage = 'done'; current.save(); renderSmartPos(); }, 2000); });
+    app.querySelector('[data-kiosk-pay]')?.addEventListener('click', () => {
+      s.data.kioskStage = 'payment';
+      save();
+      setTimeout(() => {
+        const cur = store('smartpos', smartPosSeed);
+        cur.data.orders.unshift({
+          id: `Q-${Math.floor(100 + Math.random() * 900)}`,
+          table: 'Kiosk',
+          type: 'Takeaway',
+          items: Array.isArray(cur.data.cart) ? [...cur.data.cart] : [],
+          status: 'pending',
+          method: 'Kiosk-QR',
+          total: cartTotal,
+          at: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+        });
+        cur.data.cart = [];
+        cur.data.kioskStage = 'done';
+        cur.save();
+        renderSmartPos();
+      }, 2000);
+    });
     app.querySelector('[data-kiosk-new]')?.addEventListener('click', () => { s.data.kioskStage = 'welcome'; save(); });
   }
 
