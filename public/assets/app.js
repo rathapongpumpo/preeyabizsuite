@@ -26,6 +26,29 @@
   if (!document.body.dataset.page && page !== 'portal' && app) {
     document.body.dataset.page = page;
     document.body.dataset.route = route;
+
+    const frame = document.createElement('div');
+    frame.className = 'demo-frame';
+    const shell = document.createElement('header');
+    shell.className = 'demo-shell';
+    const back = document.createElement('a');
+    back.className = 'shell-back';
+    back.href = '/';
+    back.setAttribute('aria-label', 'กลับหน้า PreeyaBizSuite');
+    back.textContent = '← กลับหน้า PreeyaBizSuite';
+    const projectName = document.createElement('div');
+    projectName.className = 'shell-project';
+    const status = document.createElement('span');
+    status.className = 'status-dot';
+    status.setAttribute('aria-hidden', 'true');
+    const title = document.createElement('strong');
+    title.textContent = projects[pathname]?.title || 'PreeyaBizSuite Demo';
+    const shellSpacer = document.createElement('span');
+    shellSpacer.setAttribute('aria-hidden', 'true');
+    projectName.append(status, title);
+    shell.append(back, projectName, shellSpacer);
+    app.replaceWith(frame);
+    frame.append(shell, app);
     app.className = 'demo-content';
   }
 
@@ -1055,7 +1078,9 @@
   }
 
   function renderExternal(kind) {
-    const source = kind === 'ecommerce' ? '/external/ecommerce/' : '/external/tilt/tilt-signal-arcade-bar';
+    const source = kind === 'ecommerce'
+      ? 'https://ecommerce-codex-demo.vercel.app/'
+      : 'https://openai-landing-page-examples.vercel.app/tilt-signal-arcade-bar';
     app.innerHTML = `<iframe class="external-frame" src="${source}" title="${kind === 'ecommerce' ? 'OAI Apparel Storefront' : 'Tilt Signal Arcade Bar'}"></iframe>`;
   }
 

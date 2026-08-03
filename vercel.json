@@ -6,7 +6,7 @@
     },
     {
       "source": "/external/tilt/:path*",
-      "destination": "https://tilt-signal-arcade-bar.vercel.app/:path*"
+      "destination": "https://openai-landing-page-examples.vercel.app/:path*"
     },
     {
       "source": "/(.*)",
