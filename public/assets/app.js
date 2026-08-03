@@ -477,6 +477,16 @@
 
     app.innerHTML = `<div class="app-shell">${appHeader('Shipping Admin Suite', 'ระบบจัดการนำเข้าสินค้า USA → Thailand (Air & Sea Freight)', [], '', `<a class="btn small" href="/usa-thai-shipping/customer">พอร์ตัลลูกค้า</a><button class="btn small primary" data-add-package>+ ลงทะเบียนพัสดุ</button><button class="btn small danger" data-reset>รีเซ็ต</button>`)}
       <div class="page-pad">
+        <div class="onboard-banner" style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div>
+              <span class="eyebrow">🚢 THAI SHIPPING SUITE SYSTEM GUIDE</span>
+              <h2 style="margin:4px 0 2px;font-size:18px">วิธีทดลองใช้งานระบบชิปปิ้งนำเข้า USA → Thailand</h2>
+              <p class="muted" style="margin:0;font-size:13px">1. คำนวณ CBM ค่าส่ง ➔ 2. ลงทะเบียนพัสดุ ➔ 3. ออก Commercial Invoice และส่งข้อความแจ้งเตือนลูกค้าทาง LINE</p>
+            </div>
+          </div>
+        </div>
+
         <div class="grid cols-4">
           <article class="card stat-card"><small>พัสดุในระบบ</small><strong>${s.data.packages.length} รายการ</strong><small>กล่องรวม ${s.data.packages.reduce((a, x) => a + x.boxes, 0)} กล่อง</small></article>
           <article class="card stat-card"><small>น้ำหนักรวม (Chargeable)</small><strong>${totalWeight.toFixed(1)} kg</strong><small> Air/Sea Combined</small></article>
