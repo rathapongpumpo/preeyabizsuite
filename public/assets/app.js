@@ -1896,29 +1896,278 @@
     app.querySelector('[data-kiosk-new]')?.addEventListener('click', () => { s.data.kioskStage = 'welcome'; save(); });
   }
 
-  const esignSeed = { signed: null };
-  function renderEsign() {
-    const s = store('esign', esignSeed); let drawing = false, dirty = false, ctx = null, canvas = null;
-    const signed = s.data.signed;
-    app.innerHTML = `<div class="app-shell">${appHeader('Lite E-Signature', 'DOC-2026-0430 · สัญญาจ้างพัฒนาซอฟต์แวร์', [], '', `<button class="btn small danger" data-esign-reset>รีเซ็ต</button>`)}
-      <div class="page-pad contract">${signed ? `<section class="signed-mark"><div style="font-size:60px">✓</div><h1>ลงนามสำเร็จเรียบร้อย</h1><p>ลงนามโดย คุณลูกค้า · ${esc(signed.time)} · IP 182.52.xx.xx</p><img src="${signed.image}" alt="ลายเซ็น" style="max-height:120px"><div class="hero-buttons"><button class="btn primary" data-download-pdf>ดาวน์โหลด PDF</button><button class="btn" data-view-contract>ดูสัญญา</button></div></section>` : `<article class="contract-paper"><p class="eyebrow">DOC-2026-0430</p><h1>สัญญาจ้างพัฒนาซอฟต์แวร์ (ฉบับย่อ)</h1><p><strong>ผู้ว่าจ้าง:</strong> คุณลูกค้า</p><p><strong>ผู้รับจ้าง:</strong> บริษัท เพ็ญรัศ เทคโนโลยี จำกัด</p><h3>1. ขอบเขตงาน</h3><p>ผู้รับจ้างตกลงออกแบบและพัฒนาระบบตามขอบเขตที่อนุมัติ พร้อมส่งมอบ source code และคู่มือที่เกี่ยวข้อง</p><h3>2. ค่าตอบแทน</h3><p>ชำระตามงวดงานและเงื่อนไขในใบเสนอราคาที่ได้รับอนุมัติ</p><h3>3. การส่งมอบ</h3><p>ถือว่าส่งมอบเมื่อผู้ว่าจ้างตรวจรับงานตาม acceptance criteria</p><h3>4. การรักษาความลับ</h3><p>คู่สัญญาต้องรักษาข้อมูลทางธุรกิจและข้อมูลส่วนบุคคลที่ได้รับระหว่างโครงการ</p><p><strong>วันที่มีผล:</strong> 30 เมษายน 2026</p></article><section class="card" style="margin-top:18px"><div class="card-head"><div><p class="eyebrow">Signature pad</p><h2>ลงลายเซ็น</h2></div><button class="btn small" data-clear-sign>ล้างใหม่</button></div><canvas class="signature-pad" id="signature-pad"></canvas><p class="muted">ใช้เมาส์ นิ้ว หรือปากกาเพื่อวาดลายเซ็น</p><button class="btn primary" style="width:100%" data-submit-sign disabled>ยืนยันการลงนาม</button></section>`}</div></div>`;
-    app.querySelector('[data-esign-reset]')?.addEventListener('click', () => { if (confirm('ลบลายเซ็นและคืนสถานะเริ่มต้น?')) { s.reset(); renderEsign(); } });
-    if (!signed) {
-      canvas = app.querySelector('#signature-pad'); ctx = canvas.getContext('2d');
-      const resize = () => { const ratio = Math.max(window.devicePixelRatio || 1, 1); const rect = canvas.getBoundingClientRect(); canvas.width = rect.width * ratio; canvas.height = rect.height * ratio; ctx.scale(ratio, ratio); ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.strokeStyle = '#111827'; }; resize();
-      const point = (e) => { const r = canvas.getBoundingClientRect(); const p = e.touches?.[0] || e; return [p.clientX - r.left, p.clientY - r.top]; };
-      const start = (e) => { e.preventDefault(); drawing = true; const [x, y] = point(e); ctx.beginPath(); ctx.moveTo(x, y); };
-      const move = (e) => { if (!drawing) return; e.preventDefault(); const [x, y] = point(e); ctx.lineTo(x, y); ctx.stroke(); dirty = true; app.querySelector('[data-submit-sign]').disabled = false; };
-      const end = () => drawing = false;
-      ['pointerdown', 'touchstart'].forEach(n => canvas.addEventListener(n, start, { passive: false }));
-      ['pointermove', 'touchmove'].forEach(n => canvas.addEventListener(n, move, { passive: false }));
-      ['pointerup', 'pointerleave', 'touchend'].forEach(n => canvas.addEventListener(n, end));
-      app.querySelector('[data-clear-sign]')?.addEventListener('click', () => { ctx.clearRect(0, 0, canvas.width, canvas.height); dirty = false; app.querySelector('[data-submit-sign]').disabled = true; });
-      app.querySelector('[data-submit-sign]')?.addEventListener('click', () => { if (!dirty) return; s.data.signed = { image: canvas.toDataURL('image/png'), time: new Date().toISOString(), document: 'DOC-2026-0430' }; s.save(); renderEsign(); });
+    const esignSeed = {
+    selectedDoc: 'DOC-2026-0430',
+    signerName: 'คุณสมศักดิ์ พัฒนากุล',
+    signerRole: 'กรรมการผู้จัดการ (Managing Director)',
+    companyName: 'บริษัท สยาม อินโนเวชั่น จำกัด',
+    withSeal: true,
+    signed: null
+  };
+
+  const esignDocs = {
+    'DOC-2026-0430': {
+      title: 'สัญญาจ้างพัฒนาซอฟต์แวร์ (Software Development Agreement)',
+      type: 'Service Contract',
+      value: '150,000 THB',
+      body: `
+        <h3>1. ขอบเขตงาน (Scope of Work)</h3>
+        <p>ผู้รับจ้างตกลงพัฒนาระบบ Enterprise Web Application พร้อมฐานข้อมูลและ API Integration ตามข้อกำหนดในขอบเขตงานที่ได้รับอนุมัติ</p>
+        <h3>2. กำหนดส่งมอบและชำระเงิน (Milestones)</h3>
+        <p>งวดที่ 1: 30% ณ วันลงนามสัญญา | งวดที่ 2: 40% หลังส่งมอบ System Prototype | งวดที่ 3: 30% หลัง UAT และขึ้นระบบ</p>
+        <h3>3. การรับประกันและดูแล (Warranty & Support)</h3>
+        <p>ผู้รับจ้างรับประกันระบบ 12 เดือนนับจากวันตรวจรับงาน พร้อมบริการแก้ไข Bug และดูแล Server Availability 99.9%</p>
+      `
+    },
+    'NDA-2026-0118': {
+      title: 'ข้อตกลงไม่เปิดเผยข้อมูลลับ (Non-Disclosure Agreement)',
+      type: 'Legal Compliance',
+      value: 'Strict Confidentiality',
+      body: `
+        <h3>1. ข้อมูลลับ (Confidential Information)</h3>
+        <p>รวมถึงข้อมูลซอร์สโค้ด แผนธุรกิจ ข้อมูลลูกค้า และข้อมูลทางการเงินทั้งหมดที่เปิดเผยระหว่างการทำงานร่วมกัน</p>
+        <h3>2. ข้อกำหนดการใช้งาน (Terms of Use)</h3>
+        <p>ผู้รับข้อมูลตกลงรักษาความลับและไม่เปิดเผยต่อบุคคลภายนอกโดยไม่ได้รับความยินยอมเป็นลายลักษณ์อักษร</p>
+        <h3>3. ระยะเวลาคุ้มครอง (Duration)</h3>
+        <p>ข้อตกลงนี้มีผลบังคับใช้เป็นเวลา 5 ปี นับจากวันลงนามในสัญญา</p>
+      `
+    },
+    'QUO-2026-0899': {
+      title: 'ใบอนุมัติสั่งซื้อและเสนอราคา (Approved Quotation)',
+      type: 'Purchase Order Approval',
+      value: '85,000 THB',
+      body: `
+        <h3>รายการสินค้าและบริการ (Items Approved)</h3>
+        <p>1. คลาวด์เซิร์ฟเวอร์ High Performance Node (1 ปี): 35,000 THB</p>
+        <p>2. บริการติดตั้งและย้ายฐานข้อมูล Cloud Migration: 50,000 THB</p>
+        <h3>เงื่อนไขการชำระเงิน</h3>
+        <p>ชำระเต็มจำนวนภายใน 30 วันนับจากวันที่ได้รับใบแจ้งหนี้ (Credit Term 30 Days)</p>
+      `
     }
-    app.querySelector('[data-view-contract]')?.addEventListener('click', () => modal('ข้อมูลเอกสาร', '<p><strong>DOC-2026-0430</strong></p><p>สัญญาจ้างพัฒนาซอฟต์แวร์ (ฉบับย่อ)</p><p class="muted">ลายเซ็นนี้เป็น demo image ไม่ใช่ digital signature ตามมาตรฐาน PKI</p>'));
+  };
+
+  function renderEsign() {
+    const s = store('esign', esignSeed);
+    const save = () => { s.save(); renderEsign(); };
+    let drawing = false, dirty = false, ctx = null, canvas = null;
+
+    const currentDoc = esignDocs[s.data.selectedDoc] || esignDocs['DOC-2026-0430'];
+    const signed = s.data.signed;
+
+    const views = [
+      ['doc', 'หน้าต่างลงนามสัญญา'],
+      ['audit', 'ตรวจสอบ Audit Certificate & Hash']
+    ];
+
+    let body = '';
+
+    if (signed) {
+      body = `<div class="page-pad">
+        <section class="signed-mark card" style="max-width:780px;margin:auto;padding:32px;text-align:center">
+          <div style="font-size:64px;color:var(--success);margin-bottom:10px">✓</div>
+          <p class="eyebrow" style="color:var(--success)">OFFICIALLY SIGNED & VERIFIED</p>
+          <h1 style="margin:6px 0 16px">${esc(currentDoc.title)}</h1>
+          
+          <div class="grid cols-2" style="text-align:left;background:var(--subtle);padding:16px;border-radius:10px;margin:20px 0">
+            <div>
+              <small class="muted">ผู้ลงนาม (Signer)</small><br>
+              <strong>${esc(signed.signerName)}</strong> (${esc(signed.signerRole)})<br>
+              <small class="muted">${esc(signed.companyName)}</small>
+            </div>
+            <div>
+              <small class="muted">เวลาและรหัสการลงนาม</small><br>
+              <strong>${esc(signed.time)}</strong><br>
+              <small class="muted">Hash: ${esc(signed.docHash.slice(0, 24))}...</small>
+            </div>
+          </div>
+
+          <div style="border:2px dashed var(--line);padding:16px;border-radius:12px;display:inline-block;background:#fff;margin-bottom:20px">
+            <img src="${signed.image}" alt="ลายเซ็นดิจิทัล" style="max-height:100px;display:block;margin:auto">
+            ${signed.withSeal ? `<div style="font-size:11px;color:var(--brand);margin-top:6px;font-weight:bold">🛡️ ประทับตราบริษัทดิจิทัลเรียบร้อย</div>` : ''}
+          </div>
+
+          <div style="display:flex;gap:12px;justify-content:center">
+            <button class="btn primary" data-download-pdf>🖨️ ดาวน์โหลด / พิมพ์สัญญา (PDF)</button>
+            <button class="btn" data-view-certificate>📜 ดูใบรับรอง Audit Certificate</button>
+            <button class="btn danger" data-esign-reset>ล้างสัญญาลองใหม่</button>
+          </div>
+        </section>
+      </div>`;
+    } else {
+      body = `<div class="page-pad split">
+        <section>
+          <div class="card" style="margin-bottom:14px;padding:14px">
+            <label style="font-size:12px;font-weight:bold" class="muted">เลือกรูปแบบเอกสารสัญญา</label>
+            <select class="select" id="doc-selector" style="margin-top:6px">
+              ${Object.entries(esignDocs).map(([key, doc]) => `<option value="${key}" ${key === s.data.selectedDoc ? 'selected' : ''}>${doc.title} (${doc.value})</option>`).join('')}
+            </select>
+          </div>
+
+          <article class="contract-paper card" style="padding:28px">
+            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:16px">
+              <div>
+                <p class="eyebrow">${esc(s.data.selectedDoc)} · ${esc(currentDoc.type)}</p>
+                <h1 style="font-size:22px;margin:4px 0">${esc(currentDoc.title)}</h1>
+              </div>
+              ${badge(currentDoc.value, 'primary')}
+            </div>
+
+            ${currentDoc.body}
+
+            <div style="margin-top:24px;border-top:1px dashed var(--line);padding-top:16px">
+              <p class="muted" style="font-size:12px">การลงนามในเอกสารนี้ถือเป็นลายมือชื่อดิจิทัลที่มีผลผูกพันตามกฎหมาย พ.ร.บ. ว่าด้วยธุรกรรมทางอิเล็กทรอนิกส์</p>
+            </div>
+          </article>
+        </section>
+
+        <aside class="card sidebar-card">
+          <h2>ข้อมูลผู้ลงนาม & ลายเซ็น</h2>
+          
+          <form id="signer-info-form" class="form-grid" style="margin-bottom:14px">
+            <div class="field" style="grid-column:1/-1">
+              <label>ชื่อ-นามสกุล ผู้ลงนาม</label>
+              <input class="input" id="signer-name" value="${esc(s.data.signerName)}" required>
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label>ตำแหน่ง</label>
+              <input class="input" id="signer-role" value="${esc(s.data.signerRole)}" required>
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label>ชื่อบริษัท / หน่วยงาน</label>
+              <input class="input" id="company-name" value="${esc(s.data.companyName)}" required>
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <label><input type="checkbox" id="seal-toggle" ${s.data.withSeal ? 'checked' : ''}> แนบตราประทับบริษัทดิจิทัล (Digital Company Seal)</label>
+            </div>
+          </form>
+
+          <div class="card-head" style="margin-top:10px">
+            <div><p class="eyebrow">Signature Pad</p><h3 style="margin:0">กล่องจรดลายเซ็น</h3></div>
+            <button class="btn small" data-clear-sign>ล้างใหม่</button>
+          </div>
+
+          <canvas class="signature-pad" id="signature-pad" style="border:2px dashed var(--brand);border-radius:8px;width:100%;height:150px;background:#fff;margin:10px 0;cursor:crosshair"></canvas>
+          <p class="muted" style="font-size:11px">ใช้นิ้ว เมาส์ หรือปากกา Stylus วาดลายเซ็นภายในกล่อง</p>
+
+          <button class="btn primary" style="width:100%;margin-top:10px" data-submit-sign disabled>✍️ ยืนยันการลงนามสัญญา</button>
+        </aside>
+      </div>`;
+    }
+
+    app.innerHTML = `<div class="app-shell">${appHeader('Lite E-Signature', `${esc(s.data.selectedDoc)} · ระบบลงนามเอกสารสัญญาออนไลน์พร้อม Audit Trail`, [], '', `<button class="btn small danger" data-esign-reset>รีเซ็ตข้อมูล</button>`)}${body}</div>`;
+
+    app.querySelector('#doc-selector')?.addEventListener('change', (e) => {
+      s.data.selectedDoc = e.target.value;
+      save();
+    });
+
+    app.querySelector('#signer-name')?.addEventListener('input', (e) => { s.data.signerName = e.target.value; s.save(); });
+    app.querySelector('#signer-role')?.addEventListener('input', (e) => { s.data.signerRole = e.target.value; s.save(); });
+    app.querySelector('#company-name')?.addEventListener('input', (e) => { s.data.companyName = e.target.value; s.save(); });
+    app.querySelector('#seal-toggle')?.addEventListener('change', (e) => { s.data.withSeal = e.target.checked; s.save(); });
+
+    app.querySelector('[data-esign-reset]')?.addEventListener('click', () => {
+      if (confirm('ยกเลิกลายเซ็นและรีเซ็ตสัญญา?')) {
+        s.reset();
+        renderEsign();
+      }
+    });
+
+    if (!signed) {
+      canvas = app.querySelector('#signature-pad');
+      if (canvas) {
+        ctx = canvas.getContext('2d');
+        const resize = () => {
+          const ratio = Math.max(window.devicePixelRatio || 1, 1);
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = rect.width * ratio;
+          canvas.height = rect.height * ratio;
+          ctx.scale(ratio, ratio);
+          ctx.lineWidth = 2.5;
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = '#0f172a';
+        };
+        resize();
+
+        const point = (e) => {
+          const r = canvas.getBoundingClientRect();
+          const p = e.touches?.[0] || e;
+          return [p.clientX - r.left, p.clientY - r.top];
+        };
+
+        const start = (e) => {
+          e.preventDefault();
+          drawing = true;
+          const [x, y] = point(e);
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+        };
+
+        const move = (e) => {
+          if (!drawing) return;
+          e.preventDefault();
+          const [x, y] = point(e);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          dirty = true;
+          const btn = app.querySelector('[data-submit-sign]');
+          if (btn) btn.disabled = false;
+        };
+
+        const end = () => drawing = false;
+
+        ['pointerdown', 'touchstart'].forEach(n => canvas.addEventListener(n, start, { passive: false }));
+        ['pointermove', 'touchmove'].forEach(n => canvas.addEventListener(n, move, { passive: false }));
+        ['pointerup', 'pointerleave', 'touchend'].forEach(n => canvas.addEventListener(n, end));
+
+        app.querySelector('[data-clear-sign]')?.addEventListener('click', () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          dirty = false;
+          const btn = app.querySelector('[data-submit-sign]');
+          if (btn) btn.disabled = true;
+        });
+
+        app.querySelector('[data-submit-sign]')?.addEventListener('click', () => {
+          if (!dirty) return;
+          const docHash = 'sha256:' + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2) + 'e3b0c442';
+          s.data.signed = {
+            image: canvas.toDataURL('image/png'),
+            time: new Date().toLocaleString('th-TH'),
+            signerName: s.data.signerName || 'คุณสมศักดิ์ พัฒนากุล',
+            signerRole: s.data.signerRole || 'กรรมการผู้จัดการ',
+            companyName: s.data.companyName || 'บริษัท สยาม อินโนเวชั่น จำกัด',
+            withSeal: s.data.withSeal,
+            docHash,
+            ip: '182.52.198.42',
+            location: 'Bangkok, Thailand'
+          };
+          save();
+          toast('ลงนามในเอกสารสัญญาเรียบร้อยแล้ว');
+        });
+      }
+    }
+
+    app.querySelector('[data-view-certificate]')?.addEventListener('click', () => {
+      modal('ใบรับรอง Audit Trail Certificate', `
+        <div style="padding:16px;background:var(--subtle);border-radius:10px;font-family:monospace;font-size:13px;line-height:1.8">
+          <h3 style="margin:0 0 10px;color:var(--brand)">📜 E-SIGNATURE AUDIT TRAIL LOG</h3>
+          <div><strong>Document ID:</strong> ${esc(s.data.selectedDoc)}</div>
+          <div><strong>Document Title:</strong> ${esc(currentDoc.title)}</div>
+          <div><strong>Signer Name:</strong> ${esc(signed?.signerName)} (${esc(signed?.signerRole)})</div>
+          <div><strong>Organization:</strong> ${esc(signed?.companyName)}</div>
+          <div><strong>Signed Timestamp:</strong> ${esc(signed?.time)}</div>
+          <div><strong>IP Address:</strong> ${esc(signed?.ip)}</div>
+          <div><strong>Geo Location:</strong> ${esc(signed?.location)}</div>
+          <div style="word-break:break-all;margin-top:8px"><strong>SHA-256 Checksum:</strong><br><span style="color:var(--success)">${esc(signed?.docHash)}</span></div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);color:var(--muted)">
+            Status: VALID & Cryptographically Sealed via SHA-256
+          </div>
+        </div>
+      `);
+    });
+
     app.querySelector('[data-download-pdf]')?.addEventListener('click', () => {
-      if (window.jspdf?.jsPDF) { const pdf = new window.jspdf.jsPDF(); pdf.setFontSize(16); pdf.text('Software Development Contract', 20, 24); pdf.setFontSize(11); pdf.text('Document: DOC-2026-0430', 20, 36); pdf.text('Signer: Demo Customer', 20, 44); pdf.text(`Signed at: ${s.data.signed.time}`, 20, 52); pdf.text('This file is generated by the PHP demo system.', 20, 64); pdf.addImage(s.data.signed.image, 'PNG', 20, 78, 90, 35); pdf.save('contract_DOC-2026-0430_signed.pdf'); } else { toast('กำลังเปิดหน้าพิมพ์ กรุณาเลือก Save as PDF'); window.print(); }
+      window.print();
     });
   }
 
