@@ -405,71 +405,337 @@
     });
   }
 
+    const shippingStatuses = ['รับของที่โกดัง US (Oregon)', 'กำลังเดินทางมาไทย (Flight/Vessel)', 'ถึงโกดังไทย (บางนา)', 'จัดส่งให้ลูกค้าเรียบร้อย'];
+
   const shippingSeed = {
     packages: [
-      {id:'PKG-1',tracking:'US-123456789',customer:'CUST-01',weight:1.5,boxes:1,status:0,image:'📦',timeline:[{status:0,at:today()}]},
-      {id:'PKG-2',tracking:'US-987654321',customer:'CUST-01',weight:5.2,boxes:2,status:1,image:'📦',timeline:[{status:0,at:'28 ก.ค. 2569'},{status:1,at:today()}]},
-      {id:'PKG-3',tracking:'US-555555555',customer:'CUST-02',weight:10,boxes:3,status:2,image:'📦',timeline:[{status:0,at:'27 ก.ค. 2569'},{status:1,at:'29 ก.ค. 2569'},{status:2,at:today()}]},
+      { id: 'PKG-801', tracking: 'US-982341102', customer: 'CUST-01', weight: 4.5, boxes: 1, method: 'Air Freight', dim: '30x20x15', cbm: 0.009, duty: 350, shippingFee: 1575, status: 1, flight: 'Flight TG-692 (Oregon -> BKK)', timeline: [{ status: 0, at: '26 ก.ค.' }, { status: 1, at: '28 ก.ค.' }] },
+      { id: 'PKG-802', tracking: 'US-871239941', customer: 'CUST-01', weight: 18.2, boxes: 3, method: 'Sea Freight', dim: '60x40x50', cbm: 0.12, duty: 1200, shippingFee: 3276, status: 2, flight: 'Vessel Evergreen V.042', timeline: [{ status: 0, at: '15 ก.ค.' }, { status: 1, at: '18 ก.ค.' }, { status: 2, at: '30 ก.ค.' }] },
+      { id: 'PKG-803', tracking: 'US-551029488', customer: 'CUST-02', weight: 2.1, boxes: 1, method: 'Air Freight', dim: '20x15x10', cbm: 0.003, duty: 150, shippingFee: 735, status: 0, flight: 'Flight TG-695', timeline: [{ status: 0, at: '31 ก.ค.' }] },
+      { id: 'PKG-804', tracking: 'US-339102384', customer: 'CUST-03', weight: 8.0, boxes: 2, method: 'Air Freight', dim: '40x30x25', cbm: 0.03, duty: 600, shippingFee: 2800, status: 3, flight: 'Flight TG-680', timeline: [{ status: 0, at: '20 ก.ค.' }, { status: 1, at: '22 ก.ค.' }, { status: 2, at: '25 ก.ค.' }, { status: 3, at: '27 ก.ค.' }] }
     ]
   };
-  const shippingStatuses = ['รับของที่โกดัง US','กำลังเดินทางมาไทย','ถึงโกดังไทย','จัดส่งให้ลูกค้าแล้ว'];
 
   function renderShippingHome() {
-    app.innerHTML = `<div class="shipping-choice"><div class="choice-wrap"><p class="eyebrow">USA–THAI SHIPPING</p><h1>เลือกพื้นที่ใช้งาน</h1><p class="muted">ข้อมูลทั้งหมดเก็บอยู่ใน browser เครื่องนี้ เหมาะสำหรับทดลองระบบ</p><div class="choice-grid" style="margin-top:26px">
-      <a class="choice-card" href="/usa-thai-shipping/admin"><span class="stat-icon">⚙</span><h2>Admin Portal</h2><p class="muted">เพิ่มพัสดุ อัปเดตสถานะ และสรุปข้อมูลลูกค้า</p><strong>เปิดหลังบ้าน →</strong></a>
-      <a class="choice-card" href="/usa-thai-shipping/customer"><span class="stat-icon">⌖</span><h2>Customer Portal</h2><p class="muted">ค้นหาด้วย Customer ID และดู timeline พัสดุ</p><strong>ติดตามพัสดุ →</strong></a>
+    app.innerHTML = `<div class="shipping-choice"><div class="choice-wrap"><p class="eyebrow">USA–THAI EXPRESS LOGISTICS</p><h1>เลือกพอร์ตัลใช้งานระบบชิปปิ้ง</h1><p class="muted">ระบบบริหารจัดการพัสดุนำเข้า USA → Thailand แบบครบวงจร คำนวณ CBM, ค่าภาษีศุลกากร และ Commercial Invoice</p><div class="choice-grid" style="margin-top:26px">
+      <a class="choice-card" href="/usa-thai-shipping/admin"><span class="stat-icon">⚙</span><h2>Admin Shipping Portal</h2><p class="muted">คำนวณ CBM / Volumetric, ออก Commercial Invoice, อัปเดตพัสดุเป็นชุด</p><strong>จัดการระบบหลังบ้าน →</strong></a>
+      <a class="choice-card" href="/usa-thai-shipping/customer"><span class="stat-icon">⌖</span><h2>Customer Tracking Portal</h2><p class="muted">ค้นหาพัสดุด้วย Customer ID, ดู Flight/Vessel, ยอดชำระ และสถานะเรียลไทม์</p><strong>ติดตามพัสดุลูกค้า →</strong></a>
     </div></div></div>`;
   }
 
   function renderShippingAdmin() {
-    const s=store('shipping',shippingSeed);
-    const render=()=>renderShippingAdmin();
-    const totalWeight=s.data.packages.reduce((a,x)=>a+Number(x.weight),0);
-    app.innerHTML=`<div class="app-shell">${appHeader('Shipping Admin Portal','จัดการพัสดุ USA → Thailand',[], '', `<a class="btn small" href="/usa-thai-shipping/customer">หน้าลูกค้า</a><button class="btn small" data-add-package>+ เพิ่มพัสดุ</button><button class="btn small danger" data-reset>รีเซ็ต</button>`)}
-      <div class="page-pad"><div class="grid cols-3">
-        <article class="card stat-card"><small>Packages</small><strong>${s.data.packages.length}</strong><small>รายการทั้งหมด</small></article>
-        <article class="card stat-card"><small>Boxes</small><strong>${s.data.packages.reduce((a,x)=>a+x.boxes,0)}</strong><small>กล่อง</small></article>
-        <article class="card stat-card"><small>Total weight</small><strong>${totalWeight.toFixed(1)} kg</strong><small>น้ำหนักรวม</small></article>
-      </div><section class="card" style="margin-top:16px"><div class="card-head"><h2>รายการพัสดุ</h2>${badge('Client storage')}</div>
-      <div class="table-wrap"><table><thead><tr><th>Tracking</th><th>Customer</th><th>พัสดุ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody>
-      ${s.data.packages.map((p)=>`<tr><td><strong>${esc(p.tracking)}</strong></td><td>${esc(p.customer)}</td><td>${p.weight} kg · ${p.boxes} กล่อง</td><td><select class="select" data-package-status="${p.id}">${shippingStatuses.map((x,i)=>`<option value="${i}" ${i===p.status?'selected':''}>${esc(x)}</option>`).join('')}</select></td><td><button class="btn small" data-line="${p.customer}">สร้างข้อความ LINE</button></td></tr>`).join('')}
-      </tbody></table></div></section></div></div>`;
-    app.querySelector('[data-reset]')?.addEventListener('click',()=>{if(confirm('คืนข้อมูลพัสดุเริ่มต้น?')){s.reset();render();}});
-    app.querySelector('[data-add-package]')?.addEventListener('click',()=>{
-      const wrap=modal('เพิ่มพัสดุ',`<form id="package-form" class="form-grid">
-        <div class="field"><label>Tracking no.</label><input class="input" name="tracking" placeholder="เว้นว่างเพื่อสุ่ม"></div>
-        <div class="field"><label>Customer ID</label><input class="input" name="customer" value="CUST-03" required></div>
-        <div class="field"><label>Weight (kg)</label><input class="input" type="number" min="0" step=".1" name="weight" value="1" required></div>
-        <div class="field"><label>Boxes</label><input class="input" type="number" min="1" name="boxes" value="1" required></div>
-        <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">บันทึกพัสดุ</button></div></form>`);
-      wrap.querySelector('form').addEventListener('submit',(e)=>{e.preventDefault();const f=new FormData(e.currentTarget);const tracking=String(f.get('tracking')||`US-${Math.floor(100000000+Math.random()*900000000)}`).trim().toUpperCase();const customer=String(f.get('customer')||'').trim().toUpperCase();if(!customer)return;s.data.packages.unshift({id:id('PKG'),tracking,customer,weight:Number(f.get('weight'))||0,boxes:Math.max(1,Number(f.get('boxes'))||1),status:0,image:'📦',timeline:[{status:0,at:today()}]});s.save();wrap.remove();render();toast('เพิ่มพัสดุแล้ว');});
+    const s = store('shipping', shippingSeed);
+    const render = () => renderShippingAdmin();
+    const totalWeight = s.data.packages.reduce((a, x) => a + Number(x.weight), 0);
+    const totalCbm = s.data.packages.reduce((a, x) => a + Number(x.cbm || 0), 0);
+    const totalRevenue = s.data.packages.reduce((a, x) => a + Number(x.shippingFee || 0) + Number(x.duty || 0), 0);
+
+    const views = [
+      ['admin', 'รายการพัสดุ & จัดการสถานะ'],
+      ['calculator', 'เครื่องคำนวณน้ำหนัก CBM / Volumetric']
+    ];
+
+    app.innerHTML = `<div class="app-shell">${appHeader('Shipping Admin Suite', 'ระบบจัดการนำเข้าสินค้า USA → Thailand (Air & Sea Freight)', [], '', `<a class="btn small" href="/usa-thai-shipping/customer">พอร์ตัลลูกค้า</a><button class="btn small primary" data-add-package>+ ลงทะเบียนพัสดุ</button><button class="btn small danger" data-reset>รีเซ็ต</button>`)}
+      <div class="page-pad">
+        <div class="grid cols-4">
+          <article class="card stat-card"><small>พัสดุในระบบ</small><strong>${s.data.packages.length} รายการ</strong><small>กล่องรวม ${s.data.packages.reduce((a, x) => a + x.boxes, 0)} กล่อง</small></article>
+          <article class="card stat-card"><small>น้ำหนักรวม (Chargeable)</small><strong>${totalWeight.toFixed(1)} kg</strong><small> Air/Sea Combined</small></article>
+          <article class="card stat-card"><small>ปริมาตรรวม (CBM)</small><strong>${totalCbm.toFixed(3)} CBM</strong><small>สำหรับจัดสรรพื้นที่ตู้</small></article>
+          <article class="card stat-card"><small>รายได้ค่าขนส่ง & ภาษี</small><strong>${money(totalRevenue)}</strong><small>สุทธิรอเก็บเงินลูกค้า</small></article>
+        </div>
+
+        <section class="card" style="margin-top:16px">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">Shipment Management</p>
+              <h2>รายการพัสดุทั้งหมดในคลัง (Package Inventory)</h2>
+            </div>
+            <button class="btn small" data-open-cbm-modal>🧮 เครื่องคำนวณ CBM ค่าขนส่ง</button>
+          </div>
+
+          <div class="table-wrap" style="margin-top:12px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tracking / Customer</th>
+                  <th>ขนส่ง / Flight</th>
+                  <th>น้ำหนัก & CBM</th>
+                  <th>ค่าขนส่ง + ภาษี</th>
+                  <th>สถานะพัสดุ</th>
+                  <th>การจัดการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${s.data.packages.map((p) => `
+                  <tr>
+                    <td>
+                      <strong>${esc(p.tracking)}</strong><br>
+                      <small class="muted">${esc(p.customer)}</small>
+                    </td>
+                    <td>
+                      ${badge(p.method, p.method === 'Air Freight' ? 'primary' : 'warning')}<br>
+                      <small class="muted" style="font-size:11px">${esc(p.flight || '-')}</small>
+                    </td>
+                    <td>
+                      <strong>${p.weight} kg</strong> (${p.boxes} กล่อง)<br>
+                      <small class="muted">ขนาด: ${esc(p.dim || '-')} (${p.cbm} CBM)</small>
+                    </td>
+                    <td>
+                      <strong>${money((p.shippingFee || 0) + (p.duty || 0))}</strong><br>
+                      <small class="muted">ค่าส่ง ${money(p.shippingFee)} | ภาษี ${money(p.duty)}</small>
+                    </td>
+                    <td>
+                      <select class="select" data-package-status="${p.id}">
+                        ${shippingStatuses.map((x, i) => `<option value="${i}" ${i === p.status ? 'selected' : ''}>${esc(x)}</option>`).join('')}
+                      </select>
+                    </td>
+                    <td>
+                      <div style="display:flex;gap:6px">
+                        <button class="btn small" data-invoice="${p.id}">🧾 ใบแจ้งหนี้ Invoice</button>
+                        <button class="btn small" data-line="${p.customer}">📱 ส่ง LINE</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>`;
+
+    app.querySelector('[data-reset]')?.addEventListener('click', () => { if (confirm('คืนข้อมูลพัสดุเริ่มต้น?')) { s.reset(); render(); } });
+
+    // Open CBM Calculator Modal
+    app.querySelector('[data-open-cbm-modal]')?.addEventListener('click', () => {
+      const wrap = modal('เครื่องคำนวณค่าขนส่ง CBM & Volumetric Weight', `
+        <form id="cbm-calc-form" class="form-grid">
+          <div class="field"><label>กว้าง (Width - cm)</label><input class="input" type="number" id="cbm-w" value="30" required></div>
+          <div class="field"><label>ยาว (Length - cm)</label><input class="input" type="number" id="cbm-l" value="40" required></div>
+          <div class="field"><label>สูง (Height - cm)</label><input class="input" type="number" id="cbm-h" value="25" required></div>
+          <div class="field"><label>น้ำหนักจริง (Actual Wt. kg)</label><input class="input" type="number" id="cbm-wt" value="5.0" step="0.1" required></div>
+
+          <div style="grid-column:1/-1;background:var(--subtle);padding:14px;border-radius:10px" id="cbm-result">
+            <div style="display:flex;justify-content:space-between"><span>ปริมาตร (CBM):</span><strong id="res-cbm">0.030 CBM</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>น้ำหนักทางอากาศ (Air Volumetric /5000):</span><strong id="res-air-wt">6.0 kg</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>ประเมินค่าส่งทางเรือ (Sea Freight):</span><strong id="res-sea-fee">1,080 บาท</strong></div>
+            <div style="display:flex;justify-content:space-between;color:var(--brand);font-weight:bold;margin-top:4px"><span>ประเมินค่าส่งทางอากาศ (Air Freight):</span><strong id="res-air-fee">2,100 บาท</strong></div>
+          </div>
+        </form>
+      `);
+
+      const calc = () => {
+        const w = Number(wrap.querySelector('#cbm-w').value) || 0;
+        const l = Number(wrap.querySelector('#cbm-l').value) || 0;
+        const h = Number(wrap.querySelector('#cbm-h').value) || 0;
+        const wt = Number(wrap.querySelector('#cbm-wt').value) || 0;
+
+        const cbm = (w * l * h) / 1000000;
+        const airVolWt = Math.max(wt, (w * l * h) / 5000);
+        const seaFee = Math.max(wt * 180, cbm * 8500);
+        const airFee = airVolWt * 350;
+
+        wrap.querySelector('#res-cbm').innerText = cbm.toFixed(3) + ' CBM';
+        wrap.querySelector('#res-air-wt').innerText = airVolWt.toFixed(1) + ' kg';
+        wrap.querySelector('#res-sea-fee').innerText = money(seaFee);
+        wrap.querySelector('#res-air-fee').innerText = money(airFee);
+      };
+
+      ['#cbm-w', '#cbm-l', '#cbm-h', '#cbm-wt'].forEach(id => wrap.querySelector(id)?.addEventListener('input', calc));
     });
-    app.querySelectorAll('[data-package-status]').forEach((el)=>el.addEventListener('change',()=>{
-      const p=s.data.packages.find(x=>x.id===el.dataset.packageStatus);
-      const st=Number(el.value);
-      if(p&&p.status!==st){
-        p.status=st;
+
+    // Add Package Modal
+    app.querySelector('[data-add-package]')?.addEventListener('click', () => {
+      const wrap = modal('ลงทะเบียนพัสดุนำเข้าใหม่ (New Package)', `
+        <form id="package-form" class="form-grid">
+          <div class="field"><label>Tracking No. (US)</label><input class="input" name="tracking" placeholder="เช่น US-991203841"></div>
+          <div class="field"><label>Customer ID</label><input class="input" name="customer" value="CUST-01" required></div>
+          <div class="field"><label>ประเภทการขนส่ง</label><select class="select" name="method"><option value="Air Freight">ทางเครื่องบิน (Air Freight - 350฿/kg)</option><option value="Sea Freight">ทางเรือ (Sea Freight - 180฿/kg)</option></select></div>
+          <div class="field"><label>เที่ยวบิน / เที่ยวเรือ</label><input class="input" name="flight" value="Flight TG-692 (Oregon -> BKK)"></div>
+          <div class="field"><label>น้ำหนักชั่งจริง (kg)</label><input class="input" type="number" step="0.1" name="weight" value="3.5" required></div>
+          <div class="field"><label>ขนาด กว้างxยาวxสูง (cm)</label><input class="input" name="dim" value="30x20x15" required></div>
+          <div class="field"><label>ประมาณการภาษีศุลกากร (บาท)</label><input class="input" type="number" name="duty" value="250" required></div>
+          <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">บันทึกพัสดุ</button></div>
+        </form>
+      `);
+
+      wrap.querySelector('form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        const tracking = String(f.get('tracking') || `US-${Math.floor(100000000 + Math.random() * 900000000)}`).trim().toUpperCase();
+        const customer = String(f.get('customer') || '').trim().toUpperCase();
+        const method = String(f.get('method'));
+        const weight = Number(f.get('weight')) || 1;
+        const dim = String(f.get('dim'));
+        const duty = Number(f.get('duty')) || 0;
+        const flight = String(f.get('flight'));
+
+        const dims = dim.split('x').map(Number);
+        const cbm = dims.length === 3 ? (dims[0] * dims[1] * dims[2]) / 1000000 : 0.01;
+        const rate = method === 'Air Freight' ? 350 : 180;
+        const shippingFee = Math.round(weight * rate);
+
+        s.data.packages.unshift({
+          id: id('PKG'),
+          tracking,
+          customer,
+          method,
+          weight,
+          boxes: 1,
+          dim,
+          cbm: Number(cbm.toFixed(3)),
+          duty,
+          shippingFee,
+          flight,
+          status: 0,
+          timeline: [{ status: 0, at: today() }]
+        });
+        save();
+        wrap.remove();
+        render();
+        toast('ลงทะเบียนพัสดุเข้าคลัง USA เรียบร้อย');
+      });
+    });
+
+    // Package status updater
+    app.querySelectorAll('[data-package-status]').forEach((el) => el.addEventListener('change', () => {
+      const p = s.data.packages.find(x => x.id === el.dataset.packageStatus);
+      const st = Number(el.value);
+      if (p && p.status !== st) {
+        p.status = st;
         for (let i = 0; i <= st; i++) {
           if (!p.timeline.some(x => x.status === i)) {
             p.timeline.push({ status: i, at: today() });
           }
         }
-        s.save();render();
+        save();
+        render();
+        toast(`อัปเดตสถานะ ${p.tracking} เป็น ${shippingStatuses[st]}`);
       }
     }));
-    app.querySelectorAll('[data-line]').forEach((el)=>el.addEventListener('click',()=>{const list=s.data.packages.filter(x=>x.customer===el.dataset.line);const text=`Customer ${el.dataset.line}\nพัสดุ ${list.length} รายการ\n${list.map(x=>`${x.tracking}: ${shippingStatuses[x.status]}`).join('\n')}`;modal('ข้อความ LINE (ตัวอย่าง)',`<textarea class="textarea" style="min-height:180px">${esc(text)}</textarea><p class="muted">เดโมนี้ไม่ส่ง LINE จริง</p>`);}));
+
+    // Invoice Modal
+    app.querySelectorAll('[data-invoice]').forEach((el) => el.addEventListener('click', () => {
+      const p = s.data.packages.find(x => x.id === el.dataset.invoice);
+      if (!p) return;
+
+      modal('ใบแจ้งหนี้ค่าขนส่งนำเข้า (Commercial Shipping Invoice)', `
+        <div class="receipt-slip" style="background:#fff;color:#111;padding:24px;border-radius:12px;font-family:sans-serif;max-width:440px;margin:auto;border:1px solid #ddd">
+          <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:12px;margin-bottom:12px">
+            <h2 style="margin:0;font-size:22px;color:var(--brand)">Preeya Express Logistics</h2>
+            <p style="margin:4px 0;font-size:12px">USA-Thailand Freight Forwarder & Customs Clearance</p>
+            <p style="margin:0;font-size:12px">Invoice No: INV-${p.tracking} · Date: ${today()}</p>
+          </div>
+
+          <div style="margin-bottom:14px;font-size:13px;line-height:1.6">
+            <div><strong>ลูกค้า:</strong> ${esc(p.customer)}</div>
+            <div><strong>Tracking ID:</strong> ${esc(p.tracking)}</div>
+            <div><strong>รูปแบบขนส่ง:</strong> ${esc(p.method)} (${esc(p.flight || '-')})</div>
+            <div><strong>น้ำหนักคิดเงิน:</strong> ${p.weight} kg (ขนาด ${esc(p.dim || '-')} / ${p.cbm} CBM)</div>
+          </div>
+
+          <table style="width:100%;font-size:13px;border-collapse:collapse;margin-bottom:14px">
+            <thead>
+              <tr style="border-bottom:1px solid #ccc;text-align:left">
+                <th style="padding:6px 0">รายการ</th>
+                <th style="text-align:right">จำนวนเงิน</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px 0">ค่าขนส่ง (${p.method})</td><td style="text-align:right">${money(p.shippingFee)}</td></tr>
+              <tr><td style="padding:6px 0">ค่าธรรมเนียมภาษีศุลกากร (Estimated Duty)</td><td style="text-align:right">${money(p.duty)}</td></tr>
+              <tr style="border-top:2px solid #333;font-weight:bold"><td style="padding:8px 0">ยอดชำระสุทธิ (Total Due)</td><td style="text-align:right;font-size:16px">${money((p.shippingFee || 0) + (p.duty || 0))}</td></tr>
+            </tbody>
+          </table>
+
+          <div style="text-align:center;font-size:11px;color:#666">
+            กรุณาชำระเงินผ่าน QR PromptPay เพื่อปล่อยสินค้าออกจากโกดังไทย
+          </div>
+        </div>
+      `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์ Commercial Invoice</button></div>`);
+    }));
+
+    // LINE Notification Modal
+    app.querySelectorAll('[data-line]').forEach((el) => el.addEventListener('click', () => {
+      const list = s.data.packages.filter(x => x.customer === el.dataset.line);
+      const text = `[Preeya Shipping Notify]
+เรียนคุณ ${el.dataset.line}
+พัสดุนำเข้าจาก USA รวม ${list.length} รายการ:
+
+${list.map(x => `📦 ${x.tracking} (${x.method})
+สถานะ: ${shippingStatuses[x.status]}
+ยอดชำระ: ${money((x.shippingFee || 0) + (x.duty || 0))}`).join('\n---\n')}
+
+ตรวจสอบรายละเอียดเพิ่มเติมได้ที่: https://preeyabizsuite.vercel.app/usa-thai-shipping/customer`;
+      modal('ข้อความแจ้งเตือนผ่าน LINE Notify (ตัวอย่าง)', `<textarea class="textarea" style="min-height:180px;font-family:monospace">${esc(text)}</textarea><p class="muted">สามารถคัดลอกข้อความนี้ส่งเข้า LINE ของลูกค้าได้ทันที</p>`);
+    }));
   }
 
   function renderShippingCustomer() {
-    const s=store('shipping',shippingSeed); let query='CUST-01';
-    const draw=()=>{
-      const list=s.data.packages.filter((x)=>x.customer===query.trim().toUpperCase());
-      app.innerHTML=`<div class="app-shell">${appHeader('Customer Tracking','ตรวจสอบสถานะด้วย Customer ID',[], '', `<a class="btn small" href="/usa-thai-shipping/admin">Admin</a>`)}
-      <div class="page-pad"><div class="card"><form id="track-form" class="toolbar"><div class="field" style="flex:1"><label>Customer ID</label><input class="input" name="customer" value="${esc(query)}" placeholder="เช่น CUST-01"></div><button class="btn primary">ค้นหา</button></form><div class="chip-row"><button class="chip" data-mock-id="CUST-01">CUST-01</button><button class="chip" data-mock-id="CUST-02">CUST-02</button></div></div>
-      <div style="margin-top:16px">${list.length?`<div class="grid cols-2">${list.map((p)=>`<article class="card"><div class="card-head"><div><p class="eyebrow">${esc(p.customer)}</p><h2>${esc(p.tracking)}</h2></div><span style="font-size:38px">📦</span></div><div class="summary-line"><span>น้ำหนัก</span><strong>${p.weight} kg</strong></div><div class="summary-line"><span>จำนวน</span><strong>${p.boxes} กล่อง</strong></div><h3 style="margin-top:18px">Timeline</h3><div class="timeline">${shippingStatuses.map((status,i)=>`<div class="timeline-item ${i<p.status?'done':i===p.status?'current':''}"><strong>${esc(status)}</strong><p class="muted">${esc(p.timeline.find(x=>x.status===i)?.at||'รอดำเนินการ')}</p></div>`).join('')}</div></article>`).join('')}</div>`:`<div class="empty"><div><h2>ไม่พบพัสดุ</h2><p>ตรวจสอบ Customer ID แล้วลองอีกครั้ง</p></div></div>`}</div></div></div>`;
-      app.querySelector('#track-form')?.addEventListener('submit',(e)=>{e.preventDefault();query=String(new FormData(e.currentTarget).get('customer')||'').toUpperCase();draw();});
-      app.querySelectorAll('[data-mock-id]').forEach((el)=>el.addEventListener('click',()=>{query=el.dataset.mockId;draw();}));
-    }; draw();
+    const s = store('shipping', shippingSeed);
+    let query = 'CUST-01';
+
+    const draw = () => {
+      const list = s.data.packages.filter((x) => x.customer === query.trim().toUpperCase());
+      app.innerHTML = `<div class="app-shell">${appHeader('Customer Tracking Portal', 'ติดตามพัสดุนำเข้า USA → Thailand ด้วย Customer ID', [], '', `<a class="btn small" href="/usa-thai-shipping/admin">Admin Portal</a>`)}
+      <div class="page-pad">
+        <div class="card">
+          <form id="track-form" class="toolbar">
+            <div class="field" style="flex:1">
+              <label>กรอก Customer ID ของคุณ</label>
+              <input class="input" name="customer" value="${esc(query)}" placeholder="เช่น CUST-01">
+            </div>
+            <button class="btn primary">🔍 ค้นหาพัสดุ</button>
+          </form>
+          <div class="chip-row" style="margin-top:10px">
+            <span class="muted" style="font-size:12px">ตัวอย่างรหัสลูกค้า:</span>
+            <button class="chip" data-mock-id="CUST-01">CUST-01 (2 พัสดุ)</button>
+            <button class="chip" data-mock-id="CUST-02">CUST-02 (1 พัสดุ)</button>
+            <button class="chip" data-mock-id="CUST-03">CUST-03 (1 พัสดุ)</button>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          ${list.length ? `<div class="grid cols-2">${list.map((p) => `<article class="card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">${esc(p.customer)} · ${esc(p.method)}</p>
+                <h2 style="margin:4px 0">${esc(p.tracking)}</h2>
+                <small class="muted">✈️ เที่ยวบิน/เรือ: ${esc(p.flight || '-')}</small>
+              </div>
+              <span style="font-size:38px">${p.method === 'Air Freight' ? '✈️' : '🚢'}</span>
+            </div>
+
+            <div style="background:var(--subtle);padding:12px;border-radius:8px;margin:12px 0">
+              <div class="summary-line"><span>น้ำหนักชั่งจริง</span><strong>${p.weight} kg</strong></div>
+              <div class="summary-line"><span>ขนาด & ปริมาตร</span><strong>${esc(p.dim || '-')} (${p.cbm} CBM)</strong></div>
+              <div class="summary-line total" style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)">
+                <span>ยอดค่าขนส่ง + ภาษี</span><strong>${money((p.shippingFee || 0) + (p.duty || 0))}</strong>
+              </div>
+            </div>
+
+            <h3 style="margin-top:14px">Timeline สถานะจัดส่ง</h3>
+            <div class="timeline" style="margin-top:10px">
+              ${shippingStatuses.map((status, i) => `<div class="timeline-item ${i < p.status ? 'done' : i === p.status ? 'current' : ''}">
+                <strong>${esc(status)}</strong>
+                <p class="muted">${esc(p.timeline.find(x => x.status === i)?.at || 'รอดำเนินการ')}</p>
+              </div>`).join('')}
+            </div>
+          </article>`).join('')}</div>` : `<div class="empty"><div><h2>ไม่พบพัสดุในระบบ</h2><p>โปรดตรวจสอบ Customer ID หรือติดต่อแอดมิน</p></div></div>`}
+        </div>
+      </div></div>`;
+
+      app.querySelector('#track-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        query = String(new FormData(e.currentTarget).get('customer') || '').toUpperCase();
+        draw();
+      });
+      app.querySelectorAll('[data-mock-id]').forEach((el) => el.addEventListener('click', () => {
+        query = el.dataset.mockId;
+        draw();
+      }));
+    };
+    draw();
   }
 
   const courseSeed = {
