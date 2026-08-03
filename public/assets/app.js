@@ -212,6 +212,38 @@
           </div>
         </section>
 
+                <div class="onboard-banner" style="margin-top:28px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:22px">🧭</span>
+            <h2 style="margin:0;font-size:20px;font-weight:800">คู่มือเริ่มต้นทดลองใช้งาน (Quick Start Guide)</h2>
+          </div>
+          <p class="muted" style="margin:0;font-size:14px">เลือกระบบธุรกิจที่ตรงกับความต้องการของคุณเพื่อทดลอง Interactive Workflow แบบเสมือนจริง</p>
+
+          <div class="onboard-steps">
+            <div class="onboard-step">
+              <div class="onboard-step-num">1</div>
+              <div>
+                <strong style="display:block;font-size:14px;margin-bottom:2px">เลือกระบบที่สนใจ</strong>
+                <span class="muted" style="font-size:12px">เลือกจาก 4 ระบบไฮไลต์ด้านล่าง (POS, WMS, E-Signature, Shipping)</span>
+              </div>
+            </div>
+            <div class="onboard-step">
+              <div class="onboard-step-num">2</div>
+              <div>
+                <strong style="display:block;font-size:14px;margin-bottom:2px">ทดลองทำรายการ</strong>
+                <span class="muted" style="font-size:12px">กดเลือกเมนู สั่งซื้อสินค้า เบิกสต็อก หรือวาดลายเซ็นจริง</span>
+              </div>
+            </div>
+            <div class="onboard-step">
+              <div class="onboard-step-num">3</div>
+              <div>
+                <strong style="display:block;font-size:14px;margin-bottom:2px">ดูผลลัพธ์ทันที</strong>
+                <span class="muted" style="font-size:12px">พิมพ์ใบเสร็จ สรุปปิดกะ หรือตรวจสอบ Audit Certificate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <section class="portal-section" id="featured" style="padding:36px 0">
           <div class="section-head">
             <div>
