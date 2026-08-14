@@ -8,6 +8,7 @@
     '/business-suite': 'crm',
     '/ecommerce-storefront': 'external-ecommerce',
     '/tilt-signal-arcade-bar': 'external-tilt',
+    '/medical-flow': 'external-medical',
     '/usa-thai-shipping': 'shipping-home',
     '/usa-thai-shipping/admin': 'shipping-admin',
     '/usa-thai-shipping/customer': 'shipping-customer',
@@ -2567,6 +2568,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
     classicpos: renderClassicPos,
     'external-ecommerce': () => renderExternal('ecommerce'),
     'external-tilt': () => renderExternal('tilt'),
+    'external-medical': () => renderExternal('medical'),
   };
 
   if (app && handlers[page]) handlers[page]();
