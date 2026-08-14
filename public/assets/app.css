@@ -254,6 +254,7 @@ html[data-theme="dark"] .btn.danger { border-color: #7f1d1d; color: #fca5a5; bac
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
   transition: all 0.2s ease;
   text-decoration: none;
+  justify-self: start;
 }
 .shell-back:hover { 
   background: var(--brand);
