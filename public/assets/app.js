@@ -161,6 +161,7 @@
     const featured = visible.slice(0, 3);
     const regular = visible.slice(3);
     const preview = {
+      '/medical-flow': '/assets/demo-previews/medical-flow.png',
       '/business-suite': '/assets/demo-previews/business-suite.png',
       '/ecommerce-storefront': '/assets/demo-previews/ecommerce-storefront.png',
       '/tilt-signal-arcade-bar': '/assets/demo-previews/tilt-signal-arcade-bar.png',
