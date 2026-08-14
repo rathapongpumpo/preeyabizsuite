@@ -2549,8 +2549,11 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
   function renderExternal(kind) {
     const source = kind === 'ecommerce'
       ? 'https://ecommerce-codex-demo.vercel.app/'
-      : 'https://openai-landing-page-examples.vercel.app/tilt-signal-arcade-bar';
-    app.innerHTML = `<iframe class="external-frame" src="${source}" title="${kind === 'ecommerce' ? 'OAI Apparel Storefront' : 'Tilt Signal Arcade Bar'}"></iframe>`;
+      : kind === 'medical'
+        ? 'https://medical-flow-lovat.vercel.app/'
+        : 'https://openai-landing-page-examples.vercel.app/tilt-signal-arcade-bar';
+    const frameTitle = kind === 'ecommerce' ? 'OAI Apparel Storefront' : kind === 'medical' ? 'Medical Flow Clinic' : 'Tilt Signal Arcade Bar';
+    app.innerHTML = `<iframe class="external-frame" src="${source}" title="${frameTitle}"></iframe>`;
   }
 
   const handlers = {
