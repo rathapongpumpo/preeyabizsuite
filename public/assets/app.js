@@ -35,19 +35,37 @@
     const back = document.createElement('a');
     back.className = 'shell-back';
     back.href = '/';
-    back.setAttribute('aria-label', 'กลับหน้า PreeyaBizSuite');
-    back.textContent = '← กลับหน้า PreeyaBizSuite';
+    back.setAttribute('aria-label', 'กลับพอร์ตโฟลิโอ');
+    back.textContent = '← กลับพอร์ตโฟลิโอ';
     const projectName = document.createElement('div');
     projectName.className = 'shell-project';
     const status = document.createElement('span');
     status.className = 'status-dot';
     status.setAttribute('aria-hidden', 'true');
     const title = document.createElement('strong');
-    title.textContent = projects[pathname]?.title || 'PreeyaBizSuite Demo';
-    const shellSpacer = document.createElement('span');
-    shellSpacer.setAttribute('aria-hidden', 'true');
-    projectName.append(status, title);
-    shell.append(back, projectName, shellSpacer);
+    title.textContent = projects[pathname]?.short || projects[pathname]?.title || 'Demo';
+    const demoBadge = document.createElement('span');
+    demoBadge.className = 'badge';
+    demoBadge.style.fontSize = '11px';
+    demoBadge.textContent = 'Prototype Demo';
+    projectName.append(status, title, demoBadge);
+
+    const shellActions = document.createElement('div');
+    shellActions.className = 'shell-actions';
+    const infoBtn = document.createElement('button');
+    infoBtn.className = 'btn small';
+    infoBtn.type = 'button';
+    infoBtn.textContent = 'ℹ️ รายละเอียดระบบ';
+    infoBtn.onclick = () => window.openProjectDetail?.(pathname);
+    const newTabBtn = document.createElement('a');
+    newTabBtn.className = 'btn small';
+    newTabBtn.href = pathname;
+    newTabBtn.target = '_blank';
+    newTabBtn.rel = 'noopener noreferrer';
+    newTabBtn.textContent = '↗ เปิดแท็บใหม่';
+    shellActions.append(infoBtn, newTabBtn);
+
+    shell.append(back, projectName, shellActions);
     app.replaceWith(frame);
     frame.append(shell, app);
     app.className = 'demo-content';
@@ -103,11 +121,21 @@
     const wrap = document.createElement('div');
     wrap.className = 'modal-backdrop';
     wrap.innerHTML = `<section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}">
-      <div class="card-head"><h2>${esc(title)}</h2><button class="icon-btn" data-close-modal>ปิด</button></div>
+      <div class="card-head"><h2>${esc(title)}</h2><button class="icon-btn" data-close-modal>✕ ปิด</button></div>
       ${body}${footer}
     </section>`;
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        wrap.remove();
+        window.removeEventListener('keydown', onKey);
+      }
+    };
+    window.addEventListener('keydown', onKey);
     wrap.addEventListener('click', (event) => {
-      if (event.target === wrap || event.target.closest('[data-close-modal]')) wrap.remove();
+      if (event.target === wrap || event.target.closest('[data-close-modal]')) {
+        wrap.remove();
+        window.removeEventListener('keydown', onKey);
+      }
     });
     document.body.appendChild(wrap);
     wrap.querySelector('input,select,textarea,button')?.focus();
@@ -122,8 +150,17 @@
 
   function appHeader(title, subtitle, tabItems = [], active = '', actions = '') {
     return `<header class="app-topbar">
-      <div class="app-title"><h1>${esc(title)}</h1><p>${esc(subtitle)}</p></div>
-      <div class="app-actions">${tabItems.length ? tabs(tabItems, active) : ''}${actions}</div>
+      <div class="app-topbar-main">
+        <div class="app-title">
+          <div class="app-title-row">
+            <span class="app-system-tag">Interactive Demo</span>
+            <h1>${esc(title)}</h1>
+          </div>
+          ${subtitle ? `<p>${esc(subtitle)}</p>` : ''}
+        </div>
+        ${actions ? `<div class="app-actions">${actions}</div>` : ''}
+      </div>
+      ${tabItems && tabItems.length ? `<nav class="app-topbar-nav" aria-label="Demo Navigation">${tabs(tabItems, active)}</nav>` : ''}
     </header>`;
   }
 
@@ -158,183 +195,508 @@
 
   function renderPortal() {
     const visible = Object.entries(projects).filter(([, p]) => p.visible);
-    const featured = visible.slice(0, 3);
-    const regular = visible.slice(3);
-    const preview = {
-      '/medical-flow': '/assets/demo-previews/medical-flow.png',
-      '/business-suite': '/assets/demo-previews/business-suite.png',
-      '/ecommerce-storefront': '/assets/demo-previews/ecommerce-storefront.png',
-      '/tilt-signal-arcade-bar': '/assets/demo-previews/tilt-signal-arcade-bar.png',
+    const featuredKeys = ['/warehouse-management', '/business-suite', '/pos-system-smart'];
+    const featured = featuredKeys.map(k => [k, projects[k]]).filter(([, p]) => !!p);
+    let activeFilter = 'all';
+
+    const getPreview = (path) => {
+      const custom = {
+        '/warehouse-management': '/assets/demo-previews/warehouse-management.png',
+        '/business-suite': '/assets/demo-previews/business-suite.png',
+        '/pos-system-smart': '/assets/demo-previews/pos-system-smart.png',
+        '/usa-thai-shipping': '/assets/demo-previews/usa-thai-shipping.png',
+        '/ecommerce-storefront': '/assets/demo-previews/ecommerce-storefront.png',
+        '/tilt-signal-arcade-bar': '/assets/demo-previews/tilt-signal-arcade-bar.png',
+      };
+      return custom[path] || '/assets/demo-previews/warehouse-management.png';
     };
-    const icons = {
-      teal: '◫', amber: '◈', violet: '✦', cyan: '⇄', blue: '◉',
-      lime: '▦', slate: '▤', orange: '▣', emerald: '✓'
-    };
 
-    app.innerHTML = `
-      <div class="portal-wrap">
-        <nav class="portal-nav">
-          <a class="brand" href="/">
-            <span class="brand-mark">P</span>
-            <span>PreeyaBizSuite<br><small class="muted">preeyabizsuite.com</small></span>
-          </a>
-          <div class="portal-actions">
-            <a class="btn small" href="#demos">ดูเดโมทั้งหมด (${visible.length})</a>
-            <a class="btn small primary" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">ปรึกษาโครงการ</a>
-            <button class="btn square" id="theme-toggle" aria-label="สลับธีม">◐</button>
-          </div>
-        </nav>
+    function renderPortalContent() {
+      const filteredWorks = visible.filter(([, p]) => {
+        if (activeFilter === 'all') return true;
+        if (activeFilter === 'business') return p.category === 'business';
+        if (activeFilter === 'website') return p.category === 'website';
+        return true;
+      });
 
-        <section class="portal-hero" style="padding:48px 0 36px">
-          <div>
-            <div class="chip-row" style="margin-bottom:16px">
-              <span class="chip" style="background:var(--brand);color:#05201b;font-weight:900">⚡ Interactive Demo Suite</span>
-              <span class="chip">🔒 ข้อมูลบันทึกในเครื่องคุณ</span>
+      const countAll = visible.length;
+      const countBusiness = visible.filter(([, p]) => p.category === 'business').length;
+      const countWebsite = visible.filter(([, p]) => p.category === 'website').length;
+
+      app.innerHTML = `
+        <div class="portal-wrap">
+          <!-- Navigation -->
+          <nav class="portal-nav" id="top">
+            <a class="brand" href="/" aria-label="หน้าแรก Preeya Portfolio">
+              <span class="brand-mark">P</span>
+              <div class="brand-title">
+                <span>Preeya</span>
+                <small class="brand-sub">Creative Developer</small>
+              </div>
+            </a>
+            <div class="portal-nav-links">
+              <a href="#featured">ผลงานเด่น</a>
+              <a href="#projects">ผลงานทั้งหมด</a>
+              <a href="#services">บริการ</a>
+              <a href="#process">ขั้นตอนการทำงาน</a>
+              <a href="#contact">ติดต่อ</a>
             </div>
-            <h1 style="font-size:clamp(34px, 5.5vw, 62px);line-height:1.1;margin-bottom:16px">
-              PreeyaBizSuite<br>
-              <span style="color:var(--brand-2);font-weight:400">ทดลองใช้งานระบบธุรกิจจริง</span>
-            </h1>
-            <p class="lead" style="max-width:620px;font-size:17px;line-height:1.6;margin-bottom:24px">
-              สัมผัสประสบการณ์ใช้งานระบบ CRM, E-Commerce, คอร์สออนไลน์ EduFlow, คลังสินค้า และเอกสารออนไลน์ ก่อนเริ่มพัฒนาระบบจริง
-            </p>
-            <div class="hero-buttons">
-              <a class="btn primary" href="#featured">เริ่มทดลองเดโมยอดนิยม ▶</a>
-              <a class="btn" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">ส่งโจทย์ประเมินราคาฟรี ↗</a>
+            <div class="portal-actions">
+              <a class="btn small primary" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">คุยงาน ↗</a>
+              <button class="btn square small" id="theme-toggle" aria-label="สลับธีม">◐</button>
             </div>
-          </div>
+          </nav>
 
-          <div class="hero-stack">
-            ${featured.map(([path, project]) => `
-              <a class="hero-preview" href="${path}">
-                <img src="${preview[path]}" alt="${esc(project.short)}">
-                <footer><span>${esc(project.short)}</span><span>เปิดทดลอง ↗</span></footer>
+          <!-- Hero Section -->
+          <section class="hero-section">
+            <div class="hero-content">
+              <div class="hero-tag">⚡ Creative Developer Portfolio</div>
+              <h1 class="hero-title">
+                พัฒนาเว็บแอป <span class="highlight-blue">ระบบหลังบ้าน</span> และระบบอัตโนมัติสำหรับธุรกิจ
+              </h1>
+              <p class="hero-desc">
+                ออกแบบและพัฒนาระบบที่จับต้องได้จริง คล่องตัว และตรงโจทย์ธุรกิจ ทุกผลงานในพอร์ตโฟลิโอนี้พัฒนาจากความต้องการใช้งานจริง และสามารถทดลอง Interactive Workflow บนหน้าจอได้ทันที
+              </p>
+              <div class="hero-ctas">
+                <a class="btn primary" href="#projects">ดูผลงาน (6 ระบบ) ↓</a>
+                <a class="btn coral" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">คุยเรื่องโปรเจกต์ ↗</a>
+              </div>
+              <div class="hero-stats-banner">
+                <div class="hero-stat-item">
+                  <strong>6</strong>
+                  <span>ระบบ Interactive</span>
+                </div>
+                <div class="hero-stat-item">
+                  <strong>100%</strong>
+                  <span>ทดลองหน้าจอจริงได้</span>
+                </div>
+                <div class="hero-stat-item">
+                  <strong>Scalable</strong>
+                  <span>สถาปัตยกรรมพร้อมต่อยอด</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-visual">
+              <article class="hero-featured-card">
+                <span class="hero-featured-badge">⭐ ผลงานคัดสรร</span>
+                <div class="hero-featured-img-wrap">
+                  <img src="${getPreview('/warehouse-management')}" alt="NexusWMS คลังสินค้า" width="600" height="375" fetchpriority="high">
+                </div>
+                <div class="hero-featured-meta">
+                  <div>
+                    <span class="badge primary" style="margin-bottom:4px">ระบบคลังสินค้า</span>
+                    <h3>NexusWMS</h3>
+                  </div>
+                  <a class="btn small" href="/warehouse-management">เปิดทดลอง ↗</a>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- Featured Works (3 ระบบเด่น) -->
+          <section class="portal-section" id="featured">
+            <div class="section-header">
+              <span class="eyebrow">Highlights</span>
+              <h2>3 ผลงานเด่นที่แนะนำให้ทดลอง</h2>
+              <p>ระบบบริหารจัดการหลักที่ออกแบบกระบวนการทำงานให้เห็นภาพชัดเจน และคลิกทดลองบันทึกข้อมูลจริงได้</p>
+            </div>
+
+            <div class="featured-grid">
+              <!-- 1. NexusWMS -->
+              <article class="feat-card accent-blue">
+                <div class="feat-img-wrap">
+                  <img src="${getPreview('/warehouse-management')}" alt="NexusWMS" loading="lazy">
+                </div>
+                <div class="feat-body">
+                  <div class="badge-wrap">
+                    <span class="badge primary">ระบบธุรกิจ</span>
+                    <small class="muted">Inventory & Stock</small>
+                  </div>
+                  <h3>NexusWMS คลังสินค้า</h3>
+                  <p>ระบบบริหารสต็อก บันทึกรับเข้า (Inbound) เบิกจ่าย (Outbound) ตรวจสอบยอดคงเหลือ และแจ้งเตือนสินค้าใกล้หมดสต็อก</p>
+                  <div class="feat-tech">
+                    <span>Inbound/Outbound</span>
+                    <span>LocalStorage</span>
+                    <span>Re-order Alerts</span>
+                  </div>
+                  <div class="feat-actions">
+                    <button class="btn small" type="button" data-detail="/warehouse-management">📋 รายละเอียด</button>
+                    <a class="btn small primary" href="/warehouse-management">ทดลองเดโม ↗</a>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 2. Sales Flow CRM -->
+              <article class="feat-card accent-coral">
+                <div class="feat-img-wrap">
+                  <img src="${getPreview('/business-suite')}" alt="Sales Flow CRM" loading="lazy">
+                </div>
+                <div class="feat-body">
+                  <div class="badge-wrap">
+                    <span class="badge coral">ระบบธุรกิจ</span>
+                    <small class="muted">CRM & E-Sign</small>
+                  </div>
+                  <h3>Sales Flow CRM & E-Sign</h3>
+                  <p>ติดตามลูกค้าและดีลใน Pipeline แบบลากวาง ออกใบเสนอราคา และส่งต่อสัญญาเพื่อลงนามผ่านฟีเจอร์ Lite E-Signature</p>
+                  <div class="feat-tech">
+                    <span>Drag & Drop</span>
+                    <span>Quotation Calc</span>
+                    <span>E-Sign Handoff</span>
+                  </div>
+                  <div class="feat-actions">
+                    <button class="btn small" type="button" data-detail="/business-suite">📋 รายละเอียด</button>
+                    <a class="btn small coral" href="/business-suite">ทดลองเดโม ↗</a>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 3. SmartPOS -->
+              <article class="feat-card accent-yellow">
+                <div class="feat-img-wrap">
+                  <img src="${getPreview('/pos-system-smart')}" alt="SmartPOS" loading="lazy">
+                </div>
+                <div class="feat-body">
+                  <div class="badge-wrap">
+                    <span class="badge yellow">ระบบธุรกิจ</span>
+                    <small class="muted">POS & Kitchen KDS</small>
+                  </div>
+                  <h3>SmartPOS ร้านอาหาร & KDS</h3>
+                  <p>จุดขายหน้าร้าน คิดเงิน คำนวณภาษี ส่งออเดอร์เข้าหน้าจอครัว KDS แบบเรียลไทม์ พร้อมโหมด Kiosk และสรุปปิดกะ</p>
+                  <div class="feat-tech">
+                    <span>Cashier POS</span>
+                    <span>Kitchen KDS</span>
+                    <span>Self Kiosk</span>
+                  </div>
+                  <div class="feat-actions">
+                    <button class="btn small" type="button" data-detail="/pos-system-smart">📋 รายละเอียด</button>
+                    <a class="btn small yellow" href="/pos-system-smart">ทดลองเดโม ↗</a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- All Works & Filter (6 ผลงาน) -->
+          <section class="portal-section" id="projects">
+            <div class="section-header">
+              <span class="eyebrow">Portfolio Directory</span>
+              <h2>ผลงานทั้งหมด (6 ระบบ)</h2>
+              <p>เลือกกรองตามหมวดหมู่เพื่อดูระบบธุรกิจหรือเว็บไซต์และงานออกแบบ</p>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="filter-tabs" role="tablist" aria-label="ตัวกรองผลงาน">
+              <button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" type="button" data-filter="all">ทั้งหมด (${countAll})</button>
+              <button class="filter-btn ${activeFilter === 'business' ? 'active' : ''}" type="button" data-filter="business">ระบบธุรกิจ (${countBusiness})</button>
+              <button class="filter-btn ${activeFilter === 'website' ? 'active' : ''}" type="button" data-filter="website">เว็บไซต์และงานออกแบบ (${countWebsite})</button>
+            </div>
+
+            <!-- Works Grid -->
+            <div class="all-works-grid">
+              ${filteredWorks.map(([path, p]) => `
+                <article class="work-item-card">
+                  <div class="work-item-thumb">
+                    <img src="${getPreview(path)}" alt="${esc(p.short || p.title)}" loading="lazy">
+                  </div>
+                  <div class="work-item-body">
+                    <div class="work-item-meta">
+                      <span class="badge ${p.category === 'business' ? 'primary' : 'yellow'}">${esc(p.category_name || (p.category === 'business' ? 'ระบบธุรกิจ' : 'เว็บไซต์และงานออกแบบ'))}</span>
+                      ${p.featured ? '<span style="font-size:11px;font-weight:800;color:var(--coral)">★ แนะนำ</span>' : ''}
+                    </div>
+                    <h4>${esc(p.short || p.title)}</h4>
+                    <p>${esc(p.description)}</p>
+                    <div class="work-item-foot">
+                      <button class="btn small" type="button" data-detail="${path}">📋 รายละเอียด</button>
+                      <a class="btn small ${p.featured ? 'primary' : ''}" href="${path}">เปิดเดโม ↗</a>
+                    </div>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </section>
+
+          <!-- Services Section -->
+          <section class="portal-section" id="services">
+            <div class="section-header">
+              <span class="eyebrow">Expertise & Services</span>
+              <h2>บริการที่รับพัฒนา</h2>
+              <p>เน้นงานที่ต้องการความถูกต้องของตรรกะ ประสบการณ์การใช้งานที่ลื่นไหล และระบบที่นำไปต่อยอดได้จริง</p>
+            </div>
+
+            <div class="services-grid">
+              <div class="service-card">
+                <div class="service-icon-box blue">📊</div>
+                <h3>1. Web Applications & Back-office Systems</h3>
+                <p>พัฒนาระบบหลังบ้านสำหรับธุรกิจ เช่น จัดการคลังสินค้า (WMS), บริหารงานขายและลูกค้า (CRM), ระบบจุดขายหน้าร้าน (POS) ออกแบบให้ใช้งานสะดวกและตอบสนองไว</p>
+                <ul class="service-list">
+                  <li>UX/UI สะอาด ชัดเจน ใช้งานง่ายบนทุกอุปกรณ์</li>
+                  <li>Client & Server State Management ที่เสถียร</li>
+                  <li>คำนวณภาษี บิล สต็อก และรายงานอย่างถูกต้อง</li>
+                </ul>
+              </div>
+
+              <div class="service-card">
+                <div class="service-icon-box coral">⚡</div>
+                <h3>2. Workflow & Process Automation</h3>
+                <p>สร้างระบบส่งต่องานอัตโนมัติ ลดขั้นตอนการทำงานที่ซ้ำซ้อน เช่น ระบบส่งต่อเอกสารลงนามออนไลน์ (E-Signature), ระบบติดตามสถานะพัสดุ และการแจ้งเตือนงาน</p>
+                <ul class="service-list">
+                  <li>เปลี่ยนเอกสารกระดาษเป็น Interactive Digital Workflow</li>
+                  <li>ระบบลงนามออนไลน์พร้อม Audit Trail & บันทึกเวลา</li>
+                  <li>เชื่อมต่อสถานะงานระหว่างฝ่ายอย่างราบรื่น</li>
+                </ul>
+              </div>
+
+              <div class="service-card">
+                <div class="service-icon-box yellow">🎨</div>
+                <h3>3. Modern Web Storefront & Landing Pages</h3>
+                <p>พัฒนาเว็บไซต์หน้าร้าน E-Commerce และหน้า Landing Page โปรโมตแบรนด์ ที่มีเอกลักษณ์เฉพาะตัว โหลดไว และจัดวาง Typography สวยงามมีพลัง</p>
+                <ul class="service-list">
+                  <li>ดีไซน์มีบุคลิกโดดเด่น ไม่ซ้ำเทมเพลตสำเร็จรูปทั่วไป</li>
+                  <li>รองรับ Cart Drawer, แกลเลอรี และประสบการณ์ช้อปปิ้ง</li>
+                  <li>โครงสร้าง SEO และ Performance ที่ได้คะแนนสูง</li>
+                </ul>
+              </div>
+
+              <div class="service-card">
+                <div class="service-icon-box green">🔌</div>
+                <h3>4. API Integration & System Architecture</h3>
+                <p>วางสถาปัตยกรรมระบบและเชื่อมต่อบริการภายนอก เช่น Proxy, Third-party APIs, ระบบขนส่ง และเตรียมความพร้อมสำหรับฐานข้อมูล Production</p>
+                <ul class="service-list">
+                  <li>Clean Code โครงสร้างอ่านง่าย ดูแลต่อง่าย</li>
+                  <li>Reverse Proxy & Security Headers สำหรับบริการภายนอก</li>
+                  <li>การจัดเก็บข้อมูลแคชและโครงสร้างฐานข้อมูลที่มีประสิทธิภาพ</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Work Process Section -->
+          <section class="portal-section" id="process">
+            <div class="section-header">
+              <span class="eyebrow">How I Work</span>
+              <h2>ขั้นตอนการทำงาน</h2>
+              <p>ทำงานอย่างโปร่งใส มีขั้นตอนชัดเจน เพื่อให้คุณได้ระบบที่ตรงตามโจทย์และอยู่ในงบประมาณ</p>
+            </div>
+
+            <div class="process-grid">
+              <div class="process-step">
+                <div class="step-num">1</div>
+                <h4>คุยโจทย์</h4>
+                <p>พูดคุยทำความเข้าใจปัญหา เป้าหมายทางธุรกิจ และฟังก์ชันที่จำเป็นต้องมี</p>
+              </div>
+              <div class="process-step">
+                <div class="step-num">2</div>
+                <h4>สรุปขอบเขต</h4>
+                <p>จัดทำ Requirement, แผนผัง Workflow และโครงสร้างหน้าจอที่ตกลงร่วมกัน</p>
+              </div>
+              <div class="process-step">
+                <div class="step-num">3</div>
+                <h4>เสนอราคา</h4>
+                <p>ประเมินกรอบเวลาและราคาอย่างชัดเจน ไม่มีค่าใช้จ่ายแอบแฝง</p>
+              </div>
+              <div class="process-step">
+                <div class="step-num">4</div>
+                <h4>พัฒนา</h4>
+                <p>เขียนโค้ดตามมาตรฐาน อัปเดตความคืบหน้าให้ทดลองหน้าจอจริงเป็นระยะ</p>
+              </div>
+              <div class="process-step">
+                <div class="step-num">5</div>
+                <h4>ตรวจรับและส่งมอบ</h4>
+                <p>ทดสอบร่วมกัน ส่งมอบซอร์สโค้ด เอกสารระบบ และให้คำแนะนำการใช้งาน</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- About & Contact Section -->
+          <section class="contact-section" id="contact">
+            <div class="contact-info">
+              <span class="eyebrow">Get in touch</span>
+              <h2>มีโจทย์ระบบที่อยากปรึกษา?</h2>
+              <p>
+                ไม่ว่าจะเป็นการสร้างระบบหลังบ้านใหม่ ปรับปรุงเว็บเดิม หรือต้องการทำ Interactive Prototype เพื่อทดสอบแนวคิดก่อนลงทุน ยินดีพูดคุยและให้คำแนะนำอย่างตรงไปตรงมาครับ
+              </p>
+              <div class="chip-row">
+                <span class="chip">🔒 รักษาความลับข้อมูลลูกค้า</span>
+                <span class="chip">⏱️ ให้คำตอบรวดเร็ว</span>
+                <span class="chip">🎯 ประเมินตามขอบเขตจริง</span>
+              </div>
+            </div>
+
+            <div class="contact-cards">
+              <a class="contact-btn-card line" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">
+                <div>
+                  <small style="opacity:0.9">คุยผ่านแชท LINE</small>
+                  <div>LINE Official Account</div>
+                </div>
+                <span>เปิดแชท ↗</span>
               </a>
-            `).join('')}
-          </div>
-        </section>
 
-                <div class="onboard-banner" style="margin-top:28px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-            <span style="font-size:22px">🧭</span>
-            <h2 style="margin:0;font-size:20px;font-weight:800">คู่มือเริ่มต้นทดลองใช้งาน (Quick Start Guide)</h2>
-          </div>
-          <p class="muted" style="margin:0;font-size:14px">เลือกระบบธุรกิจที่ตรงกับความต้องการของคุณเพื่อทดลอง Interactive Workflow แบบเสมือนจริง</p>
+              <a class="contact-btn-card" href="mailto:r.pumpo@gmail.com">
+                <div>
+                  <small class="muted">ติดต่อทางอีเมล</small>
+                  <div>r.pumpo@gmail.com</div>
+                </div>
+                <span>ส่งอีเมล ↗</span>
+              </a>
+            </div>
+          </section>
 
-          <div class="onboard-steps">
-            <div class="onboard-step">
-              <div class="onboard-step-num">1</div>
-              <div>
-                <strong style="display:block;font-size:14px;margin-bottom:2px">เลือกระบบที่สนใจ</strong>
-                <span class="muted" style="font-size:12px">เลือกจาก 4 ระบบไฮไลต์ด้านล่าง (POS, WMS, E-Signature, Shipping)</span>
-              </div>
+          <!-- Footer -->
+          <footer class="portal-footer">
+            <div>© ${new Date().getFullYear()} Preeya · Creative Developer Portfolio</div>
+            <div>Built with Clean Standards · Inspired by OBLO Design</div>
+          </footer>
+        </div>
+      `;
+
+      // Bind Filter Tab Events
+      app.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeFilter = btn.dataset.filter;
+          renderPortalContent();
+  
+        });
+      });
+
+      // Bind Detail Modal Triggers
+      app.querySelectorAll('[data-detail]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          openProjectDetail(btn.dataset.detail);
+        });
+      });
+
+      // Bind Theme Toggle
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+    }
+
+    renderPortalContent();
+
+    // Check if URL has ?view=detail or ?project=
+    const params = new URLSearchParams(window.location.search);
+    const detailTarget = params.get('project') || (params.get('view') === 'detail' ? params.get('p') : null);
+    if (detailTarget && projects[detailTarget]) {
+      openProjectDetail(detailTarget);
+    }
+  }
+
+  // Project Detail Modal System
+  function openProjectDetail(path) {
+    const p = projects[path];
+    if (!p) return;
+
+    // Update URL query state without full reload
+    const url = new URL(window.location);
+    url.searchParams.set('view', 'detail');
+    url.searchParams.set('project', path);
+    window.history.replaceState({}, '', url);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'detail-modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'modal-proj-title');
+
+    const previewImg = p.preview_image || (
+      path === '/warehouse-management' ? '/assets/demo-previews/warehouse-management.png' :
+      path === '/business-suite' ? '/assets/demo-previews/business-suite.png' :
+      path === '/pos-system-smart' ? '/assets/demo-previews/pos-system-smart.png' :
+      path === '/usa-thai-shipping' ? '/assets/demo-previews/usa-thai-shipping.png' :
+      path === '/ecommerce-storefront' ? '/assets/demo-previews/ecommerce-storefront.png' :
+      '/assets/demo-previews/tilt-signal-arcade-bar.png'
+    );
+
+    overlay.innerHTML = `
+      <div class="detail-modal-card">
+        <header class="detail-modal-header">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span class="badge ${p.category === 'business' ? 'primary' : 'yellow'}">${esc(p.category_name || (p.category === 'business' ? 'ระบบธุรกิจ' : 'เว็บไซต์และงานออกแบบ'))}</span>
+              <span class="badge">Interactive Prototype</span>
             </div>
-            <div class="onboard-step">
-              <div class="onboard-step-num">2</div>
-              <div>
-                <strong style="display:block;font-size:14px;margin-bottom:2px">ทดลองทำรายการ</strong>
-                <span class="muted" style="font-size:12px">กดเลือกเมนู สั่งซื้อสินค้า เบิกสต็อก หรือวาดลายเซ็นจริง</span>
-              </div>
+            <h2 id="modal-proj-title" style="font-size:24px;font-weight:900">${esc(p.short || p.title)}</h2>
+          </div>
+          <button class="detail-modal-close" type="button" aria-label="ปิดหน้ารายละเอียด">×</button>
+        </header>
+
+        <div class="detail-modal-content">
+          <div class="detail-image-box">
+            <img src="${previewImg}" alt="${esc(p.short || p.title)}" style="width:100%;display:block">
+          </div>
+
+          <div class="detail-grid-info">
+            <div class="detail-info-block">
+              <strong>🎯 โจทย์และประโยชน์ของระบบ</strong>
+              <p>${esc(p.problem || p.description)}</p>
+              <p style="margin-top:6px;color:var(--text);font-weight:600">${esc(p.impact || '')}</p>
             </div>
-            <div class="onboard-step">
-              <div class="onboard-step-num">3</div>
-              <div>
-                <strong style="display:block;font-size:14px;margin-bottom:2px">ดูผลลัพธ์ทันที</strong>
-                <span class="muted" style="font-size:12px">พิมพ์ใบเสร็จ สรุปปิดกะ หรือตรวจสอบ Audit Certificate</span>
-              </div>
+
+            <div class="detail-info-block">
+              <strong>👥 กลุ่มผู้ใช้งาน</strong>
+              <p>${esc(p.audience || 'เจ้าของธุรกิจและทีมงาน')}</p>
             </div>
+          </div>
+
+          <div class="detail-info-block">
+            <strong>🛠️ ขอบเขตที่พัฒนา (Scope of Work)</strong>
+            <p>${esc(p.scope || 'ออกแบบและพัฒนา Interactive UI, State Management, ตรรกะคำนวณ และจำลองกระบวนการทำงานจริง')}</p>
+          </div>
+
+          <div class="detail-info-block">
+            <strong>⚙️ เทคโนโลยีและฟีเจอร์ที่ตรวจยืนยันได้</strong>
+            <p style="margin-bottom:8px">${esc(p.description)}</p>
+            <div class="detail-tech-chips">
+              ${(p.tech || p.highlights || []).map(t => `<span class="chip">✔ ${esc(t)}</span>`).join('')}
+            </div>
+          </div>
+
+          <div class="detail-info-block">
+            <strong>💡 วิธีทดลองสั้นๆ (Quick Try-out)</strong>
+            <p>${esc(p.quick_try || '1. กดเข้าหน้าเดโม 2. ทดลองเลือกรายการหรือกรอกข้อมูล 3. ตรวจสอบผลลัพธ์ที่คำนวณอัตโนมัติ')}</p>
+          </div>
+
+          <div class="detail-info-block" style="background:var(--coral-light);border-color:var(--coral)">
+            <strong style="color:var(--coral)">⚠️ สถานะและข้อจำกัดตามจริง (Transparency)</strong>
+            <p style="color:var(--charcoal)">${esc(p.constraints || 'ระบบนี้เป็น Interactive Prototype สำหรับแสดงตัวอย่างการทำงาน ข้อมูลจะถูกจัดเก็บใน LocalStorage ของเบราว์เซอร์เครื่องนี้ และไม่มีการเชื่อมต่อ Payment Gateway หรือ Database จริง')}</p>
           </div>
         </div>
 
-        <section class="portal-section" id="featured" style="padding:36px 0">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">Interactive Highlights</p>
-              <h2>4 ระบบเดโมหลักที่แนะนำให้ทดลอง</h2>
-            </div>
-            <p>คลิกเลือกเพื่อเข้าดู Workflow หน้าจอจริงได้ทันทีโดยไม่ต้องลงทะเบียน</p>
-          </div>
-
-          <div class="solution-grid">
-            <a class="solution-card" href="/business-suite" style="border-top:4px solid #2dd4bf">
-              <span class="badge warning" style="margin-bottom:8px">Sales & CRM</span>
-              <h3 style="font-size:20px;margin:6px 0">Sales Flow CRM →</h3>
-              <p>จัดการลูกค้า ใบเสนอราคา สัญญา และติดตาม Pipeline เพื่อปิดการขาย</p>
-              <span class="btn small primary" style="margin-top:14px;width:100%">เปิดทดลอง CRM</span>
-            </a>
-            
-            <a class="solution-card" href="/course" style="border-top:4px solid #3b82f6">
-              <span class="badge success" style="margin-bottom:8px">Education</span>
-              <h3 style="font-size:20px;margin:6px 0">EduFlow Course →</h3>
-              <p>คอร์สออนไลน์รามเกียรติ์ (Lore Universe YouTube) พร้อมใบประกาศนียบัตร</p>
-              <span class="btn small primary" style="margin-top:14px;width:100%">เปิดดูคลิปคอร์สเรียน</span>
-            </a>
-
-            <a class="solution-card" href="/ecommerce-storefront" style="border-top:4px solid #f59e0b">
-              <span class="badge" style="margin-bottom:8px">E-Commerce</span>
-              <h3 style="font-size:20px;margin:6px 0">OAI Apparel Store →</h3>
-              <p>หน้าร้านค้าออนไลน์ แคตตาล็อกแฟชั่น สินค้า และระบบตะกร้าสินค้า</p>
-              <span class="btn small primary" style="margin-top:14px;width:100%">เปิดเข้าร้านค้า</span>
-            </a>
-
-            <a class="solution-card" href="/usa-thai-shipping" style="border-top:4px solid #06b6d4">
-              <span class="badge" style="margin-bottom:8px">Logistics</span>
-              <h3 style="font-size:20px;margin:6px 0">Thai Shipping Suite →</h3>
-              <p>ระบบจัดการพัสดุหลังบ้าน และหน้าติดตาม Timeline สำหรับลูกค้า</p>
-              <span class="btn small primary" style="margin-top:14px;width:100%">ติดตามพัสดุ</span>
-            </a>
-          </div>
-        </section>
-
-        <section class="portal-section" id="demos" style="padding:36px 0">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">All Modules</p>
-              <h2>เดโมระบบทั้งหมดใน PreeyaBizSuite</h2>
-            </div>
-            <p>ทดลองใช้งาน ข้อมูลที่แก้ไขจะถูกบันทึกใน Browser เครื่องนี้โดยอัตโนมัติ</p>
-          </div>
-
-          <div class="compact-list">
-            ${visible.map(([path, project], i) => `
-              <a class="compact-project" href="${path}">
-                <span class="project-number">${String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3 style="font-size:18px;margin-bottom:4px">${esc(project.short)}</h3>
-                  <span class="badge">${esc(project.category)}</span>
-                </div>
-                <p>${esc(project.description)}</p>
-                <span class="btn small">เปิดเดโม ↗</span>
-              </a>
-            `).join('')}
-          </div>
-        </section>
-
-        <section class="contact-panel">
-          <div>
-            <p class="eyebrow">Start Your Project</p>
-            <h2>สนใจนำระบบไปใช้งานในธุรกิจคุณ?</h2>
-            <p class="muted">ปรึกษาแนวทางออกแบบ พัฒนา หรือสั่งทำระบบธุรกิจตาม Requirement ของคุณ</p>
-          </div>
-          <div class="contact-links">
-            <a class="contact-link" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">
-              <span>LINE Official Account</span><span>เปิดคุย ↗</span>
-            </a>
-            <a class="contact-link" href="mailto:r.pumpo@gmail.com">
-              <span>r.pumpo@gmail.com</span><span>ส่งอีเมล ↗</span>
-            </a>
-          </div>
-        </section>
-
-        <footer class="portal-footer">
-          © ${new Date().getFullYear()} PreeyaBizSuite (preeyabizsuite.com) · Interactive Demo Platform
+        <footer class="detail-modal-actions">
+          <button class="btn" type="button" id="close-modal-btn">ปิด</button>
+          <a class="btn primary" href="${path}">เข้าสู่หน้าจอเพื่อทดลองเดโม ▶</a>
+          <a class="btn coral" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">คุยเรื่องระบบลักษณะนี้ ↗</a>
         </footer>
-      </div>`;
+      </div>
+    `;
 
-    document.getElementById('theme-toggle')?.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+    const closeModal = () => {
+      overlay.remove();
+      const cleanUrl = new URL(window.location);
+      cleanUrl.searchParams.delete('view');
+      cleanUrl.searchParams.delete('project');
+      window.history.replaceState({}, '', cleanUrl);
+    };
+
+    overlay.querySelector('.detail-modal-close').addEventListener('click', closeModal);
+    overlay.querySelector('#close-modal-btn').addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal();
+    });
+
+    document.addEventListener('keydown', function escHandler(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        document.removeEventListener('keydown', escHandler);
+      }
+    });
+
+    document.body.appendChild(overlay);
   }
+  window.openProjectDetail = openProjectDetail;
 
-  const crmSeed = {
+const crmSeed = {
     view: 'overview', selected: 'D-001',
     stages: [
       ['new','ลูกค้าใหม่',25], ['qualified','คุยรายละเอียด',50], ['proposal','เสนอราคา',68],
@@ -413,8 +775,17 @@
       const d = current();
       return `<div class="page-pad split"><section class="card"><p class="eyebrow">Contract handoff</p><h2>${esc(d.company)}</h2>
         <div class="grid cols-2"><div><p class="muted">ผู้ติดต่อ</p><strong>${esc(d.contact)}</strong></div><div><p class="muted">มูลค่า</p><strong>${money(d.value)}</strong></div><div><p class="muted">ผู้ดูแล</p><strong>${esc(d.owner)}</strong></div><div><p class="muted">Next action</p><strong>${esc(d.next)}</strong></div></div>
-        <div class="notice" style="margin-top:20px">เมื่อพร้อมแล้วสามารถเปิดระบบลงนามเอกสาร และกลับมาปิดการขายได้</div>
-        <div class="form-actions"><a class="btn" href="/e-signature">เปิดหน้าลงนามเอกสาร</a><button class="btn primary" data-close-deal ${d.stage==='won'?'disabled':''}>${d.stage==='won'?'ปิดการขายแล้ว':'ปิดการขาย'}</button></div>
+        
+        <div class="notice" style="margin-top:20px;border-left:4px solid var(--blue);background:var(--cream-subtle)">
+          <strong>✍️ ฟีเจอร์ประกอบ: การส่งต่อลงนามสัญญา (Lite E-Signature)</strong>
+          <p style="margin:4px 0 6px;font-size:13px">เมื่อใบเสนอราคาได้รับอนุมัติ สามารถส่งต่อไปยังระบบลงนามเอกสาร Lite E-Signature เพื่อให้ลูกค้าลงนามสัญญาออนไลน์ พร้อมประทับตราและออก Audit Trail Certificate</p>
+          <small class="muted">ℹ️ หมายเหตุ: การเชื่อมต่อนี้เป็นการจำลองขั้นตอนทำงาน (Workflow Navigation Handoff) ข้อมูลและสถานะการเซ็นสัญญาไม่ได้ซิงก์กันแบบอัตโนมัติ</small>
+        </div>
+
+        <div class="form-actions" style="margin-top:16px">
+          <a class="btn primary" href="/e-signature?from=crm">✍️ ส่งไปลงนามที่ Lite E-Signature ↗</a>
+          <button class="btn" data-close-deal ${d.stage==='won'?'disabled':''}>${d.stage==='won'?'ปิดการขายแล้ว':'ปิดการขาย'}</button>
+        </div>
       </section><aside class="card sidebar-card"><h3>Activity ล่าสุด</h3>${s.data.activities.filter(x=>x.deal===d.id).slice(-12).reverse().map(a=>`<div class="timeline-item"><strong>${esc(a.text)}</strong><p class="muted">${esc(a.at)}</p></div>`).join('') || '<p class="muted">ยังไม่มีกิจกรรม</p>'}</aside></div>`;
     }
 
@@ -459,10 +830,36 @@
   };
 
   function renderShippingHome() {
-    app.innerHTML = `<div class="shipping-choice"><div class="choice-wrap"><p class="eyebrow">USA–THAI EXPRESS LOGISTICS</p><h1>เลือกพอร์ตัลใช้งานระบบชิปปิ้ง</h1><p class="muted">ระบบบริหารจัดการพัสดุนำเข้า USA → Thailand แบบครบวงจร คำนวณ CBM, ค่าภาษีศุลกากร และ Commercial Invoice</p><div class="choice-grid" style="margin-top:26px">
-      <a class="choice-card" href="/usa-thai-shipping/admin"><span class="stat-icon">⚙</span><h2>Admin Shipping Portal</h2><p class="muted">คำนวณ CBM / Volumetric, ออก Commercial Invoice, อัปเดตพัสดุเป็นชุด</p><strong>จัดการระบบหลังบ้าน →</strong></a>
-      <a class="choice-card" href="/usa-thai-shipping/customer"><span class="stat-icon">⌖</span><h2>Customer Tracking Portal</h2><p class="muted">ค้นหาพัสดุด้วย Customer ID, ดู Flight/Vessel, ยอดชำระ และสถานะเรียลไทม์</p><strong>ติดตามพัสดุลูกค้า →</strong></a>
-    </div></div></div>`;
+    app.innerHTML = `<div class="app-shell">
+      ${appHeader('Thai Shipping Suite', 'ระบบจัดการโลจิสติกส์และพัสดุนำเข้า USA → Thailand', [], '', `<a class="btn small" href="/usa-thai-shipping/admin">Admin Portal</a><a class="btn small" href="/usa-thai-shipping/customer">Customer Portal</a>`)}
+      <div class="page-pad">
+        <div class="shipping-choice">
+          <div class="choice-wrap">
+            <span class="app-system-tag" style="margin-bottom:12px;font-size:12px;padding:4px 12px">USA–THAI EXPRESS LOGISTICS</span>
+            <h1>เลือกพอร์ตัลเข้าใช้งานระบบ</h1>
+            <p class="muted">ระบบบริหารจัดการพัสดุนำเข้า USA → Thailand แบบครบวงจร คำนวณ CBM ค่าภาษีศุลกากร และ Commercial Invoice</p>
+            <div class="choice-grid">
+              <a class="choice-card" href="/usa-thai-shipping/admin">
+                <div class="stat-icon">⚙️</div>
+                <div>
+                  <h2>Admin Shipping Portal</h2>
+                  <p>คำนวณ CBM / Volumetric, ออก Commercial Invoice, และอัปเดตสถานะพัสดุเป็นชุด</p>
+                </div>
+                <strong>เข้าสู่ระบบหลังบ้าน (Admin) →</strong>
+              </a>
+              <a class="choice-card" href="/usa-thai-shipping/customer">
+                <div class="stat-icon">📍</div>
+                <div>
+                  <h2>Customer Tracking Portal</h2>
+                  <p>ค้นหาพัสดุด้วย Customer ID, ติดตาม Flight/Vessel, ยอดชำระ และสถานะเรียลไทม์</p>
+                </div>
+                <strong>ติดตามพัสดุลูกค้า (Tracking) →</strong>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
   }
 
   function renderShippingAdmin() {
@@ -1231,46 +1628,157 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
 
     const lowStockItems = s.data.inventory.filter(x => x.stock <= x.minStock);
     const totalValue = s.data.inventory.reduce((a, x) => a + x.stock * x.price, 0);
+    const totalItemsCount = s.data.inventory.reduce((a, x) => a + x.stock, 0);
+
+    // 4 Core Warehouse Zones Definition
+    const zones = [
+      { id: 'Zone A', code: 'Zone A-01 / A-03', name: 'Electronics & Handheld Devices', cat: 'Electronics', color: 'blue', maxCap: 50, tag: '⚡ หนาแน่น (Busy)' },
+      { id: 'Zone B', code: 'Zone B-01 / B-02', name: 'Heavy Furniture & Steel Racks', cat: 'Furniture', color: 'green', maxCap: 30, tag: '✓ ปกติ (Normal)' },
+      { id: 'Zone C', code: 'Zone C-01 / C-03', name: 'Packaging, Tapes & Label Bins', cat: 'Stationery', color: 'yellow', maxCap: 220, tag: '✓ คล่องตัว (Optimal)' },
+      { id: 'Zone D', code: 'Zone D-01 / D-02', name: 'Network Switches & Cabling Cages', cat: 'Networking', color: 'coral', maxCap: 20, tag: '🔵 มีพื้นที่ว่าง (Available)' }
+    ];
 
     let body = '';
 
     if (s.data.view === 'dashboard') {
       body = `<div class="page-pad">
+        <!-- 1. Vibrant OBLO Stat Cards -->
         <div class="grid cols-4">
-          <article class="card stat-card"><small>Total SKUs</small><strong>${s.data.inventory.length} SKUs</strong><small>ในคลังสินค้า</small></article>
-          <article class="card stat-card"><small>Total Inventory Value</small><strong>${money(totalValue)}</strong><small>มูลค่าสินค้ารวม</small></article>
-          <article class="card stat-card"><small>Low Stock Alert</small><strong style="color:var(--danger)">${lowStockItems.length} SKUs</strong><small>ต้องสั่งซื้อเพิ่ม</small></article>
-          <article class="card stat-card"><small>Pending Inbound</small><strong>${s.data.inboundOrders.filter(x => x.status === 'Pending').length} Orders</strong><small>รอรับเข้าคลัง</small></article>
+          <article class="card stat-card">
+            <div class="stat-card-head">
+              <small>Total Inventory SKUs</small>
+              <div class="stat-icon-box blue">📦</div>
+            </div>
+            <strong>${s.data.inventory.length} SKUs</strong>
+            <small>รวม ${totalItemsCount} ชิ้นในคลังสินค้า</small>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-card-head">
+              <small>Total Asset Value</small>
+              <div class="stat-icon-box green">💰</div>
+            </div>
+            <strong>${money(totalValue)}</strong>
+            <small>มูลค่าสต็อกสินค้าคงคลังรวม</small>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-card-head">
+              <small>Low Stock Alert</small>
+              <div class="stat-icon-box coral">⚠️</div>
+            </div>
+            <strong style="color:var(--coral)">${lowStockItems.length} SKUs</strong>
+            <small>ต่ำกว่าเกณฑ์ Reorder Point</small>
+          </article>
+
+          <article class="card stat-card">
+            <div class="stat-card-head">
+              <small>Pending Inbound POs</small>
+              <div class="stat-icon-box yellow">📥</div>
+            </div>
+            <strong>${s.data.inboundOrders.filter(x => x.status === 'Pending').length} Orders</strong>
+            <small>รอตรวจรับและจัดเก็บเข้าโซน</small>
+          </article>
         </div>
 
+        <!-- 2. WMS Quick Operations Command Bar -->
+        <div class="quick-ops-bar">
+          <span class="quick-ops-title">⚡ คำสั่งปฏิบัติการคลังด่วน:</span>
+          <button class="quick-op-btn blue" data-wms-quick-inbound>📥 รับเข้าด่วน (Quick Inbound)</button>
+          <button class="quick-op-btn coral" data-wms-quick-outbound>📤 ตัดจ่ายด่วน (Quick Pick)</button>
+          <button class="quick-op-btn yellow" data-wms-scanner>📷 สแกนเนอร์จำลอง (Scan Simulator)</button>
+          <button class="quick-op-btn green" data-wms-transfer>🔄 โอนย้ายโซน (Transfer Zone)</button>
+          <button class="quick-op-btn" data-wms-action="create-bulk-po">🛒 สร้าง PO สั่งซื้อด่วน (${lowStockItems.length})</button>
+        </div>
+
+        <!-- 3. Low Stock Alert Notice -->
         ${lowStockItems.length ? `
-          <div class="notice danger" style="margin-top:16px;display:flex;justify-content:space-between;align-items:center">
+          <div class="notice danger" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px">
             <div>
-              <strong style="color:var(--danger)">⚠️ แจ้งเตือนสินค้าต่ำกว่า Reorder Point (${lowStockItems.length} รายการ):</strong>
+              <strong style="color:var(--coral)">⚠️ แจ้งเตือนสินค้าต่ำกว่า Reorder Point (${lowStockItems.length} รายการ):</strong>
               <span class="muted">${lowStockItems.map(x => `${x.sku} (${x.stock}/${x.minStock})`).join(', ')}</span>
             </div>
             <button class="btn small primary" data-wms-action="create-bulk-po">สร้าง PO สั่งซื้อด่วน 🛒</button>
           </div>
         ` : ''}
 
-        <div class="grid cols-2" style="margin-top:16px">
+        <!-- 4. Warehouse Zone Capacity & Heatmap -->
+        <section class="card" style="margin-bottom:24px">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow" style="color:var(--blue)">Storage Heatmap & Layout</p>
+              <h2>🏢 แผนผังความจุคลังสินค้าแยกตามโซน (Warehouse Zone Utilization & Capacity)</h2>
+            </div>
+            <span class="badge primary">4 โซนจัดเก็บพร้อมใช้งาน</span>
+          </div>
+          <div class="zone-grid">
+            ${zones.map(z => {
+              const items = s.data.inventory.filter(x => x.location.startsWith(z.id));
+              const qty = items.reduce((a, x) => a + x.stock, 0);
+              const pct = Math.min(100, Math.round((qty / z.maxCap) * 100));
+              return `<article class="zone-card">
+                <div>
+                  <div class="zone-head">
+                    <span class="zone-tag ${z.color}">${esc(z.id)}</span>
+                    <small class="muted">${esc(z.tag)}</small>
+                  </div>
+                  <h4 class="zone-title">${esc(z.name)}</h4>
+                  <p class="zone-desc">${esc(z.code)} · ${items.length} SKUs</p>
+                </div>
+                <div>
+                  <div class="zone-bar-wrap">
+                    <div class="zone-bar-fill ${z.color}" style="width:${pct}%"></div>
+                  </div>
+                  <div class="zone-meta">
+                    <span>ความจุ: ${qty} / ${z.maxCap} ชิ้น</span>
+                    <strong>${pct}%</strong>
+                  </div>
+                  <button class="btn small" style="width:100%;margin-top:12px" data-wms-view-zone="${esc(z.id)}">ตรวจสต็อกโซนนี้ →</button>
+                </div>
+              </article>`;
+            }).join('')}
+          </div>
+        </section>
+
+        <!-- 5. Category Breakdown & Stock Movement Feeds -->
+        <div class="grid cols-2">
           <section class="card">
-            <div class="card-head"><h2>สต็อกแยกตามหมวดหมู่</h2>${badge('Realtime')}</div>
-            ${['Electronics', 'Furniture', 'Stationery', 'Networking'].map(cat => {
-              const items = s.data.inventory.filter(x => x.category === cat);
+            <div class="card-head">
+              <div>
+                <p class="eyebrow" style="color:var(--blue)">Stock Distribution</p>
+                <h2>สต็อกแยกตามหมวดหมู่สินค้า</h2>
+              </div>
+              ${badge('Realtime')}
+            </div>
+            ${[
+              ['Electronics', '💻 Electronics', 'blue'],
+              ['Furniture', '🪑 Furniture', 'green'],
+              ['Stationery', '📦 Stationery', 'yellow'],
+              ['Networking', '🌐 Networking', 'coral']
+            ].map(([catKey, catLabel, catColor]) => {
+              const items = s.data.inventory.filter(x => x.category === catKey);
               const qty = items.reduce((a, x) => a + x.stock, 0);
               const val = items.reduce((a, x) => a + x.stock * x.price, 0);
-              return `<div class="summary-line">
-                <div><strong>${cat}</strong><br><small class="muted">${items.length} SKUs</small></div>
-                <div style="text-align:right"><strong>${qty} ชิ้น</strong><br><small class="muted">${money(val)}</small></div>
+              const valPct = totalValue > 0 ? Math.round((val / totalValue) * 100) : 0;
+              return `<div style="margin-bottom:14px">
+                <div class="summary-line" style="border:none;padding:2px 0">
+                  <div><strong>${catLabel}</strong> <small class="muted">(${items.length} SKUs)</small></div>
+                  <div style="text-align:right"><strong>${qty} ชิ้น</strong> · <span class="muted">${money(val)}</span></div>
+                </div>
+                <div class="cat-progress-wrap">
+                  <div class="cat-progress-fill" style="width:${valPct}%;background:var(--${catColor})"></div>
+                </div>
               </div>`;
             }).join('')}
           </section>
 
           <section class="card">
             <div class="card-head">
-              <h2>กิจกรรมคลังล่าสุด (Stock Movement)</h2>
-              <button class="btn small" data-wms-view="reports">ดูทั้งหมด →</button>
+              <div>
+                <p class="eyebrow" style="color:var(--blue)">Audit Trail Feed</p>
+                <h2>กิจกรรมคลังล่าสุด (Stock Movement)</h2>
+              </div>
+              <button class="btn small" data-wms-view="reports">ดูประวัติทั้งหมด →</button>
             </div>
             <div class="timeline">
               ${s.data.logs.slice(0, 5).map(l => `
@@ -1287,11 +1795,12 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
       body = `<div class="page-pad">
         <section class="card">
           <div class="toolbar">
-            <div class="tabs" style="margin:0">
+            <div class="tabs sub-tabs" style="margin:0">
               ${categories.map(cat => `<button class="tab ${s.data.category === cat ? 'active' : ''}" data-wms-cat="${esc(cat)}">${esc(cat)}</button>`).join('')}
             </div>
-            <div style="display:flex;gap:8px">
-              <input class="input" id="wms-search" style="max-width:280px" placeholder="ค้นหา SKU, ชื่อ หรือ Zone..." value="${esc(s.data.search)}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input class="input" id="wms-search" style="max-width:260px" placeholder="ค้นหา SKU, ชื่อ หรือ Zone..." value="${esc(s.data.search)}">
+              <button class="btn small yellow" data-wms-scanner>📷 สแกนเนอร์</button>
               <button class="btn primary small" data-wms-add-sku>+ เพิ่ม SKU ใหม่</button>
             </div>
           </div>
@@ -1301,36 +1810,40 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
               <thead>
                 <tr>
                   <th>SKU</th>
-                  <th>ชื่อสินค้า</th>
+                  <th>ชื่อสินค้า & ซัพพลายเออร์</th>
                   <th>หมวดหมู่</th>
                   <th>Location Zone</th>
-                  <th>คงเหลือ (Min)</th>
+                  <th>คงเหลือ / จุดเตือน (Min)</th>
                   <th>ราคา/หน่วย</th>
                   <th>มูลค่ารวม</th>
-                  <th>จัดการสต็อก</th>
+                  <th>การจัดการสต็อก</th>
                 </tr>
               </thead>
               <tbody>
                 ${filteredInventory.map(x => `
                   <tr>
                     <td><code>${esc(x.sku)}</code></td>
-                    <td><strong>${esc(x.name)}</strong><br><small class="muted">ซัพพลายเออร์: ${esc(x.supplier || '-')}</small></td>
-                    <td>${badge(x.category)}</td>
-                    <td><span class="chip">${esc(x.location)}</span></td>
                     <td>
-                      <strong style="font-size:16px;color:${x.stock === 0 ? 'var(--danger)' : x.stock <= x.minStock ? 'var(--warning)' : 'inherit'}">
+                      <strong>${esc(x.name)}</strong><br>
+                      <small class="muted">${esc(x.supplier || '-')}</small>
+                    </td>
+                    <td>${badge(x.category)}</td>
+                    <td><span class="chip" style="font-weight:700">${esc(x.location)}</span></td>
+                    <td>
+                      <strong style="font-size:16px;color:${x.stock === 0 ? 'var(--coral)' : x.stock <= x.minStock ? '#D97706' : 'inherit'}">
                         ${x.stock}
                       </strong>
-                      <small class="muted"> / ${x.minStock}</small>
-                      ${x.stock <= x.minStock ? badge('สั่งซื้อเพิ่ม', 'warning') : ''}
+                      <small class="muted"> / ${x.minStock} ชิ้น</small>
+                      ${x.stock <= x.minStock ? badge('ใกล้หมด', 'warning') : ''}
                     </td>
                     <td>${money(x.price)}</td>
                     <td><strong>${money(x.stock * x.price)}</strong></td>
                     <td>
-                      <div style="display:flex;gap:4px">
-                        <button class="btn small" data-wms-adjust="${x.sku}" data-delta="-1" title="เบิกจ่าย">−</button>
-                        <button class="btn small" data-wms-adjust="${x.sku}" data-delta="1" title="รับเข้า">+</button>
-                        <button class="btn small primary" data-wms-po="${x.sku}" title="สั่งซื้อเพิ่ม">PO</button>
+                      <div style="display:flex;gap:6px;align-items:center">
+                        <button class="btn small" data-wms-adjust="${x.sku}" data-delta="-1" title="เบิกจ่าย 1 ชิ้น">−</button>
+                        <button class="btn small" data-wms-adjust="${x.sku}" data-delta="1" title="รับเข้า 1 ชิ้น">+</button>
+                        <button class="btn small primary" data-wms-po="${x.sku}" title="สั่งซื้อด่วน">PO</button>
+                        <button class="btn small" data-wms-transfer-item="${x.sku}" title="ย้ายโซน">ย้าย</button>
                       </div>
                     </td>
                   </tr>
@@ -1344,8 +1857,11 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
       body = `<div class="page-pad">
         <section class="card">
           <div class="card-head">
-            <div><p class="eyebrow">Inbound Operations</p><h2>รายการรับสินค้าเข้าคลัง (Inbound PO Receipts)</h2></div>
-            <button class="btn primary small" data-wms-new-inbound>+ สร้างใบรับสินค้าเข้าคลัง</button>
+            <div>
+              <p class="eyebrow" style="color:var(--blue)">Inbound Receiving</p>
+              <h2>รายการรับสินค้าเข้าคลัง (Inbound PO Receipts)</h2>
+            </div>
+            <button class="btn primary small" data-wms-quick-inbound>+ สร้างใบรับสินค้าเข้าคลัง</button>
           </div>
           <div class="table-wrap">
             <table>
@@ -1373,7 +1889,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
                     <td>${badge(o.status, o.status === 'Received' ? 'success' : 'warning')}</td>
                     <td>
                       <button class="btn small primary" data-wms-confirm-inbound="${o.id}" ${o.status === 'Received' ? 'disabled' : ''}>
-                        ${o.status === 'Received' ? 'รับสินค้าแล้ว ✓' : 'ยืนยันรับสินค้าเข้าคลัง'}
+                        ${o.status === 'Received' ? 'รับสินค้าแล้ว ✓' : 'ยืนยันรับเข้าคลัง'}
                       </button>
                     </td>
                   </tr>
@@ -1387,18 +1903,21 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
       body = `<div class="page-pad">
         <section class="card">
           <div class="card-head">
-            <div><p class="eyebrow">Outbound Operations</p><h2>รายการเบิกจ่ายและจัดส่งสินค้า (Outbound Pick List)</h2></div>
-            <button class="btn primary small" data-wms-new-outbound>+ สร้างใบเบิกจ่ายสินค้า</button>
+            <div>
+              <p class="eyebrow" style="color:var(--coral)">Outbound Picking & Dispatch</p>
+              <h2>รายการเบิกจ่ายและจัดส่งสินค้า (Outbound Pick List)</h2>
+            </div>
+            <button class="btn primary small" data-wms-quick-outbound>+ สร้างใบเบิกจ่ายสินค้า</button>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Order No.</th>
-                  <th>ลูกค้า / ผู้เบิก</th>
+                  <th>ลูกค้า / ปลายทาง</th>
                   <th>SKU สินค้า</th>
                   <th>จำนวนเบิก</th>
-                  <th>ผู้จัดสินค้า (Picker)</th>
+                  <th>ผู้หยิบ (Picker)</th>
                   <th>วันที่</th>
                   <th>สถานะ</th>
                   <th>การดำเนินการ</th>
@@ -1415,8 +1934,8 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
                     <td>${esc(o.date)}</td>
                     <td>${badge(o.status, o.status === 'Dispatched' ? 'success' : 'warning')}</td>
                     <td>
-                      <button class="btn small primary" data-wms-confirm-outbound="${o.id}" ${o.status === 'Dispatched' ? 'disabled' : ''}>
-                        ${o.status === 'Dispatched' ? 'จัดส่งแล้ว ✓' : 'ยืนยันเบิกจ่ายสินค้า'}
+                      <button class="btn small coral" data-wms-confirm-outbound="${o.id}" ${o.status === 'Dispatched' ? 'disabled' : ''}>
+                        ${o.status === 'Dispatched' ? 'จัดส่งแล้ว ✓' : 'ยืนยันจัดส่ง / ตัดสต็อก'}
                       </button>
                     </td>
                   </tr>
@@ -1429,37 +1948,47 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
     } else if (s.data.view === 'suppliers') {
       body = `<div class="page-pad">
         <section class="card">
-          <div class="card-head"><h2>รายชื่อคู่ค้าและซัพพลายเออร์ (Suppliers Directory)</h2></div>
-          <div class="grid cols-3" style="margin-top:14px">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow" style="color:var(--blue)">Vendor Network</p>
+              <h2>รายชื่อซัพพลายเออร์และคู่ค้าคลังสินค้า (Supplier Partners)</h2>
+            </div>
+          </div>
+          <div class="grid cols-3">
             ${s.data.suppliers.map(sup => `
-              <article class="card">
+              <article class="card" style="box-shadow:var(--shadow-chunky)">
                 <div class="card-head">
                   <h3>${esc(sup.name)}</h3>
-                  ${badge(sup.rating, 'success')}
+                  <span class="badge primary">${esc(sup.rating)}</span>
                 </div>
-                <div class="summary-line"><span>ผู้ติดต่อ</span><strong>${esc(sup.contact)}</strong></div>
-                <div class="summary-line"><span>โทรศัพท์</span><strong>${esc(sup.phone)}</strong></div>
-                <div class="summary-line"><span>อีเมล</span><small class="muted">${esc(sup.email)}</small></div>
-                <div class="summary-line"><span>Lead Time จัดส่ง</span><strong>${esc(sup.leadTime)}</strong></div>
+                <div class="field"><small class="muted">ผู้ติดต่อ:</small><strong>${esc(sup.contact)}</strong></div>
+                <div class="field"><small class="muted">โทร:</small><span>${esc(sup.phone)}</span></div>
+                <div class="field"><small class="muted">อีเมล:</small><span>${esc(sup.email)}</span></div>
+                <div class="field"><small class="muted">ระยะเวลาจัดส่ง (Lead Time):</small><span class="chip">${esc(sup.leadTime)}</span></div>
+                <button class="btn small primary" style="width:100%;margin-top:14px" data-wms-quick-inbound="${esc(sup.name)}">🛒 สั่งซื้อเข้าคลังด่วน</button>
               </article>
             `).join('')}
           </div>
         </section>
       </div>`;
     } else {
+      // reports view
       body = `<div class="page-pad">
         <section class="card">
           <div class="card-head">
-            <div><p class="eyebrow">Stock Ledger & Audit Trail</p><h2>สมุดบัญชีเคลื่อนไหวคลังสินค้า (Stock Ledger Log)</h2></div>
-            ${badge(`${s.data.logs.length} รายการบันทึก`)}
+            <div>
+              <p class="eyebrow" style="color:var(--blue)">Inventory Audit Trail</p>
+              <h2>ประวัติการรับเข้า-เบิกจ่ายสินค้า (Stock Movement Ledger)</h2>
+            </div>
+            <button class="btn small" data-wms-clear-logs>ล้างประวัติ Log</button>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>วันที่-เวลา</th>
+                  <th>วันที่ / เวลา</th>
                   <th>ประเภท</th>
-                  <th>SKU</th>
+                  <th>SKU สินค้า</th>
                   <th>จำนวน</th>
                   <th>Location Zone</th>
                   <th>ผู้บันทึก</th>
@@ -1469,10 +1998,10 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
               <tbody>
                 ${s.data.logs.map(l => `
                   <tr>
-                    <td><code>${esc(l.date)}</code></td>
-                    <td>${badge(l.type, l.type === 'INBOUND' ? 'success' : 'danger')}</td>
+                    <td>${esc(l.date)}</td>
+                    <td>${badge(l.type, l.type === 'INBOUND' ? 'success' : 'coral')}</td>
                     <td><code>${esc(l.sku)}</code></td>
-                    <td><strong>${l.qty > 0 ? '+' : ''}${l.qty} ชิ้น</strong></td>
+                    <td><strong>${l.type === 'INBOUND' ? '+' : '-'}${l.qty} ชิ้น</strong></td>
                     <td><span class="chip">${esc(l.location)}</span></td>
                     <td>${esc(l.user)}</td>
                     <td>${esc(l.note)}</td>
@@ -1487,13 +2016,33 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
 
     app.innerHTML = `<div class="app-shell">${appHeader('NexusWMS', 'ระบบจัดการคลังสินค้าและสต็อก (Warehouse Management)', views, s.data.view, `<button class="btn small danger" data-wms-reset>รีเซ็ตคลัง</button>`)}${body}</div>`;
 
-    // Event Listeners
+    // Tab Navigation
     app.querySelectorAll('[data-tab]').forEach(el => el.addEventListener('click', () => { s.data.view = el.dataset.tab; save(); }));
     app.querySelectorAll('[data-wms-view]').forEach(el => el.addEventListener('click', () => { s.data.view = el.dataset.wmsView; save(); }));
-    app.querySelector('[data-wms-reset]')?.addEventListener('click', () => { if (confirm('ล้างข้อมูลสต็อกและคืนค่าเริ่มต้น?')) { s.reset(); renderWms(); } });
+    app.querySelectorAll('[data-wms-view-zone]').forEach(el => el.addEventListener('click', () => {
+      s.data.view = 'inventory';
+      s.data.search = el.dataset.wmsViewZone;
+      save();
+    }));
 
+    // Reset
+    app.querySelector('[data-wms-reset]')?.addEventListener('click', () => {
+      if (confirm('ล้างข้อมูลสต็อกและคืนค่าเริ่มต้นทั้งหมด?')) { s.reset(); renderWms(); }
+    });
+
+    // Clear logs
+    app.querySelector('[data-wms-clear-logs]')?.addEventListener('click', () => {
+      if (confirm('ต้องการล้างประวัติ Stock Movement ทั้งหมด?')) { s.data.logs = []; save(); toast('ล้างประวัติเรียบร้อย'); }
+    });
+
+    // Search and Category
     app.querySelectorAll('[data-wms-cat]').forEach(el => el.addEventListener('click', () => { s.data.category = el.dataset.wmsCat; save(); }));
-    app.querySelector('#wms-search')?.addEventListener('input', (e) => { s.data.search = e.target.value; s.save(); renderWms(); document.querySelector('#wms-search')?.focus(); });
+    app.querySelector('#wms-search')?.addEventListener('input', (e) => {
+      s.data.search = e.target.value;
+      s.save();
+      renderWms();
+      document.querySelector('#wms-search')?.focus();
+    });
 
     // Stock Adjustments
     app.querySelectorAll('[data-wms-adjust]').forEach(el => el.addEventListener('click', () => {
@@ -1514,7 +2063,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
           user: 'Preeya C.'
         });
         save();
-        toast(`อัปเดตสต็อก ${item.sku} เรียบร้อยแล้ว`);
+        toast(`อัปเดตสต็อก ${item.sku} คงเหลือ ${item.stock} ชิ้น`);
       }
     }));
 
@@ -1539,7 +2088,8 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
     }));
 
     // Bulk PO
-    app.querySelector('[data-wms-action="create-bulk-po"]')?.addEventListener('click', () => {
+    app.querySelectorAll('[data-wms-action="create-bulk-po"]').forEach(btn => btn.addEventListener('click', () => {
+      if (!lowStockItems.length) { toast('ไม่มีสินค้าที่ต่ำกว่าเกณฑ์ Reorder Point'); return; }
       lowStockItems.forEach(item => {
         s.data.inboundOrders.unshift({
           id: id('IN'),
@@ -1554,44 +2104,14 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
       });
       s.data.view = 'inbound';
       save();
-      toast(`สร้างใบ PO สั่งซื้อด่วนสำหรับสินค้าใกล้หมด ${lowStockItems.length} รายการแล้ว`);
-    });
+      toast(`สร้างใบ PO สั่งซื้อด่วน ${lowStockItems.length} รายการแล้ว`);
+    }));
 
-    // New Inbound Receipt Modal
-    app.querySelector('[data-wms-new-inbound]')?.addEventListener('click', () => {
-      const wrap = modal('สร้างใบรับสินค้าเข้าคลัง (Inbound PO)', `
-        <form id="inbound-form" class="form-grid">
-          <div class="field"><label>PO Number</label><input class="input" name="poNumber" value="PO-2026-${Math.floor(100 + Math.random() * 900)}" required></div>
-          <div class="field"><label>ซัพพลายเออร์</label><select class="select" name="supplier">${s.data.suppliers.map(x => `<option>${esc(x.name)}</option>`).join('')}</select></div>
-          <div class="field"><label>เลือก SKU สินค้า</label><select class="select" name="sku">${s.data.inventory.map(x => `<option value="${x.sku}">${x.sku} - ${esc(x.name)}</option>`).join('')}</select></div>
-          <div class="field"><label>จำนวนรับเข้า (ชิ้น)</label><input class="input" type="number" name="qty" value="20" min="1" required></div>
-          <div class="field"><label>จัดเก็บเข้า Zone Location</label><input class="input" name="location" value="Zone A-01" required></div>
-          <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">สร้างใบรับสินค้า</button></div>
-        </form>
-      `);
-      wrap.querySelector('form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const f = new FormData(e.currentTarget);
-        s.data.inboundOrders.unshift({
-          id: id('IN'),
-          poNumber: String(f.get('poNumber')),
-          supplier: String(f.get('supplier')),
-          sku: String(f.get('sku')),
-          qty: Number(f.get('qty')) || 1,
-          location: String(f.get('location')),
-          status: 'Pending',
-          date: today()
-        });
-        save();
-        wrap.remove();
-        toast('สร้างใบรับสินค้าเรียบร้อย');
-      });
-    });
-
-    // Confirm Inbound Receipt
-    app.querySelectorAll('[data-wms-confirm-inbound]').forEach(el => el.addEventListener('click', () => {
-      const order = s.data.inboundOrders.find(x => x.id === el.dataset.wmsConfirmInbound);
-      if (order && order.status === 'Pending') {
+    // Confirm Inbound
+    app.querySelectorAll('[data-wms-confirm-inbound]').forEach(btn => btn.addEventListener('click', () => {
+      const orderId = btn.dataset.wmsConfirmInbound;
+      const order = s.data.inboundOrders.find(x => x.id === orderId);
+      if (order && order.status !== 'Received') {
         order.status = 'Received';
         const item = s.data.inventory.find(x => x.sku === order.sku);
         if (item) item.stock += order.qty;
@@ -1601,101 +2121,425 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
           sku: order.sku,
           qty: order.qty,
           location: order.location,
-          note: `รับสินค้าตาม ${order.poNumber} จาก ${order.supplier}`,
+          note: `รับเข้าตาม ${order.poNumber} จาก ${order.supplier}`,
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
           user: 'Preeya C.'
         });
         save();
-        toast(`รับสินค้าเข้าคลังเรียบร้อยแล้ว เพิ่มสต็อก ${order.sku} +${order.qty} ชิ้น`);
+        toast(`ตรวจรับสินค้า ${order.sku} เข้า ${order.location} สำเร็จ (+ ${order.qty} ชิ้น)`);
       }
     }));
 
-    // New Outbound Dispatch Modal
-    app.querySelector('[data-wms-new-outbound]')?.addEventListener('click', () => {
-      const wrap = modal('สร้างใบเบิกจ่ายสินค้า (Outbound Pick List)', `
-        <form id="outbound-form" class="form-grid">
-          <div class="field"><label>Order No.</label><input class="input" name="orderNo" value="ORD-${Math.floor(1000 + Math.random() * 9000)}" required></div>
-          <div class="field"><label>ชื่อลูกค้า / ผู้เบิก</label><input class="input" name="customer" placeholder="เช่น บริษัท สยามโลจิสติกส์" required></div>
-          <div class="field"><label>เลือก SKU สินค้า</label><select class="select" name="sku">${s.data.inventory.map(x => `<option value="${x.sku}">${x.sku} - ${esc(x.name)} (คงเหลือ ${x.stock})</option>`).join('')}</select></div>
-          <div class="field"><label>จำนวนเบิก (ชิ้น)</label><input class="input" type="number" name="qty" value="1" min="1" required></div>
-          <div class="field"><label>ผู้เบิก/จัดสินค้า (Picker)</label><input class="input" name="picker" value="Preeya C." required></div>
-          <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">สร้างรายการเบิกจ่าย</button></div>
-        </form>
-      `);
-      wrap.querySelector('form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const f = new FormData(e.currentTarget);
-        const sku = String(f.get('sku'));
-        const qty = Number(f.get('qty')) || 1;
-        const item = s.data.inventory.find(x => x.sku === sku);
-        if (item && item.stock < qty) { toast(`สต็อกคงเหลือไม่พอ (${item.stock} ชิ้น)`); return; }
-        s.data.outboundOrders.unshift({
-          id: id('OUT'),
-          orderNo: String(f.get('orderNo')),
-          customer: String(f.get('customer')),
-          sku,
-          qty,
-          picker: String(f.get('picker')),
-          status: 'Picking',
-          date: today()
-        });
-        save();
-        wrap.remove();
-        toast('สร้างรายการเบิกจ่ายสินค้าเรียบร้อย');
-      });
-    });
-
-    // Confirm Outbound Dispatch
-    app.querySelectorAll('[data-wms-confirm-outbound]').forEach(el => el.addEventListener('click', () => {
-      const order = s.data.outboundOrders.find(x => x.id === el.dataset.wmsConfirmOutbound);
-      if (order && order.status === 'Picking') {
+    // Confirm Outbound
+    app.querySelectorAll('[data-wms-confirm-outbound]').forEach(btn => btn.addEventListener('click', () => {
+      const orderId = btn.dataset.wmsConfirmOutbound;
+      const order = s.data.outboundOrders.find(x => x.id === orderId);
+      if (order && order.status !== 'Dispatched') {
         const item = s.data.inventory.find(x => x.sku === order.sku);
-        if (item && item.stock < order.qty) { toast(`สต็อกคงเหลือไม่พอ (${item.stock} ชิ้น)`); return; }
+        if (item && item.stock < order.qty) {
+          toast(`สต็อกไม่เพียงพอ (มี ${item.stock} ชิ้น, ต้องการ ${order.qty} ชิ้น)`);
+          return;
+        }
         order.status = 'Dispatched';
-        if (item) item.stock = Math.max(0, item.stock - order.qty);
+        if (item) item.stock -= order.qty;
         s.data.logs.unshift({
           id: id('LOG'),
           type: 'OUTBOUND',
           sku: order.sku,
-          qty: -order.qty,
-          location: item?.location || 'Zone A-01',
-          note: `จ่ายสินค้าตาม ${order.orderNo} ส่งให้ ${order.customer}`,
+          qty: order.qty,
+          location: item ? item.location : 'Zone A-01',
+          note: `เบิกจ่ายส่งมอบตาม ${order.orderNo} ให้ ${order.customer}`,
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-          user: order.picker || 'Preeya C.'
+          user: order.picker || 'Somchai N.'
         });
         save();
-        toast(`เบิกจ่ายสินค้าเรียบร้อยแล้ว หักสต็อก ${order.sku} -${order.qty} ชิ้น`);
+        toast(`ตัดสต็อกและจัดส่ง ${order.sku} สำเร็จ (- ${order.qty} ชิ้น)`);
       }
     }));
 
-    // Add New SKU Modal
-    app.querySelector('[data-wms-add-sku]')?.addEventListener('click', () => {
-      const wrap = modal('เพิ่ม SKU สินค้าใหม่ในคลัง', `
-        <form id="sku-form" class="form-grid">
-          <div class="field"><label>SKU Code</label><input class="input" name="sku" placeholder="เช่น EL-004" required></div>
-          <div class="field"><label>ชื่อสินค้า</label><input class="input" name="name" required placeholder="เช่น Barcode Printer A4"></div>
-          <div class="field"><label>หมวดหมู่</label><select class="select" name="category"><option>Electronics</option><option>Furniture</option><option>Stationery</option><option>Networking</option></select></div>
-          <div class="field"><label>Zone Location</label><input class="input" name="location" value="Zone A-04" required></div>
-          <div class="field"><label>จำนวนสต็อกเริ่มต้น</label><input class="input" type="number" name="stock" value="10" min="0" required></div>
-          <div class="field"><label>จุดแจ้งเตือน (Min Stock)</label><input class="input" type="number" name="minStock" value="5" min="1" required></div>
-          <div class="field"><label>ราคา/หน่วย (บาท)</label><input class="input" type="number" name="price" value="1500" required></div>
-          <div class="field"><label>ซัพพลายเออร์</label><select class="select" name="supplier">${s.data.suppliers.map(x => `<option>${esc(x.name)}</option>`).join('')}</select></div>
-          <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">บันทึก SKU</button></div>
+    // Interactive Barcode Scanner Modal Simulator
+    app.querySelectorAll('[data-wms-scanner]').forEach(btn => btn.addEventListener('click', () => {
+      let activeItem = s.data.inventory[0];
+      const m = modal('📷 เครื่องสแกนบาร์โค้ดคลังสินค้าจำลอง (Barcode / QR PDA Simulator)', `
+        <div class="scanner-screen">
+          <div class="scanner-laser"></div>
+          <div style="font-size:42px;margin-bottom:8px">||| | |||| | |||</div>
+          <strong style="letter-spacing:0.1em;font-size:16px" id="scan-target-sku">${activeItem.sku}</strong>
+          <p style="font-size:12px;color:#9CA3AF;margin:4px 0 0">จุดเลเซอร์พร้อมตรวจจับรหัสบาร์โค้ดแบบเรียลไทม์</p>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <label style="font-size:12.5px;font-weight:800;display:block;margin-bottom:6px">เลือกยิงบาร์โค้ดสินค้าตัวอย่างในคลัง:</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${s.data.inventory.map(item => `
+              <button class="btn small" data-scan-preset="${item.sku}">${item.sku}</button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="scanner-result-card" id="scanner-result-box">
+          <div class="card-head" style="margin-bottom:8px;padding-bottom:8px">
+            <div>
+              <span class="badge primary" id="scan-res-cat">${activeItem.category}</span>
+              <h3 id="scan-res-name" style="margin:4px 0 0">${esc(activeItem.name)}</h3>
+            </div>
+            <strong style="font-size:22px;color:var(--blue)" id="scan-res-stock">${activeItem.stock} ชิ้น</strong>
+          </div>
+          <div class="summary-line" style="border:none;padding:4px 0;font-size:13px">
+            <span>Location Zone: <strong id="scan-res-loc">${activeItem.location}</strong></span>
+            <span>ราคา: <strong id="scan-res-price">${money(activeItem.price)}</strong></span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn primary small" id="scan-add-btn">📥 สแกนรับเข้า (+1)</button>
+          <button class="btn coral small" id="scan-sub-btn">📤 สแกนจ่ายออก (-1)</button>
+          <button class="btn small" data-close-modal>ปิดหน้าจอ</button>
+        </div>
+      `);
+
+      const updateScannerView = (sku) => {
+        const found = s.data.inventory.find(x => x.sku === sku);
+        if (!found) return;
+        activeItem = found;
+        m.querySelector('#scan-target-sku').textContent = found.sku;
+        m.querySelector('#scan-res-cat').textContent = found.category;
+        m.querySelector('#scan-res-name').textContent = found.name;
+        m.querySelector('#scan-res-stock').textContent = `${found.stock} ชิ้น`;
+        m.querySelector('#scan-res-loc').textContent = found.location;
+        m.querySelector('#scan-res-price').textContent = money(found.price);
+      };
+
+      m.querySelectorAll('[data-scan-preset]').forEach(b => b.addEventListener('click', () => {
+        updateScannerView(b.dataset.scanPreset);
+      }));
+
+      m.querySelector('#scan-add-btn').addEventListener('click', () => {
+        activeItem.stock += 1;
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: 'INBOUND',
+          sku: activeItem.sku,
+          qty: 1,
+          location: activeItem.location,
+          note: 'สแกนรับเข้าด้วย PDA Scanner',
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: 'Barcode Scanner'
+        });
+        save();
+        updateScannerView(activeItem.sku);
+        toast(`สแกนรับเข้า ${activeItem.sku} สำเร็จ (+1 ชิ้น)`);
+      });
+
+      m.querySelector('#scan-sub-btn').addEventListener('click', () => {
+        if (activeItem.stock <= 0) { toast('สินค้าหมดสต็อก'); return; }
+        activeItem.stock -= 1;
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: 'OUTBOUND',
+          sku: activeItem.sku,
+          qty: 1,
+          location: activeItem.location,
+          note: 'สแกนตัดจ่ายด้วย PDA Scanner',
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: 'Barcode Scanner'
+        });
+        save();
+        updateScannerView(activeItem.sku);
+        toast(`สแกนตัดจ่าย ${activeItem.sku} สำเร็จ (-1 ชิ้น)`);
+      });
+    }));
+
+    // Quick Inbound Modal
+    app.querySelectorAll('[data-wms-quick-inbound]').forEach(btn => btn.addEventListener('click', () => {
+      const defaultSupplier = btn.dataset.wmsQuickInbound || s.data.suppliers[0].name;
+      const m = modal('📥 บันทึกรับสินค้าเข้าคลัง (Quick Inbound PO)', `
+        <form id="quick-inbound-form">
+          <div class="field">
+            <label>เลือกสินค้าที่รับเข้า (SKU)</label>
+            <select class="select" name="sku">
+              ${s.data.inventory.map(item => `<option value="${item.sku}">${item.sku} - ${item.name} (คงเหลือ ${item.stock})`).join('')}
+            </select>
+          </div>
+          <div class="grid cols-2">
+            <div class="field">
+              <label>จำนวนที่รับเข้า (ชิ้น)</label>
+              <input class="input" type="number" name="qty" value="20" min="1" required>
+            </div>
+            <div class="field">
+              <label>จัดเก็บเข้า Zone</label>
+              <select class="select" name="location">
+                <option value="Zone A-01">Zone A-01 (Electronics)</option>
+                <option value="Zone B-01">Zone B-01 (Furniture)</option>
+                <option value="Zone C-01">Zone C-01 (Stationery)</option>
+                <option value="Zone D-01">Zone D-01 (Networking)</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>ซัพพลายเออร์ผู้ส่งมอบ</label>
+            <input class="input" name="supplier" value="${esc(defaultSupplier)}" required>
+          </div>
+          <div class="modal-actions">
+            <button class="btn" type="button" data-close-modal>ยกเลิก</button>
+            <button class="btn primary" type="submit">ยืนยันรับเข้าคลัง ✓</button>
+          </div>
         </form>
       `);
-      wrap.querySelector('form')?.addEventListener('submit', (e) => {
+
+      m.querySelector('#quick-inbound-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        const f = new FormData(e.currentTarget);
+        const fd = new FormData(e.target);
+        const sku = fd.get('sku');
+        const qty = Number(fd.get('qty'));
+        const loc = fd.get('location');
+        const sup = fd.get('supplier');
+
+        const item = s.data.inventory.find(x => x.sku === sku);
+        if (item) {
+          item.stock += qty;
+          item.location = loc;
+        }
+
+        s.data.inboundOrders.unshift({
+          id: id('IN'),
+          poNumber: `PO-${Date.now().toString().slice(-4)}`,
+          supplier: sup,
+          sku: sku,
+          qty: qty,
+          location: loc,
+          status: 'Received',
+          date: today()
+        });
+
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: 'INBOUND',
+          sku: sku,
+          qty: qty,
+          location: loc,
+          note: `รับสินค้าเข้าจาก ${sup}`,
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: 'Preeya C.'
+        });
+
+        m.remove();
+        save();
+        toast(`รับเข้า ${sku} จำนวน ${qty} ชิ้น เรียบร้อยแล้ว`);
+      });
+    }));
+
+    // Quick Outbound Modal
+    app.querySelectorAll('[data-wms-quick-outbound]').forEach(btn => btn.addEventListener('click', () => {
+      const m = modal('📤 บันทึกเบิกจ่ายสินค้า (Quick Outbound / Pick List)', `
+        <form id="quick-outbound-form">
+          <div class="field">
+            <label>เลือกสินค้าที่ต้องการเบิก (SKU)</label>
+            <select class="select" name="sku">
+              ${s.data.inventory.map(item => `<option value="${item.sku}">${item.sku} - ${item.name} (มีในคลัง ${item.stock})`).join('')}
+            </select>
+          </div>
+          <div class="grid cols-2">
+            <div class="field">
+              <label>จำนวนที่เบิกจ่าย (ชิ้น)</label>
+              <input class="input" type="number" name="qty" value="5" min="1" required>
+            </div>
+            <div class="field">
+              <label>ผู้เบิก / ลูกค้าปลายทาง</label>
+              <input class="input" name="customer" value="ลูกค้าทั่วไป / เบิกหน้าร้าน" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>หมายเหตุการเบิกจ่าย</label>
+            <input class="input" name="note" value="เบิกจ่ายตามคำสั่งซื้อด่วน">
+          </div>
+          <div class="modal-actions">
+            <button class="btn" type="button" data-close-modal>ยกเลิก</button>
+            <button class="btn coral" type="submit">ยืนยันตัดจ่ายสต็อก ✓</button>
+          </div>
+        </form>
+      `);
+
+      m.querySelector('#quick-outbound-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const sku = fd.get('sku');
+        const qty = Number(fd.get('qty'));
+        const customer = fd.get('customer');
+        const note = fd.get('note');
+
+        const item = s.data.inventory.find(x => x.sku === sku);
+        if (!item || item.stock < qty) {
+          toast(`สต็อกไม่เพียงพอ (มี ${item ? item.stock : 0} ชิ้น)`);
+          return;
+        }
+
+        item.stock -= qty;
+
+        s.data.outboundOrders.unshift({
+          id: id('OUT'),
+          orderNo: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+          customer: customer,
+          sku: sku,
+          qty: qty,
+          status: 'Dispatched',
+          picker: 'Preeya C.',
+          date: today()
+        });
+
+        s.data.logs.unshift({
+          id: id('LOG'),
+          type: 'OUTBOUND',
+          sku: sku,
+          qty: qty,
+          location: item.location,
+          note: `เบิกจ่ายให้ ${customer} (${note})`,
+          date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          user: 'Preeya C.'
+        });
+
+        m.remove();
+        save();
+        toast(`ตัดจ่าย ${sku} จำนวน ${qty} ชิ้น เรียบร้อยแล้ว`);
+      });
+    }));
+
+    // Transfer Zone Modal
+    const openTransferModal = (defaultSku = '') => {
+      const activeSku = defaultSku || s.data.inventory[0].sku;
+      const m = modal('🔄 โอนย้ายตำแหน่งจัดเก็บสินค้า (Zone Transfer)', `
+        <form id="transfer-zone-form">
+          <div class="field">
+            <label>เลือกสินค้าที่ต้องการย้าย (SKU)</label>
+            <select class="select" name="sku" id="trans-sku-select">
+              ${s.data.inventory.map(item => `<option value="${item.sku}" ${item.sku === activeSku ? 'selected' : ''}>${item.sku} - ${item.name} (ปัจจุบัน: ${item.location})`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>เลือกโซนจัดเก็บปลายทาง</label>
+            <select class="select" name="newLocation">
+              <option value="Zone A-01">Zone A-01 (Electronics / Front)</option>
+              <option value="Zone A-02">Zone A-02 (Electronics / Middle)</option>
+              <option value="Zone B-01">Zone B-01 (Heavy Furniture)</option>
+              <option value="Zone C-01">Zone C-01 (Stationery / Fast Bin)</option>
+              <option value="Zone D-01">Zone D-01 (Networking Secure)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>เหตุผลในการโอนย้าย</label>
+            <input class="input" name="reason" value="ปรับพื้นที่จัดระเบียบคลังใหม่">
+          </div>
+          <div class="modal-actions">
+            <button class="btn" type="button" data-close-modal>ยกเลิก</button>
+            <button class="btn green" type="submit">บันทึกการโอนย้าย ✓</button>
+          </div>
+        </form>
+      `);
+
+      m.querySelector('#transfer-zone-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const sku = fd.get('sku');
+        const newLoc = fd.get('newLocation');
+        const reason = fd.get('reason');
+
+        const item = s.data.inventory.find(x => x.sku === sku);
+        if (item) {
+          const oldLoc = item.location;
+          item.location = newLoc;
+          s.data.logs.unshift({
+            id: id('LOG'),
+            type: 'INBOUND',
+            sku: sku,
+            qty: item.stock,
+            location: newLoc,
+            note: `ย้ายโซนจาก ${oldLoc} ➔ ${newLoc} (${reason})`,
+            date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+            user: 'Preeya C.'
+          });
+          m.remove();
+          save();
+          toast(`ย้ายสินค้า ${sku} ไปยัง ${newLoc} เรียบร้อยแล้ว`);
+        }
+      });
+    };
+
+    app.querySelectorAll('[data-wms-transfer]').forEach(btn => btn.addEventListener('click', () => openTransferModal()));
+    app.querySelectorAll('[data-wms-transfer-item]').forEach(btn => btn.addEventListener('click', () => openTransferModal(btn.dataset.wmsTransferItem)));
+
+    // Add New SKU Modal
+    app.querySelector('[data-wms-add-sku]')?.addEventListener('click', () => {
+      const m = modal('➕ เพิ่มรายการสินค้าใหม่ (Register New SKU)', `
+        <form id="add-sku-form">
+          <div class="grid cols-2">
+            <div class="field">
+              <label>รหัส SKU สินค้า</label>
+              <input class="input" name="sku" placeholder="เช่น EL-004" required>
+            </div>
+            <div class="field">
+              <label>หมวดหมู่</label>
+              <select class="select" name="category">
+                <option value="Electronics">Electronics</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Networking">Networking</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>ชื่อสินค้า</label>
+            <input class="input" name="name" placeholder="เช่น Smart Barcode Scale" required>
+          </div>
+          <div class="grid cols-3">
+            <div class="field">
+              <label>จำนวนเริ่มต้น (ชิ้น)</label>
+              <input class="input" type="number" name="stock" value="10" min="0" required>
+            </div>
+            <div class="field">
+              <label>จุดสั่งซื้อซ้ำ (Min Stock)</label>
+              <input class="input" type="number" name="minStock" value="5" min="1" required>
+            </div>
+            <div class="field">
+              <label>ราคาต่อหน่วย (บาท)</label>
+              <input class="input" type="number" name="price" value="1200" min="1" required>
+            </div>
+          </div>
+          <div class="grid cols-2">
+            <div class="field">
+              <label>ตำแหน่งจัดเก็บ (Location)</label>
+              <input class="input" name="location" value="Zone A-04" required>
+            </div>
+            <div class="field">
+              <label>ซัพพลายเออร์</label>
+              <input class="input" name="supplier" value="SUP-001 Nexus Tech Supply" required>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn" type="button" data-close-modal>ยกเลิก</button>
+            <button class="btn primary" type="submit">บันทึกสินค้าใหม่ ✓</button>
+          </div>
+        </form>
+      `);
+
+      m.querySelector('#add-sku-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
         const newSku = {
-          sku: String(f.get('sku')).trim().toUpperCase(),
-          name: String(f.get('name')).trim(),
-          category: String(f.get('category')),
-          location: String(f.get('location')).trim(),
-          stock: Number(f.get('stock')) || 0,
-          minStock: Number(f.get('minStock')) || 5,
-          price: Number(f.get('price')) || 0,
-          supplier: String(f.get('supplier'))
+          sku: fd.get('sku').toUpperCase().trim(),
+          name: fd.get('name').trim(),
+          category: fd.get('category'),
+          stock: Number(fd.get('stock')),
+          minStock: Number(fd.get('minStock')),
+          price: Number(fd.get('price')),
+          location: fd.get('location'),
+          supplier: fd.get('supplier')
         };
+
+        if (s.data.inventory.some(x => x.sku === newSku.sku)) {
+          toast(`รหัส SKU ${newSku.sku} มีอยู่ในระบบแล้ว`);
+          return;
+        }
+
         s.data.inventory.unshift(newSku);
         s.data.logs.unshift({
           id: id('LOG'),
@@ -1703,36 +2547,31 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
           sku: newSku.sku,
           qty: newSku.stock,
           location: newSku.location,
-          note: `เพิ่ม SKU ใหม่ลงในคลังสินค้า`,
+          note: 'ลงทะเบียน SKU ใหม่เข้าสู่คลังสินค้า',
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
           user: 'Preeya C.'
         });
+
+        m.remove();
         save();
-        wrap.remove();
-        toast(`เพิ่ม SKU (${newSku.sku}) เรียบร้อยแล้ว`);
+        toast(`ลงทะเบียน SKU ${newSku.sku} สำเร็จ`);
       });
     });
-  }
 
-  const kanbanSeed = {
-    project: 'website', search: '', projects: {
-      website: {
-        name: 'Website Redesign', tasks: [
-          { id: 'T-1', col: 'todo', title: 'ออกแบบหน้า Login และ Register', tag: 'Design', priority: 'High', assignee: 'PC', due: '15 Mar' },
-          { id: 'T-2', col: 'todo', title: 'Setup ฐานข้อมูล PostgreSQL', tag: 'Backend', priority: 'Medium', assignee: 'SP', due: '18 Mar' },
-          { id: 'T-3', col: 'progress', title: 'พัฒนา API สำหรับดึงข้อมูล User', tag: 'Backend', priority: 'High', assignee: 'WT', due: '12 Mar' },
-          { id: 'T-4', col: 'review', title: 'ปรับ UI หน้า Dashboard', tag: 'Frontend', priority: 'Medium', assignee: 'PC', due: '10 Mar' },
-        ]
-      },
-      mobile: {
-        name: 'Mobile App MVP', tasks: [
-          { id: 'T-B1', col: 'todo', title: 'วิเคราะห์คู่แข่ง Mobile App', tag: 'Research', priority: 'Low', assignee: 'AK', due: '20 Apr' },
-          { id: 'T-B2', col: 'progress', title: 'ออกแบบ Wireframe หน้าหลัก', tag: 'Design', priority: 'High', assignee: 'PC', due: '05 Apr' },
-        ]
-      }
+    const wmsParams = new URLSearchParams(window.location.search);
+    const modalParam = wmsParams.get('modal') || window.location.hash.replace('#', '');
+    if (modalParam === 'inbound') {
+      setTimeout(() => app.querySelector('[data-wms-quick-inbound]')?.click(), 120);
+    } else if (modalParam === 'outbound') {
+      setTimeout(() => app.querySelector('[data-wms-quick-outbound]')?.click(), 120);
+    } else if (modalParam === 'scanner') {
+      setTimeout(() => app.querySelector('[data-wms-scanner]')?.click(), 120);
+    } else if (modalParam === 'transfer') {
+      setTimeout(() => app.querySelector('[data-wms-transfer]')?.click(), 120);
+    } else if (modalParam === 'add-sku') {
+      setTimeout(() => app.querySelector('[data-wms-add-sku]')?.click(), 120);
     }
-  };
-  const kanbanCols = [['todo', 'To Do'], ['progress', 'In Progress'], ['review', 'In Review'], ['done', 'Done']];
+  }
 
   function renderKanban() {
     const s = store('kanban', kanbanSeed); const save = () => { s.save(); renderKanban(); }; const project = s.data.projects[s.data.project]; const filtered = project.tasks.filter(x => x.title.toLowerCase().includes((s.data.search || '').toLowerCase()));
@@ -2328,7 +3167,8 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
             ${signed.withSeal ? `<div style="font-size:11px;color:var(--brand);margin-top:6px;font-weight:bold">🛡️ ประทับตราบริษัทดิจิทัลเรียบร้อย</div>` : ''}
           </div>
 
-          <div style="display:flex;gap:12px;justify-content:center">
+          <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
+            <a class="btn coral" href="/business-suite">← กลับไป Sales Flow CRM</a>
             <button class="btn primary" data-download-pdf>🖨️ ดาวน์โหลด / พิมพ์สัญญา (PDF)</button>
             <button class="btn" data-view-certificate>📜 ดูใบรับรอง Audit Certificate</button>
             <button class="btn danger" data-esign-reset>ล้างสัญญาลองใหม่</button>
@@ -2396,7 +3236,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
       </div>`;
     }
 
-    app.innerHTML = `<div class="app-shell">${appHeader('Lite E-Signature', `${esc(s.data.selectedDoc)} · ระบบลงนามเอกสารสัญญาออนไลน์พร้อม Audit Trail`, [], '', `<button class="btn small danger" data-esign-reset>รีเซ็ตข้อมูล</button>`)}${body}</div>`;
+    app.innerHTML = `<div class="app-shell">${appHeader('Lite E-Signature', `${esc(s.data.selectedDoc)} · ฟีเจอร์ประกอบ Sales Flow CRM สำหรับลงนามสัญญาพร้อม Audit Trail`, [], '', `<a class="btn small primary" href="/business-suite" style="margin-right:8px">← กลับไป Sales Flow CRM</a><button class="btn small danger" data-esign-reset>รีเซ็ตข้อมูล</button>`)}${body}</div>`;
 
     app.querySelector('#doc-selector')?.addEventListener('change', (e) => {
       s.data.selectedDoc = e.target.value;

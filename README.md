@@ -1,56 +1,52 @@
-# Preeya Systems PHP Demo
+# Preeya | Creative Developer Portfolio
 
-ระบบเดโม PHP ที่สร้างจาก SRS และ source code ตัวอย่างของ `portfolio-demo`
+Creative Developer Portfolio พัฒนาเว็บแอปพลิเคชัน ระบบหลังบ้าน และระบบอัตโนมัติสำหรับธุรกิจ ออกแบบสไตล์ **OBLO Neo-brutalist Design** (พื้นครีม `#FFF9F2`, ตัวอักษรเข้ม `#202020`, สีเน้นน้ำเงินสด `#3454F5`, ส้มคอรัล `#FF6B55`, และเหลือง `#FFD65A`) พร้อมระบบ Interactive Prototype ให้ทดลองใช้งานจริงได้ทันที
 
-## ขอบเขต
+---
 
-- Portfolio Portal
-- Sales Flow CRM
-- E-Commerce Storefront (external proxy)
-- Tilt Signal Arcade Bar (external proxy)
-- USA–Thai Shipping
-- EduFlow Course Platform
-- Nexus Warehouse Management
-- NexusFlow Project / Kanban
-- SmartPOS
-- Lite E-Signature
-- NexusDash และ OmniPOS Classic แบบ archive
+## 🎯 ขอบเขตผลงานหลัก (6 ระบบ)
 
-ระบบ Mini Game และระบบบริหารสปา/คลินิกไม่รวมอยู่ในโครงการนี้
+### ผลงานเด่น (Featured Systems)
+1. **NexusWMS** — `/warehouse-management`  
+   ระบบบริหารจัดการคลังสินค้าและสต็อก บันทึกรับเข้า (Inbound) เบิกจ่าย (Outbound) ตรวจสอบยอดคงเหลือ และแจ้งเตือนสต็อกใกล้หมด
+2. **Sales Flow CRM พร้อม E-Signature** — `/business-suite`  
+   ระบบบริหารงานขาย จัดการ Pipeline และ Lead แบบ Drag & Drop ออกใบเสนอราคา และส่งต่อไปยังโมดูลลงนามสัญญาออนไลน์ (Lite E-Signature)
+3. **SmartPOS** — `/pos-system-smart`  
+   ระบบจุดขายร้านอาหารและคาเฟ่ พร้อมหน้าจอจัดคิวในครัว (Kitchen Display System - KDS) โหมด Kiosk สั่งอาหาร และรายงานสรุปปิดกะ
 
-## วิธีเปิดใช้งาน
+### ผลงานเพิ่มเติม (Additional Works)
+4. **Thai Shipping Suite** — `/usa-thai-shipping`  
+   ระบบจัดการขนส่งพัสดุนำเข้า ครอบคลุม Admin Portal และหน้าค้นหา Tracking Timeline 4 ขั้นตอนสำหรับลูกค้า
+5. **OAI Apparel Storefront** — `/ecommerce-storefront`  
+   (หมวดเว็บไซต์และงานออกแบบ) หน้าร้านค้าแฟชั่นออนไลน์ แคตตาล็อกสินค้า และระบบตะกร้าสินค้า (Slide-over Cart Drawer) ผ่าน Reverse Proxy
+6. **Tilt Signal Arcade Bar** — `/tilt-signal-arcade-bar`  
+   (หมวดเว็บไซต์และงานออกแบบ) Landing Page ประชาสัมพันธ์ร้านและอีเวนต์สไตล์ Cinematic จัดวาง Editorial Typography โดดเด่น ผ่าน Reverse Proxy
 
-ต้องใช้ PHP 8.2+ พร้อม extensions `curl`, `json`, `mbstring` และ `openssl`
+---
 
-วิธีง่ายที่สุดบน Windows: ดับเบิลคลิก `start-demo.bat`
+## 📌 หมายเหตุการปรับลดและปรับปรุงระบบ
+- **ถอด 3 ระบบออกจากหน้าแรกและตัวกรอง:** EduFlow (`/course`), NexusFlow (`/project-management`), และ Medical Flow (`/medical-flow`) โดยเก็บ Source Code เดิมไว้ในโครงการสำหรับต่อยอดในอนาคต แต่ไม่แสดงในรายการผลงาน
+- **E-Signature:** ปรับเป็นฟีเจอร์ประกอบ Sales Flow CRM โดยยังคงรักษาเส้นทาง `/e-signature` ให้เข้าถึงได้ และมีปุ่มนำทางไป-กลับระหว่าง CRM และ E-Signature ชัดเจน (ระบุสถานะเป็น Prototype Simulation อย่างโปร่งใส)
 
-หรือเปิด PowerShell แล้วใช้คำสั่ง:
+---
 
+## 🚀 วิธีเปิดใช้งานและทดสอบในเครื่อง
+
+### ความต้องการของระบบ
+- PHP 8.2+ พร้อมส่วนขยาย `curl`, `json`, `mbstring`, `openssl` (หรือ Node.js สำหรับ Static Server)
+
+### วิธีเริ่มระบบบน Windows
+1. ดับเบิลคลิก `start-demo.bat`  
+หรือ
+2. เปิด PowerShell ในโฟลเดอร์โครงการแล้วรันคำสั่ง:
 ```powershell
-cd C:\Projects\demo-system
 php -S 127.0.0.1:8080 -t public router.php
 ```
+3. เปิดเบราว์เซอร์ไปที่: `http://127.0.0.1:8080`
 
-จากนั้นเปิด `http://127.0.0.1:8080`
+---
 
-> ต้องมี `-t public` หากตัดส่วนนี้ออก CSS และ JavaScript จะตอบ 404
-
-## การเก็บข้อมูลเดโม
-
-ข้อมูลที่ผู้ทดลองเพิ่มหรือแก้ไขเก็บใน `localStorage` ของ browser โดยใช้ prefix:
-
-```text
-preeya_php_demo_v1:
-```
-
-ข้อมูลไม่ถูกส่งเข้า database และแยกตาม browser/profile ผู้ใช้สามารถกดปุ่มรีเซ็ตในแต่ละโมดูลเพื่อกลับไปใช้ seed data
-
-## Apache shared hosting
-
-ตั้ง Document Root ไปที่โฟลเดอร์ `public/` และเปิด `mod_rewrite` ไฟล์ `.htaccess` จะส่ง route ที่ไม่ใช่ไฟล์จริงไปยัง `index.php`
-
-## หมายเหตุ
-
-- หน้า E-Commerce และ Tilt Signal ใช้ PHP reverse proxy ไปยัง upstream allowlist จึงต้องเชื่อมต่ออินเทอร์เน็ต
-- การส่ง LINE, payment, video และลายเซ็นเป็น simulation สำหรับ demo
-- PDF ใช้ jsPDF จาก CDN หาก CDN ใช้งานไม่ได้ ระบบจะเปิดหน้าพิมพ์เพื่อเลือก Save as PDF
+## 💾 การจัดเก็บข้อมูลและการทดลอง (Local Persistence)
+- ข้อมูลการสั่งซื้อ สต็อก และลูกค้า จัดเก็บใน `localStorage` ของเบราว์เซอร์เครื่องผู้ทดลอง
+- สามารถกดปุ่ม **"รีเซ็ตข้อมูล"** ในแต่ละโมดูลเพื่อคืนค่าข้อมูลตัวอย่างเริ่มต้น (Seed Data) ได้ตลอดเวลา
+- ไม่มีฐานข้อมูล Production ภายนอก และไม่มีการตัดเงินจริง
