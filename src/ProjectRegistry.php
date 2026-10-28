@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 return [
     '/' => [
-        'title' => 'Preeya | Creative Developer Portfolio',
+        'title' => 'Preeya | Systems & Full-Stack Engineering Showcase',
         'short' => 'Preeya Portfolio',
-        'description' => 'Creative Developer Portfolio พัฒนาเว็บแอป ระบบหลังบ้าน และระบบอัตโนมัติสำหรับธุรกิจ',
+        'description' => 'พอร์ตโฟลิโอพัฒนาระบบหลังบ้าน เว็บแอปพลิเคชัน และระบบจัดการธุรกิจ Enterprise',
         'audience' => 'เจ้าของธุรกิจ ผู้บริหาร และทีมพัฒนาที่ต้องการระบบที่ใช้งานได้จริง',
         'impact' => 'เห็นแนวทางหน้าจอ ฟังก์ชันการทำงาน และ Interactive Workflow ก่อนเริ่มงานจริง',
-        'highlights' => ['6 ผลงานคัดสรร', 'Interactive Demos', 'Creative Engineering', 'Vanilla JS & PHP'],
+        'highlights' => ['6 ผลงานคัดสรร', 'Interactive Systems', 'Enterprise Architecture', 'High-Trust UX'],
         'visible' => false,
     ],
     '/warehouse-management' => [

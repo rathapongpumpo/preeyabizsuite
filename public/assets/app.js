@@ -47,7 +47,7 @@
     const demoBadge = document.createElement('span');
     demoBadge.className = 'badge';
     demoBadge.style.fontSize = '11px';
-    demoBadge.textContent = 'Prototype Demo';
+    demoBadge.textContent = 'Interactive Showcase';
     projectName.append(status, title, demoBadge);
 
     const shellActions = document.createElement('div');
@@ -231,7 +231,7 @@
               <span class="brand-mark">P</span>
               <div class="brand-title">
                 <span>Preeya</span>
-                <small class="brand-sub">Creative Developer</small>
+                <small class="brand-sub">Systems & Full-Stack Engineer</small>
               </div>
             </a>
             <div class="portal-nav-links">
@@ -250,16 +250,16 @@
           <!-- Hero Section -->
           <section class="hero-section">
             <div class="hero-content">
-              <div class="hero-tag">⚡ Creative Developer Portfolio</div>
+              <div class="hero-tag">✨ Full-Stack Systems & Back-Office Architecture</div>
               <h1 class="hero-title">
                 พัฒนาเว็บแอป <span class="highlight-blue">ระบบหลังบ้าน</span> และระบบอัตโนมัติสำหรับธุรกิจ
               </h1>
               <p class="hero-desc">
-                ออกแบบและพัฒนาระบบที่จับต้องได้จริง คล่องตัว และตรงโจทย์ธุรกิจ ทุกผลงานในพอร์ตโฟลิโอนี้พัฒนาจากความต้องการใช้งานจริง และสามารถทดลอง Interactive Workflow บนหน้าจอได้ทันที
+                ออกแบบและพัฒนาสถาปัตยกรรมระบบที่แม่นยำ ปลอดภัย และขยายตัวได้จริง รองรับงานคลังสินค้า (WMS), บริหารงานขายและสัญญา (CRM & E-Sign), จุดขายหน้าร้าน (POS) และระบบจัดการขนส่ง (Logistics) ครบวงจร พร้อมทดลอง Interactive Flow ได้จริงทุกระบบ
               </p>
               <div class="hero-ctas">
-                <a class="btn primary" href="#projects">ดูผลงาน (6 ระบบ) ↓</a>
-                <a class="btn coral" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">คุยเรื่องโปรเจกต์ ↗</a>
+                <a class="btn primary" href="#projects">ดูระบบงานจริง (6 ระบบ) ↓</a>
+                <a class="btn coral" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">ปรึกษาโปรเจกต์ B2B ↗</a>
               </div>
               <div class="hero-stats-banner">
                 <div class="hero-stat-item">
@@ -279,7 +279,7 @@
 
             <div class="hero-visual">
               <article class="hero-featured-card">
-                <span class="hero-featured-badge">⭐ ผลงานคัดสรร</span>
+                <span class="hero-featured-badge">★ Featured System</span>
                 <div class="hero-featured-img-wrap">
                   <img src="${getPreview('/warehouse-management')}" alt="NexusWMS คลังสินค้า" width="600" height="375" fetchpriority="high">
                 </div>
@@ -297,9 +297,9 @@
           <!-- Featured Works (3 ระบบเด่น) -->
           <section class="portal-section" id="featured">
             <div class="section-header">
-              <span class="eyebrow">Highlights</span>
-              <h2>3 ผลงานเด่นที่แนะนำให้ทดลอง</h2>
-              <p>ระบบบริหารจัดการหลักที่ออกแบบกระบวนการทำงานให้เห็นภาพชัดเจน และคลิกทดลองบันทึกข้อมูลจริงได้</p>
+              <span class="eyebrow">Core Enterprise Systems</span>
+              <h2>3 ระบบหลักสำหรับกระบวนการทางธุรกิจ</h2>
+              <p>ออกแบบโครงสร้างข้อมูล ตรรกะคำนวณ และ Workflow สำหรับการดำเนินงานจริง พร้อมทดสอบการทำงานได้ทันที</p>
             </div>
 
             <div class="featured-grid">
@@ -380,8 +380,8 @@
           <!-- All Works & Filter (6 ผลงาน) -->
           <section class="portal-section" id="projects">
             <div class="section-header">
-              <span class="eyebrow">Portfolio Directory</span>
-              <h2>ผลงานทั้งหมด (6 ระบบ)</h2>
+              <span class="eyebrow">Interactive Systems Directory</span>
+              <h2>ระบบทั้งหมดที่เปิดให้ทดลอง (6 ระบบ)</h2>
               <p>เลือกกรองตามหมวดหมู่เพื่อดูระบบธุรกิจหรือเว็บไซต์และงานออกแบบ</p>
             </div>
 
@@ -545,7 +545,7 @@
           <!-- Footer -->
           <footer class="portal-footer">
             <div>© ${new Date().getFullYear()} Preeya · Creative Developer Portfolio</div>
-            <div>Built with Clean Standards · Inspired by OBLO Design</div>
+            <div>Modern Engineering Standards · Enterprise Ready Architecture</div>
           </footer>
         </div>
       `;
@@ -1642,7 +1642,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
 
     if (s.data.view === 'dashboard') {
       body = `<div class="page-pad">
-        <!-- 1. Vibrant OBLO Stat Cards -->
+        <!-- 1. Modern Enterprise Stat Cards -->
         <div class="grid cols-4">
           <article class="card stat-card">
             <div class="stat-card-head">
