@@ -278,17 +278,28 @@
             </div>
 
             <div class="hero-visual">
-              <article class="hero-featured-card">
-                <span class="hero-featured-badge">★ Featured System</span>
+              <article class="hero-featured-card mock-window">
+                <div class="mock-window-header">
+                  <div class="mock-dots">
+                    <span class="mock-dot mock-close"></span>
+                    <span class="mock-dot mock-min"></span>
+                    <span class="mock-dot mock-expand"></span>
+                  </div>
+                  <div class="mock-url-bar">
+                    <span class="mock-ssl-lock">🔒</span>
+                    <span class="mock-url-text">nexus-wms.enterprise.app/live-flow</span>
+                  </div>
+                  <span class="mock-live-pill"><span class="mock-live-pulse"></span>Live Interactive</span>
+                </div>
                 <div class="hero-featured-img-wrap">
                   <img src="${getPreview('/warehouse-management')}" alt="NexusWMS คลังสินค้า" width="600" height="375" fetchpriority="high">
                 </div>
                 <div class="hero-featured-meta">
                   <div>
-                    <span class="badge primary" style="margin-bottom:4px">ระบบคลังสินค้า</span>
-                    <h3>NexusWMS</h3>
+                    <span class="badge primary" style="margin-bottom:4px">ระบบคลังสินค้าระดับองค์กร</span>
+                    <h3>NexusWMS · Inventory & Real-Time Flow</h3>
                   </div>
-                  <a class="btn small" href="/warehouse-management">เปิดทดลอง ↗</a>
+                  <a class="btn small primary" href="/warehouse-management">ทดลองระบบ ↗</a>
                 </div>
               </article>
             </div>
@@ -304,7 +315,11 @@
 
             <div class="featured-grid">
               <!-- 1. NexusWMS -->
-              <article class="feat-card accent-blue">
+              <article class="feat-card">
+                <div class="mock-card-bar">
+                  <div class="mock-card-dots"><span></span><span></span><span></span></div>
+                  <span class="mock-card-route">/warehouse-management</span>
+                </div>
                 <div class="feat-img-wrap">
                   <img src="${getPreview('/warehouse-management')}" alt="NexusWMS" loading="lazy">
                 </div>
@@ -328,7 +343,11 @@
               </article>
 
               <!-- 2. Sales Flow CRM -->
-              <article class="feat-card accent-coral">
+              <article class="feat-card">
+                <div class="mock-card-bar">
+                  <div class="mock-card-dots"><span></span><span></span><span></span></div>
+                  <span class="mock-card-route">/business-suite</span>
+                </div>
                 <div class="feat-img-wrap">
                   <img src="${getPreview('/business-suite')}" alt="Sales Flow CRM" loading="lazy">
                 </div>
@@ -352,7 +371,11 @@
               </article>
 
               <!-- 3. SmartPOS -->
-              <article class="feat-card accent-yellow">
+              <article class="feat-card">
+                <div class="mock-card-bar">
+                  <div class="mock-card-dots"><span></span><span></span><span></span></div>
+                  <span class="mock-card-route">/pos-system-smart</span>
+                </div>
                 <div class="feat-img-wrap">
                   <img src="${getPreview('/pos-system-smart')}" alt="SmartPOS" loading="lazy">
                 </div>
