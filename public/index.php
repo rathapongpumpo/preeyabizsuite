@@ -64,6 +64,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body data-page="<?= htmlspecialchars($pageKey, ENT_QUOTES) ?>" data-route="<?= htmlspecialchars($path, ENT_QUOTES) ?>">
+<?php if (file_exists(__DIR__ . '/assets/sprite.svg')) { readfile(__DIR__ . '/assets/sprite.svg'); } ?>
 <?php if ($pageKey === 'portal'): ?>
     <div id="app" class="portal-root" aria-live="polite"></div>
 <?php elseif ($pageKey === 'not-found'): ?>

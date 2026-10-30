@@ -2800,3 +2800,769 @@ html[data-theme="dark"] .portal-nav {
     padding: 20px 14px;
   }
 }
+
+
+/* ==========================================================================
+   LogisME Authentic Design System Rules
+   ========================================================================== */
+
+/* Background Atmosphere */
+body {
+  min-width: 320px;
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: #E6EEF7 !important;
+  background-image: 
+    linear-gradient(125deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.4) 100%),
+    linear-gradient(135deg, #E6EEF7 0%, #DCE9F6 45%, #EDF5FD 100%) !important;
+  background-attachment: fixed !important;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', 'Prompt', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-theme="dark"] body {
+  background-color: #0B111D !important;
+  background-image:
+    linear-gradient(125deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.02) 100%),
+    linear-gradient(135deg, #101926 0%, #0B111D 50%, #070B13 100%) !important;
+  background-attachment: fixed !important;
+  color: var(--text);
+}
+
+/* LogisME Topbar */
+.portal-nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 64px !important;
+  padding: 10px 0 !important;
+  border-bottom: 1px solid rgba(220, 230, 245, 0.8) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  background: rgba(230, 238, 247, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+html[data-theme="dark"] .portal-nav {
+  background: rgba(16, 25, 38, 0.85) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logis-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.logis-brand-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #1677FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(22, 119, 255, 0.35);
+  flex-shrink: 0;
+}
+.logis-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+.logis-brand-text .brand-name {
+  font-size: 18px;
+  font-weight: 750;
+  color: #1677FF;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.logis-brand-text .brand-sub {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.topbar-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--charcoal);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.topbar-icon-btn:hover {
+  background: var(--bg-subtle);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.topbar-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.breadcrumb-sep {
+  color: var(--muted-light);
+  font-size: 12px;
+}
+.breadcrumb-item.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Topbar Search */
+.topbar-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 190px;
+}
+.search-icon-slot {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+#topbar-search-input {
+  width: 100%;
+  height: 34px;
+  padding: 6px 28px 6px 32px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+#topbar-search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.15);
+  width: 230px;
+}
+.clear-search-btn {
+  position: absolute;
+  right: 10px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Language Pill */
+.topbar-lang-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  padding: 2px 3px;
+  gap: 2px;
+  height: 34px;
+}
+.lang-opt {
+  border-radius: 9999px;
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lang-opt.active {
+  background: #1677FF;
+  color: #FFFFFF;
+}
+
+/* Theme 3-State Segmented Control */
+.topbar-theme-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  padding: 2px 3px;
+  gap: 2px;
+  height: 34px;
+}
+.theme-opt {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.theme-opt:hover {
+  color: var(--primary);
+}
+.theme-opt.active {
+  background: #1677FF;
+  color: #FFFFFF;
+}
+
+/* Bell Button */
+.bell-btn {
+  position: relative;
+}
+.bell-unread-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1677FF;
+  border: 1.5px solid var(--panel);
+}
+
+/* User Badge */
+.topbar-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 4px;
+  border-radius: 9999px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+.user-avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #1677FF;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-meta-lines {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.user-name-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+  line-height: 1.2;
+}
+.user-role-text {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1;
+}
+.user-chevron-icon {
+  color: var(--muted);
+  margin-left: 2px;
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 56px 0 40px !important;
+  display: grid !important;
+  grid-template-columns: 1.05fr 1fr !important;
+  gap: 40px !important;
+  align-items: center !important;
+}
+
+.hero-blue-lead {
+  display: block;
+  color: #1677FF;
+  font-size: clamp(34px, 4.2vw, 54px);
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.hero-desc {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #334155;
+  margin: 18px 0 26px;
+  max-width: 540px;
+}
+html[data-theme="dark"] .hero-desc {
+  color: #94A3B8;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.hero-btn {
+  min-height: 44px;
+  padding: 10px 22px;
+  font-size: 14.5px;
+  border-radius: 10px;
+}
+.btn.outline {
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+}
+.btn.outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Tablet Device Frame */
+.tablet-device-frame {
+  background: #0B0F19;
+  border-radius: 26px;
+  padding: 12px 14px 14px;
+  box-shadow: 
+    0 28px 60px -15px rgba(22, 119, 255, 0.24),
+    0 18px 36px -18px rgba(15, 23, 42, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  position: relative;
+}
+.tablet-lens {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #1E293B;
+  border: 1px solid #334155;
+  margin: 0 auto 8px;
+}
+.tablet-screen {
+  background: var(--panel);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.tablet-screen-bar {
+  background: #F1F5F9;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+html[data-theme="dark"] .tablet-screen-bar {
+  background: #141E2E;
+}
+.tablet-brand-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--charcoal);
+}
+.screen-blue-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1677FF;
+}
+.tablet-live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: #ECFDF5;
+  color: #059669;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.pulse-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 6px #10B981;
+}
+.tablet-screen-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Floating Badge on Tablet */
+.tablet-card-badge {
+  margin-top: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 6px 18px -4px rgba(22, 119, 255, 0.12);
+}
+.tablet-badge-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #EBF3FC;
+  color: #1677FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+html[data-theme="dark"] .tablet-badge-icon {
+  background: #16273C;
+  color: #3B82F6;
+}
+.tablet-badge-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: left;
+}
+.tablet-badge-info strong {
+  font-size: 13.5px;
+  color: var(--charcoal);
+}
+.tablet-badge-info span {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* Overview Dashboard Section ("Hello, Platform Administrator") */
+.overview-section {
+  margin-top: 10px;
+}
+.overview-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.overview-heading {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--charcoal);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.overview-subtext {
+  font-size: 14px;
+  color: var(--muted);
+}
+.customize-btn {
+  border-radius: 10px !important;
+  min-height: 38px !important;
+  padding: 6px 16px !important;
+  font-size: 13px !important;
+  gap: 6px !important;
+}
+
+.overview-group-title {
+  margin-bottom: 14px;
+}
+.overview-group-title h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.logis-metric-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.logis-metric-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.logis-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(22, 119, 255, 0.12);
+  border-color: var(--primary);
+}
+
+.metric-card-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #EBF3FC;
+  color: #1677FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+html[data-theme="dark"] .metric-card-icon-box {
+  background: #16273C;
+  color: #3B82F6;
+}
+.metric-card-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #475569;
+  line-height: 1.35;
+  min-height: 34px;
+  margin-bottom: 8px;
+}
+html[data-theme="dark"] .metric-card-title {
+  color: #94A3B8;
+}
+.metric-card-val {
+  font-size: 28px;
+  font-weight: 750;
+  color: var(--charcoal);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.metric-card-desc {
+  font-size: 11px;
+  color: var(--muted-light);
+  line-height: 1.3;
+}
+
+/* Core Featured Cards (LogisME Style, NO Mac dots!) */
+.logis-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.logis-feat-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.logis-feat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px -6px rgba(22, 119, 255, 0.14);
+  border-color: var(--primary);
+}
+
+.feat-card-header {
+  padding: 16px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.feat-card-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: #EBF3FC;
+  color: #1677FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html[data-theme="dark"] .feat-card-icon-box {
+  background: #16273C;
+  color: #3B82F6;
+}
+.feat-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.feat-code {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.feat-img-container {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.feat-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.logis-feat-card:hover .feat-img-container img {
+  transform: scale(1.02);
+}
+
+.feat-card-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.feat-card-body h3 {
+  font-size: 16.5px;
+  font-weight: 750;
+  color: var(--charcoal);
+  margin-bottom: 6px;
+}
+.feat-card-body p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 14px;
+  flex: 1;
+}
+
+.feat-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.feat-tag {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--line);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #475569;
+}
+html[data-theme="dark"] .feat-tag {
+  color: #94A3B8;
+}
+
+.feat-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 8px;
+  margin-top: auto;
+}
+
+/* Filter Controls (LogisME Segmented Pill) */
+.logis-filter-bar {
+  display: flex;
+  margin-bottom: 24px;
+}
+.logis-segmented-filter {
+  display: inline-flex;
+  align-items: center;
+  background: #E2E8F0;
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+}
+html[data-theme="dark"] .logis-segmented-filter {
+  background: #162436;
+}
+.filter-btn {
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.filter-btn:hover {
+  color: var(--charcoal);
+}
+.filter-btn.active {
+  background: #FFFFFF;
+  color: #1677FF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+html[data-theme="dark"] .filter-btn.active {
+  background: #0B111D;
+  color: #3B82F6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.work-item-card {
+  border-radius: 14px !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+.work-item-card:hover {
+  border-color: var(--primary) !important;
+  box-shadow: 0 10px 24px -4px rgba(22, 119, 255, 0.12) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .logis-metric-cards-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .logis-featured-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .portal-nav {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .topbar-breadcrumb, .topbar-search-wrap, .user-meta-lines {
+    display: none;
+  }
+  .hero-section {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding: 32px 0 24px !important;
+  }
+  .logis-metric-cards-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-blue-lead {
+    font-size: 32px;
+  }
+}

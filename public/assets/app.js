@@ -168,23 +168,21 @@
     return `<span class="badge ${kind}">${esc(text)}</span>`;
   }
 
-  const SVG_SUN = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12.25 19C12.6642 19 13 19.3358 13 19.75V22.25C13 22.6642 12.6642 23 12.25 23H11.75C11.3358 23 11 22.6642 11 22.25V19.75C11 19.3358 11.3358 19 11.75 19H12.25ZM5.80957 16.7764C6.10246 16.4835 6.5782 16.4835 6.87109 16.7764L7.22363 17.1299C7.51653 17.4228 7.51653 17.8975 7.22363 18.1904L5.46094 19.9541C5.16804 20.247 4.69231 20.247 4.39941 19.9541L4.04688 19.6006C3.75398 19.3077 3.75398 18.8329 4.04688 18.54L5.80957 16.7764ZM17.1299 16.7764C17.4228 16.4835 17.8975 16.4835 18.1904 16.7764L19.9541 18.54C20.2468 18.8329 20.2469 19.3078 19.9541 19.6006L19.6006 19.9541C19.3077 20.2468 18.8329 20.2468 18.54 19.9541L16.7764 18.1904C16.4835 17.8976 16.4837 17.4228 16.7764 17.1299L17.1299 16.7764ZM10.792 7.24023C11.5653 6.91992 12.4347 6.91992 13.208 7.24023L14.5117 7.78027C15.285 8.10059 15.8994 8.715 16.2197 9.48828L16.7598 10.792C17.0801 11.5653 17.0801 12.4347 16.7598 13.208L16.2197 14.5117C15.8994 15.285 15.285 15.8994 14.5117 16.2197L13.208 16.7598C12.4347 17.0801 11.5653 17.0801 10.792 16.7598L9.48828 16.2197C8.715 15.8994 8.10059 15.285 7.78027 14.5117L7.24023 13.208C6.91992 12.4347 6.91992 11.5653 7.24023 10.792L7.78027 9.48828C8.10059 8.715 8.715 8.10059 9.48828 7.78027L10.792 7.24023ZM12.3936 9.07812C12.1416 8.97377 11.8584 8.97377 11.6064 9.07812L10.2119 9.65625C9.96034 9.7606 9.7606 9.96034 9.65625 10.2119L9.07812 11.6064C8.97377 11.8584 8.97377 12.1416 9.07812 12.3936L9.65625 13.7881C9.7606 14.0397 9.96034 14.2394 10.2119 14.3438L11.6064 14.9219C11.8584 15.0262 12.1416 15.0262 12.3936 14.9219L13.7881 14.3438C14.0397 14.2394 14.2394 14.0397 14.3438 13.7881L14.9219 12.3936C15.0262 12.1416 15.0262 11.8584 14.9219 11.6064L14.3438 10.2119C14.2394 9.96034 14.0397 9.7606 13.7881 9.65625L12.3936 9.07812ZM4.25 11C4.66421 11 5 11.3358 5 11.75V12.25C5 12.6642 4.66421 13 4.25 13H1.75C1.33579 13 1 12.6642 1 12.25V11.75C1 11.3358 1.33579 11 1.75 11H4.25ZM22.25 11C22.6642 11 23 11.3358 23 11.75V12.25C23 12.6642 22.6642 13 22.25 13H19.75C19.3358 13 19 12.6642 19 12.25V11.75C19 11.3358 19.3358 11 19.75 11H22.25ZM4.39941 4.0459C4.69231 3.75301 5.16804 3.75301 5.46094 4.0459L7.22363 5.80957C7.51653 6.10246 7.51653 6.57722 7.22363 6.87012L6.87109 7.22363C6.5782 7.51653 6.10246 7.51653 5.80957 7.22363L4.04688 5.45996C3.75398 5.16707 3.75398 4.69231 4.04688 4.39941L4.39941 4.0459ZM18.54 4.0459C18.8329 3.75324 19.3077 3.75324 19.6006 4.0459L19.9541 4.39941C20.2469 4.69225 20.2468 5.16705 19.9541 5.45996L18.1904 7.22363C17.8975 7.51653 17.4228 7.51653 17.1299 7.22363L16.7764 6.87012C16.4837 6.57721 16.4835 6.1024 16.7764 5.80957L18.54 4.0459ZM12.25 1C12.6642 1 13 1.33579 13 1.75V4.25C13 4.66421 12.6642 5 12.25 5H11.75C11.3358 5 11 4.66421 11 4.25V1.75C11 1.33579 11.3358 1 11.75 1H12.25Z" fill="currentColor"/>
-</svg>`;
-  const SVG_MOON = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10.2607 2.00757C10.4708 2.02152 10.851 2.06714 11.249 2.26831C11.5485 2.41774 11.8091 2.63371 12.0107 2.89917C12.2125 3.16487 12.3502 3.47376 12.4121 3.80054C12.5416 4.49753 12.2952 5.05121 12.1494 5.31616C11.9735 5.6349 11.723 6.15138 11.5059 6.68726C11.2728 7.26077 11.1481 7.68925 11.124 7.8894C10.9467 9.28495 11.3359 10.6932 12.2061 11.8044C13.0765 12.9157 14.3572 13.6391 15.7656 13.8152C15.9998 13.8451 16.5963 13.8351 17.3652 13.7654C18.107 13.6957 18.7566 13.5929 19.04 13.5222C19.6311 13.3729 20.7041 13.3467 21.4619 14.2595C22.0527 14.9724 22.0175 15.7881 21.9844 16.1121C21.906 16.87 21.5414 17.6367 21.1172 18.1746C18.8223 21.0827 14.8894 22.3671 11.2217 21.9089C5.44798 21.1888 1.3563 15.9661 2.08398 10.2449C2.30814 8.48289 2.82722 6.90292 3.78613 5.56226C4.75201 4.21077 6.06991 3.23502 7.66992 2.53979C8.29151 2.27657 8.94805 2.10155 9.61914 2.02124C9.80007 2.00331 10.0215 1.99163 10.2607 2.00757ZM10.3799 4.37085C10.5741 4.02068 10.2153 3.95762 9.73438 4.02222C9.1437 4.10978 8.57166 4.29534 8.04297 4.57007C5.6636 5.74028 4.43379 7.60721 4.06641 10.4949C3.92627 11.5946 4.00653 12.711 4.30273 13.78C4.59895 14.8491 5.1055 15.8497 5.79297 16.7253C6.48049 17.601 7.33542 18.3346 8.30957 18.8835C9.28374 19.4325 10.3582 19.786 11.4707 19.9246C14.2575 20.2707 17.1208 19.4095 18.9707 17.5798C19.1745 17.3794 19.3664 17.1667 19.5439 16.9431C19.6466 16.8138 19.739 16.6609 19.8135 16.5017C20.0791 15.9376 20.1164 15.3069 19.5439 15.45C19.1907 15.5395 18.6143 15.6313 17.9912 15.7009L17.9668 15.7039C17.066 15.8034 16.0722 15.8585 15.5186 15.7888C13.5783 15.5472 11.8144 14.5533 10.6152 13.0261C9.41603 11.4989 8.87965 9.56252 9.12402 7.64429C9.17843 7.21451 9.35974 6.64961 9.58008 6.0896L9.64844 5.92065C9.89099 5.32666 10.1695 4.75296 10.3799 4.37085Z" fill="currentColor"/>
-</svg>`;
-
   function setTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem('preeya_php_demo_v2:theme', theme);
-    const iconEl = document.getElementById('theme-icon');
-    if (iconEl) {
-      iconEl.innerHTML = theme === 'dark' ? SVG_SUN : SVG_MOON;
+    let effective = theme;
+    if (theme === 'system') {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      effective = prefersDark ? 'dark' : 'light';
     }
+    document.documentElement.dataset.theme = effective;
+    localStorage.setItem('preeya_php_demo_v2:theme', theme);
+    document.querySelectorAll('.theme-opt').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.themeVal === theme);
+    });
   }
 
-  setTheme(localStorage.getItem('preeya_php_demo_v2:theme') || 'light');
+  const savedTheme = localStorage.getItem('preeya_php_demo_v2:theme') || 'light';
+  setTheme(savedTheme);
 
   const infoButton = document.getElementById('project-info-button');
   const info = document.getElementById('project-info');
@@ -209,6 +207,11 @@
     const featuredKeys = ['/warehouse-management', '/business-suite', '/pos-system-smart'];
     const featured = featuredKeys.map(k => [k, projects[k]]).filter(([, p]) => !!p);
     let activeFilter = 'all';
+    let searchQuery = '';
+    let activeLang = 'th';
+
+    const icon = (name, size = 18, cls = '') =>
+      `<svg class="icon ${cls}" width="${size}" height="${size}" aria-hidden="true"><use href="#icon-${name}"></use></svg>`;
 
     const getPreview = (path) => {
       const custom = {
@@ -223,72 +226,113 @@
     };
 
     function renderPortalContent() {
-      const filteredWorks = visible.filter(([, p]) => {
-        if (activeFilter === 'all') return true;
-        if (activeFilter === 'business') return p.category === 'business';
-        if (activeFilter === 'website') return p.category === 'website';
+      const q = searchQuery.trim().toLowerCase();
+      const filteredWorks = visible.filter(([path, p]) => {
+        if (activeFilter === 'business' && p.category !== 'business') return false;
+        if (activeFilter === 'website' && p.category !== 'website') return false;
+        if (q) {
+          const matchTitle = (p.title || '').toLowerCase().includes(q);
+          const matchShort = (p.short || '').toLowerCase().includes(q);
+          const matchDesc = (p.description || '').toLowerCase().includes(q);
+          const matchTech = (p.tech || []).some(t => t.toLowerCase().includes(q));
+          if (!matchTitle && !matchShort && !matchDesc && !matchTech) return false;
+        }
         return true;
       });
 
       const countAll = visible.length;
       const countBusiness = visible.filter(([, p]) => p.category === 'business').length;
       const countWebsite = visible.filter(([, p]) => p.category === 'website').length;
+      const currentTheme = localStorage.getItem('preeya_php_demo_v2:theme') || 'light';
 
       app.innerHTML = `
         <div class="portal-wrap">
-          <!-- Navigation -->
+          <!-- Topbar Header (Exact LogisME Style) -->
           <nav class="portal-nav" id="top">
-            <a class="brand" href="/" aria-label="หน้าแรก Preeya Portfolio">
-              <span class="brand-mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" fill="url(#brandGrad)" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
-  <path d="M12 2V12L21 7M12 12L3 7M12 12V22" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/>
-  <defs>
-    <linearGradient id="brandGrad" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#38BDF8"/>
-      <stop offset="1" stop-color="#1677FF"/>
-    </linearGradient>
-  </defs>
-</svg></span>
-              <div class="brand-title">
-                <span>Preeya</span>
-                <small class="brand-sub">Systems & Full-Stack Engineer</small>
+            <div class="nav-left">
+              <a class="logis-topbar-brand" href="/" aria-label="Home">
+                <span class="logis-brand-badge">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <rect width="24" height="24" rx="6" fill="#1677FF"/>
+                    <path d="M7 6h6a4 4 0 0 1 4 4c0 2.21-1.79 4-4 4H7V6z" fill="#FFFFFF"/>
+                    <circle cx="11.5" cy="10" r="1.5" fill="#1677FF"/>
+                  </svg>
+                </span>
+                <div class="logis-brand-text">
+                  <span class="brand-name">LogisME</span>
+                  <span class="brand-sub">Portfolio Edition</span>
+                </div>
+              </a>
+
+              <button class="topbar-icon-btn sidebar-toggle-btn" type="button" aria-label="Toggle Navigation">
+                ${icon('panel-left-open', 18)}
+              </button>
+
+              <div class="topbar-breadcrumb">
+                <span class="breadcrumb-item">My work</span>
+                <span class="breadcrumb-sep">›</span>
+                <span class="breadcrumb-item active">Home</span>
               </div>
-            </a>
-            <div class="portal-nav-links">
-              <a href="#featured">ผลงานเด่น</a>
-              <a href="#projects">ผลงานทั้งหมด</a>
-              <a href="#services">บริการ</a>
-              <a href="#process">ขั้นตอนการทำงาน</a>
-              <a href="#contact">ติดต่อ</a>
             </div>
-            <div class="portal-actions">
-              <a class="btn small primary" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">คุยงาน ↗</a>
-              <button class="btn square small" id="theme-toggle" aria-label="สลับธีม"><span id="theme-icon">◐</span></button>
+
+            <div class="nav-right">
+              <div class="topbar-search-wrap">
+                <span class="search-icon-slot">${icon('search', 15)}</span>
+                <input type="text" id="topbar-search-input" placeholder="Search..." value="${esc(searchQuery)}" aria-label="Search systems">
+                ${searchQuery ? `<button class="clear-search-btn" type="button" aria-label="Clear search">×</button>` : ''}
+              </div>
+
+              <div class="topbar-lang-pill" role="group" aria-label="Language">
+                <button class="lang-opt ${activeLang === 'th' ? 'active' : ''}" type="button" data-lang="th">ไทย</button>
+                <button class="lang-opt ${activeLang === 'en' ? 'active' : ''}" type="button" data-lang="en">EN</button>
+              </div>
+
+              <div class="topbar-theme-pill" role="group" aria-label="Theme selector">
+                <button class="theme-opt ${currentTheme === 'system' ? 'active' : ''}" type="button" data-theme-val="system" title="System Theme">${icon('monitor', 15)}</button>
+                <button class="theme-opt ${currentTheme === 'light' ? 'active' : ''}" type="button" data-theme-val="light" title="Light Theme">${icon('sun', 15)}</button>
+                <button class="theme-opt ${currentTheme === 'dark' ? 'active' : ''}" type="button" data-theme-val="dark" title="Dark Theme">${icon('moon', 15)}</button>
+              </div>
+
+              <button class="topbar-icon-btn bell-btn" type="button" aria-label="Notifications">
+                <svg class="icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span class="bell-unread-dot"></span>
+              </button>
+
+              <div class="topbar-user-badge">
+                <div class="user-avatar-circle">ป</div>
+                <div class="user-meta-lines">
+                  <span class="user-name-text">ปิยะนุช วงศ์สถิตย์</span>
+                  <span class="user-role-text">Administrator</span>
+                </div>
+                <span class="user-chevron-icon">${icon('chevron-down', 13)}</span>
+              </div>
             </div>
           </nav>
 
-          <!-- Hero Section -->
+          <!-- Hero Section (Exact LogisME Style with Tablet Device) -->
           <section class="hero-section">
             <div class="hero-content">
-              <div class="hero-tag">✨ Full-Stack Systems & Back-Office Architecture</div>
               <h1 class="hero-title">
-                พัฒนาเว็บแอป <span class="highlight-blue">ระบบหลังบ้าน</span> และระบบอัตโนมัติสำหรับธุรกิจ
+                <span class="hero-blue-lead">Track everything.</span>
+                <span class="hero-blue-lead">Move Forward</span>
               </h1>
               <p class="hero-desc">
-                ออกแบบและพัฒนาสถาปัตยกรรมระบบที่แม่นยำ ปลอดภัย และขยายตัวได้จริง รองรับงานคลังสินค้า (WMS), บริหารงานขายและสัญญา (CRM & E-Sign), จุดขายหน้าร้าน (POS) และระบบจัดการขนส่ง (Logistics) ครบวงจร พร้อมทดลอง Interactive Flow ได้จริงทุกระบบ
+                AI-powered visibility for your shipments, vehicles and assets - all in one place. ออกแบบสถาปัตยกรรมระบบคลังสินค้า (WMS), งานขายและสัญญา (CRM), จุดขายหน้าร้าน (POS) และระบบขนส่ง ครบวงจร พร้อมทดลอง Interactive Flow ได้จริง
               </p>
               <div class="hero-ctas">
-                <a class="btn primary" href="#projects">ดูระบบงานจริง (6 ระบบ) ↓</a>
-                <a class="btn coral" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">ปรึกษาโปรเจกต์ B2B ↗</a>
+                <a class="btn primary hero-btn" href="#projects">ดูระบบงานจริง (6 ระบบ) ↓</a>
+                <a class="btn outline hero-btn" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">ปรึกษาโปรเจกต์ B2B ↗</a>
               </div>
               <div class="hero-stats-banner">
                 <div class="hero-stat-item">
                   <strong>6</strong>
-                  <span>ระบบ Interactive</span>
+                  <span>ระบบ Enterprise</span>
                 </div>
                 <div class="hero-stat-item">
                   <strong>100%</strong>
-                  <span>ทดลองหน้าจอจริงได้</span>
+                  <span>Interactive Demos</span>
                 </div>
                 <div class="hero-stat-item">
                   <strong>Scalable</strong>
@@ -298,141 +342,138 @@
             </div>
 
             <div class="hero-visual">
-              <article class="hero-featured-card mock-window">
-                <div class="mock-window-header">
-                  <div class="mock-dots">
-                    <span class="mock-dot mock-close"></span>
-                    <span class="mock-dot mock-min"></span>
-                    <span class="mock-dot mock-expand"></span>
+              <div class="tablet-device-frame">
+                <div class="tablet-lens"></div>
+                <div class="tablet-screen">
+                  <div class="tablet-screen-bar">
+                    <div class="tablet-brand-pill">
+                      <span class="screen-blue-dot"></span>
+                      <span>NexusWMS · Live Flow</span>
+                    </div>
+                    <span class="tablet-live-tag"><span class="pulse-dot"></span>Live Interactive</span>
                   </div>
-                  <div class="mock-url-bar">
-                    <span class="mock-ssl-lock">🔒</span>
-                    <span class="mock-url-text">nexus-wms.enterprise.app/live-flow</span>
+                  <div class="tablet-screen-img">
+                    <img src="${getPreview('/warehouse-management')}" alt="NexusWMS Live Flow" width="700" height="437" fetchpriority="high">
                   </div>
-                  <span class="mock-live-pill"><span class="mock-live-pulse"></span>Live Interactive</span>
                 </div>
-                <div class="hero-featured-img-wrap">
-                  <img src="${getPreview('/warehouse-management')}" alt="NexusWMS คลังสินค้า" width="600" height="375" fetchpriority="high">
+              </div>
+              <div class="tablet-card-badge">
+                <div class="tablet-badge-icon">
+                  ${icon('warehousewarehouse', 20)}
                 </div>
-                <div class="hero-featured-meta">
-                  <div>
-                    <span class="badge primary" style="margin-bottom:4px">ระบบคลังสินค้าระดับองค์กร</span>
-                    <h3>NexusWMS · Inventory & Real-Time Flow</h3>
-                  </div>
-                  <a class="btn small primary" href="/warehouse-management">ทดลองระบบ ↗</a>
+                <div class="tablet-badge-info">
+                  <strong>NexusWMS · Inventory Engine</strong>
+                  <span>ระบบบริหารสต็อก Inbound, Outbound & แผนผังคลัง 4 โซน</span>
                 </div>
-              </article>
+                <a class="btn small primary" href="/warehouse-management">ทดลองระบบ ↗</a>
+              </div>
             </div>
           </section>
 
-          <!-- Featured Works (3 ระบบเด่น) -->
+          <!-- Overview Dashboard Section (Exact replica of ref_home_cards.png) -->
+          <section class="portal-section overview-section" id="overview">
+            <div class="overview-header-row">
+              <div>
+                <h2 class="overview-heading">Hello, Platform Administrator</h2>
+                <p class="overview-subtext">An overview of the work and status relevant to your role</p>
+              </div>
+              <a class="btn primary customize-btn" href="#projects">
+                ${icon('layout-dashboard', 16)} Customize home
+              </a>
+            </div>
+
+            <div class="overview-group-title">
+              <h3>Chats by type</h3>
+            </div>
+
+            <div class="logis-metric-cards-grid">
+              <a class="logis-metric-card" href="/warehouse-management">
+                <div class="metric-card-icon-box">${icon('clipboard-list', 18)}</div>
+                <div class="metric-card-title">Tasks waiting for me</div>
+                <div class="metric-card-val">0</div>
+                <div class="metric-card-desc">Approval tasks you can act on</div>
+              </a>
+              <a class="logis-metric-card" href="/usa-thai-shipping">
+                <div class="metric-card-icon-box">${icon('truck', 18)}</div>
+                <div class="metric-card-title">Orders awaiting review</div>
+                <div class="metric-card-val">0</div>
+                <div class="metric-card-desc">Work the system could not verify and nobody has decided yet</div>
+              </a>
+              <div class="logis-metric-card">
+                <div class="metric-card-icon-box">${icon('circle-x', 18)}</div>
+                <div class="metric-card-title">Failed verifications today</div>
+                <div class="metric-card-val">0</div>
+                <div class="metric-card-desc">Times the Verification Gate stopped an order since midnight</div>
+              </div>
+              <div class="logis-metric-card">
+                <div class="metric-card-icon-box">${icon('clock', 18)}</div>
+                <div class="metric-card-title">Lots expiring soon</div>
+                <div class="metric-card-val">0</div>
+                <div class="metric-card-desc">Expire within 30 days</div>
+              </div>
+              <div class="logis-metric-card">
+                <div class="metric-card-icon-box">${icon('layers', 18)}</div>
+                <div class="metric-card-title">Lots on hold</div>
+                <div class="metric-card-val">0</div>
+                <div class="metric-card-desc">Waiting for release</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Featured Works (3 Core Systems, Exact LogisME Cards) -->
           <section class="portal-section" id="featured">
             <div class="section-header">
               <span class="eyebrow">Core Enterprise Systems</span>
               <h2>3 ระบบหลักสำหรับกระบวนการทางธุรกิจ</h2>
-              <p>ออกแบบโครงสร้างข้อมูล ตรรกะคำนวณ และ Workflow สำหรับการดำเนินงานจริง พร้อมทดสอบการทำงานได้ทันที</p>
+              <p>ออกแบบโครงสร้างข้อมูล ตรรกะคำนวณ และ Workflow สำหรับการดำเนินงานจริง</p>
             </div>
 
-            <div class="featured-grid">
-              <!-- 1. NexusWMS -->
-              <article class="feat-card">
-                <div class="mock-card-bar">
-                  <div class="mock-card-dots"><span></span><span></span><span></span></div>
-                  <span class="mock-card-route">/warehouse-management</span>
-                </div>
-                <div class="feat-img-wrap">
-                  <img src="${getPreview('/warehouse-management')}" alt="NexusWMS" loading="lazy">
-                </div>
-                <div class="feat-body">
-                  <div class="badge-wrap">
-                    <span class="badge primary">ระบบธุรกิจ</span>
-                    <small class="muted">Inventory & Stock</small>
+            <div class="logis-featured-grid">
+              ${featured.map(([path, p]) => `
+                <article class="logis-feat-card">
+                  <div class="feat-card-header">
+                    <div class="feat-card-icon-box">
+                      ${icon(path === '/warehouse-management' ? 'warehousewarehouse' : path === '/business-suite' ? 'handshake' : 'zap', 22)}
+                    </div>
+                    <div class="feat-card-meta">
+                      <span class="badge primary">${esc(p.category_name || 'ระบบธุรกิจ')}</span>
+                      <small class="feat-code">${path.replace('/', '')}</small>
+                    </div>
                   </div>
-                  <h3>NexusWMS คลังสินค้า</h3>
-                  <p>ระบบบริหารสต็อก บันทึกรับเข้า (Inbound) เบิกจ่าย (Outbound) ตรวจสอบยอดคงเหลือ และแจ้งเตือนสินค้าใกล้หมดสต็อก</p>
-                  <div class="feat-tech">
-                    <span>Inbound/Outbound</span>
-                    <span>LocalStorage</span>
-                    <span>Re-order Alerts</span>
+                  <div class="feat-img-container">
+                    <img src="${getPreview(path)}" alt="${esc(p.short || p.title)}" loading="lazy">
                   </div>
-                  <div class="feat-actions">
-                    <button class="btn small" type="button" data-detail="/warehouse-management">📋 รายละเอียด</button>
-                    <a class="btn small primary" href="/warehouse-management">ทดลองเดโม ↗</a>
+                  <div class="feat-card-body">
+                    <h3>${esc(p.short || p.title)}</h3>
+                    <p>${esc(p.description)}</p>
+                    <div class="feat-card-tags">
+                      ${(p.highlights || []).slice(0, 3).map(h => `<span class="feat-tag">${esc(h)}</span>`).join('')}
+                    </div>
+                    <div class="feat-card-actions">
+                      <button class="btn small outline" type="button" data-detail="${path}">📋 รายละเอียด</button>
+                      <a class="btn small primary" href="${path}">ทดลองเดโม ↗</a>
+                    </div>
                   </div>
-                </div>
-              </article>
-
-              <!-- 2. Sales Flow CRM -->
-              <article class="feat-card">
-                <div class="mock-card-bar">
-                  <div class="mock-card-dots"><span></span><span></span><span></span></div>
-                  <span class="mock-card-route">/business-suite</span>
-                </div>
-                <div class="feat-img-wrap">
-                  <img src="${getPreview('/business-suite')}" alt="Sales Flow CRM" loading="lazy">
-                </div>
-                <div class="feat-body">
-                  <div class="badge-wrap">
-                    <span class="badge coral">ระบบธุรกิจ</span>
-                    <small class="muted">CRM & E-Sign</small>
-                  </div>
-                  <h3>Sales Flow CRM & E-Sign</h3>
-                  <p>ติดตามลูกค้าและดีลใน Pipeline แบบลากวาง ออกใบเสนอราคา และส่งต่อสัญญาเพื่อลงนามผ่านฟีเจอร์ Lite E-Signature</p>
-                  <div class="feat-tech">
-                    <span>Drag & Drop</span>
-                    <span>Quotation Calc</span>
-                    <span>E-Sign Handoff</span>
-                  </div>
-                  <div class="feat-actions">
-                    <button class="btn small" type="button" data-detail="/business-suite">📋 รายละเอียด</button>
-                    <a class="btn small primary" href="/business-suite">ทดลองเดโม ↗</a>
-                  </div>
-                </div>
-              </article>
-
-              <!-- 3. SmartPOS -->
-              <article class="feat-card">
-                <div class="mock-card-bar">
-                  <div class="mock-card-dots"><span></span><span></span><span></span></div>
-                  <span class="mock-card-route">/pos-system-smart</span>
-                </div>
-                <div class="feat-img-wrap">
-                  <img src="${getPreview('/pos-system-smart')}" alt="SmartPOS" loading="lazy">
-                </div>
-                <div class="feat-body">
-                  <div class="badge-wrap">
-                    <span class="badge yellow">ระบบธุรกิจ</span>
-                    <small class="muted">POS & Kitchen KDS</small>
-                  </div>
-                  <h3>SmartPOS ร้านอาหาร & KDS</h3>
-                  <p>จุดขายหน้าร้าน คิดเงิน คำนวณภาษี ส่งออเดอร์เข้าหน้าจอครัว KDS แบบเรียลไทม์ พร้อมโหมด Kiosk และสรุปปิดกะ</p>
-                  <div class="feat-tech">
-                    <span>Cashier POS</span>
-                    <span>Kitchen KDS</span>
-                    <span>Self Kiosk</span>
-                  </div>
-                  <div class="feat-actions">
-                    <button class="btn small" type="button" data-detail="/pos-system-smart">📋 รายละเอียด</button>
-                    <a class="btn small primary" href="/pos-system-smart">ทดลองเดโม ↗</a>
-                  </div>
-                </div>
-              </article>
+                </article>
+              `).join('')}
             </div>
           </section>
 
-          <!-- All Works & Filter (6 ผลงาน) -->
+          <!-- All Works & Filter (6 Systems) -->
           <section class="portal-section" id="projects">
             <div class="section-header">
               <span class="eyebrow">Interactive Systems Directory</span>
-              <h2>ระบบทั้งหมดที่เปิดให้ทดลอง (6 ระบบ)</h2>
+              <h2>ระบบทั้งหมดที่เปิดให้ทดลอง (${visible.length} ระบบ)</h2>
               <p>เลือกกรองตามหมวดหมู่เพื่อดูระบบธุรกิจหรือเว็บไซต์และงานออกแบบ</p>
             </div>
 
             <!-- Filter Controls -->
-            <div class="filter-tabs" role="tablist" aria-label="ตัวกรองผลงาน">
-              <button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" type="button" data-filter="all">ทั้งหมด (${countAll})</button>
-              <button class="filter-btn ${activeFilter === 'business' ? 'active' : ''}" type="button" data-filter="business">ระบบธุรกิจ (${countBusiness})</button>
-              <button class="filter-btn ${activeFilter === 'website' ? 'active' : ''}" type="button" data-filter="website">เว็บไซต์และงานออกแบบ (${countWebsite})</button>
+            <div class="logis-filter-bar">
+              <div class="logis-segmented-filter" role="tablist">
+                <button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" type="button" data-filter="all">ทั้งหมด (${countAll})</button>
+                <button class="filter-btn ${activeFilter === 'business' ? 'active' : ''}" type="button" data-filter="business">ระบบธุรกิจ (${countBusiness})</button>
+                <button class="filter-btn ${activeFilter === 'website' ? 'active' : ''}" type="button" data-filter="website">เว็บไซต์และงานออกแบบ (${countWebsite})</button>
+              </div>
             </div>
 
             <!-- Works Grid -->
@@ -445,13 +486,13 @@
                   <div class="work-item-body">
                     <div class="work-item-meta">
                       <span class="badge ${p.category === 'business' ? 'primary' : 'yellow'}">${esc(p.category_name || (p.category === 'business' ? 'ระบบธุรกิจ' : 'เว็บไซต์และงานออกแบบ'))}</span>
-                      ${p.featured ? '<span style="font-size:11px;font-weight:800;color:var(--coral)">★ แนะนำ</span>' : ''}
+                      ${p.featured ? '<span class="feat-star">★ แนะนำ</span>' : ''}
                     </div>
                     <h4>${esc(p.short || p.title)}</h4>
                     <p>${esc(p.description)}</p>
                     <div class="work-item-foot">
-                      <button class="btn small" type="button" data-detail="${path}">📋 รายละเอียด</button>
-                      <a class="btn small ${p.featured ? 'primary' : ''}" href="${path}">เปิดเดโม ↗</a>
+                      <button class="btn small outline" type="button" data-detail="${path}">📋 รายละเอียด</button>
+                      <a class="btn small ${p.featured ? 'primary' : 'outline'}" href="${path}">เปิดเดโม ↗</a>
                     </div>
                   </div>
                 </article>
@@ -469,9 +510,7 @@
 
             <div class="services-grid">
               <div class="service-card">
-                <div class="service-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.52441 15C9.20911 15 9.78889 15.2253 10.2734 15.6865C10.7578 16.1477 11 16.7268 11 17.4238V19.5605C11 20.2576 10.7578 20.8387 10.2734 21.2998C9.79942 21.761 9.20911 22 8.52441 22H4.46484C3.78017 22 3.18983 21.761 2.71582 21.2998C2.24203 20.8387 2 20.2575 2 19.5605V17.4238C2.00002 16.7269 2.24202 16.1476 2.71582 15.6865C3.18983 15.2253 3.78017 15 4.46484 15H8.52441ZM19.5244 11C20.2091 11 20.7889 11.2356 21.2734 11.7188C21.7579 12.2018 21.9999 12.8088 22 13.5391V19.4443C22 20.1746 21.7579 20.7835 21.2734 21.2666C20.7994 21.7498 20.2091 22 19.5244 22H15.4648C14.7802 22 14.1898 21.7497 13.7158 21.2666C13.242 20.7835 13 20.1745 13 19.4443V13.5391C13.0001 12.8089 13.2419 12.2018 13.7158 11.7188C14.1898 11.2356 14.7802 11 15.4648 11H19.5244ZM4.99707 17.6875C4.64726 17.6875 4.47559 17.8465 4.47559 18.1631V18.8223C4.47559 19.1389 4.64726 19.2998 4.99707 19.2998H7.99316C8.34265 19.2997 8.51367 19.1387 8.51367 18.8223V18.1631C8.51367 17.8466 8.34265 17.6876 7.99316 17.6875H4.99707ZM15.9971 13.8164C15.6473 13.8164 15.4756 13.9818 15.4756 14.3135V18.6709C15.4756 19.0026 15.6473 19.1719 15.9971 19.1719H18.9932C19.3427 19.1717 19.5137 19.0024 19.5137 18.6709V14.3135C19.5137 13.982 19.3426 13.8166 18.9932 13.8164H15.9971ZM8.52441 2C9.20908 2 9.7889 2.23563 10.2734 2.71875C10.7579 3.20184 10.9999 3.80885 11 4.53906V10.4443C11 11.1746 10.7579 11.7835 10.2734 12.2666C9.79942 12.7498 9.20911 13 8.52441 13H4.46484C3.78017 13 3.18983 12.7497 2.71582 12.2666C2.24198 11.7835 2 11.1745 2 10.4443V4.53906C2.00006 3.80887 2.2419 3.20183 2.71582 2.71875C3.18983 2.23561 3.78017 2.00001 4.46484 2H8.52441ZM4.99707 4.81641C4.64727 4.81641 4.47559 4.98181 4.47559 5.31348V9.6709C4.47559 10.0026 4.64726 10.1719 4.99707 10.1719H7.99316C8.34265 10.1717 8.51367 10.0024 8.51367 9.6709V5.31348C8.51367 4.98196 8.34265 4.81656 7.99316 4.81641H4.99707ZM19.5244 2C20.2091 2 20.7889 2.22533 21.2734 2.68652C21.7578 3.14766 22 3.72682 22 4.42383V6.56055C22 7.25758 21.7578 7.83865 21.2734 8.2998C20.7994 8.76099 20.2091 9 19.5244 9H15.4648C14.7802 8.99999 14.1898 8.76098 13.7158 8.2998C13.242 7.83867 13 7.25753 13 6.56055V4.42383C13 3.72687 13.242 3.14764 13.7158 2.68652C14.1898 2.22534 14.7802 2.00001 15.4648 2H19.5244ZM15.9971 4.6875C15.6473 4.6875 15.4756 4.84649 15.4756 5.16309V5.82227C15.4756 6.13886 15.6473 6.2998 15.9971 6.2998H18.9932C19.3427 6.29966 19.5137 6.13872 19.5137 5.82227V5.16309C19.5137 4.84663 19.3427 4.68764 18.9932 4.6875H15.9971Z" fill="currentColor"/>
-</svg></div>
+                <div class="service-icon-box">${icon('warehousewarehouse', 24)}</div>
                 <h3>1. Web Applications & Back-office Systems</h3>
                 <p>พัฒนาระบบหลังบ้านสำหรับธุรกิจ เช่น จัดการคลังสินค้า (WMS), บริหารงานขายและลูกค้า (CRM), ระบบจุดขายหน้าร้าน (POS) ออกแบบให้ใช้งานสะดวกและตอบสนองไว</p>
                 <ul class="service-list">
@@ -482,9 +521,7 @@
               </div>
 
               <div class="service-card">
-                <div class="service-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12.9199 1.24658C13.5952 0.474275 14.8574 1.09855 14.6533 2.104L13.5615 7.48096C13.4361 8.10037 13.9099 8.6792 14.542 8.6792H20.127C20.9601 8.67957 21.4273 9.63915 20.9141 10.2954L11.1475 22.772C10.4754 23.6304 9.10977 22.9464 9.39453 21.894L10.8926 16.3618C11.0646 15.7261 10.5853 15.1001 9.92676 15.1001H3.01172C2.15277 15.1001 1.69345 14.0886 2.25879 13.4419L12.9199 1.24658ZM12.3975 6.96924C12.5045 6.45609 11.8499 6.14512 11.5195 6.55225L6.62988 12.5786C6.36476 12.9053 6.5969 13.3938 7.01758 13.394H12.1631C12.4931 13.394 12.7328 13.7077 12.6455 14.0259L12.0195 16.3052C11.8726 16.8412 12.5793 17.1807 12.9062 16.731L16.9219 11.2075C17.1622 10.877 16.9262 10.4136 16.5176 10.4136H12.293C11.9757 10.4136 11.7388 10.1216 11.8037 9.81104L12.3975 6.96924Z" fill="currentColor"/>
-</svg></div>
+                <div class="service-icon-box">${icon('zap', 24)}</div>
                 <h3>2. Workflow & Process Automation</h3>
                 <p>สร้างระบบส่งต่องานอัตโนมัติ ลดขั้นตอนการทำงานที่ซ้ำซ้อน เช่น ระบบส่งต่อเอกสารลงนามออนไลน์ (E-Signature), ระบบติดตามสถานะพัสดุ และการแจ้งเตือนงาน</p>
                 <ul class="service-list">
@@ -495,9 +532,7 @@
               </div>
 
               <div class="service-card">
-                <div class="service-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12 23C12.7921 23 13.2272 22.1253 13.1283 21.3394C13.0585 20.7843 13.0945 20.2161 13.24 19.6656C13.5259 18.5841 14.213 17.6521 15.1616 17.0592C16.1101 16.4662 17.249 16.2568 18.3464 16.4735C18.5009 16.5041 18.653 16.5427 18.802 16.5891C20.1247 17.0009 21.8965 17.0043 22.3624 15.6997C22.7841 14.519 23.0021 13.2679 23 12C23 5.9247 18.0753 1 12 1C5.9247 1 1 5.9247 1 12C1 18.0753 5.9247 23 12 23ZM15.3 8.7C14.7165 8.7 14.1569 8.46821 13.7444 8.05563C13.3318 7.64305 13.1 7.08348 13.1 6.5C13.1 5.91652 13.3318 5.35695 13.7444 4.94437C14.1569 4.53179 14.7165 4.3 15.3 4.3C15.8835 4.3 16.443 4.53179 16.8556 4.94437C17.2682 5.35695 17.5 5.91652 17.5 6.5C17.5 7.08348 17.2682 7.64305 16.8556 8.05563C16.443 8.46821 15.8835 8.7 15.3 8.7ZM8.7 8.7C8.11652 8.7 7.55694 8.46821 7.14436 8.05563C6.73178 7.64305 6.5 7.08348 6.5 6.5C6.5 5.91652 6.73178 5.35695 7.14436 4.94437C7.55694 4.53179 8.11652 4.3 8.7 4.3C9.28347 4.3 9.84305 4.53179 10.2556 4.94437C10.6682 5.35695 10.9 5.91652 10.9 6.5C10.9 7.08348 10.6682 7.64305 10.2556 8.05563C9.84305 8.46821 9.28347 8.7 8.7 8.7ZM5.4 14.2C4.81652 14.2 4.25694 13.9682 3.84436 13.5556C3.43178 13.1431 3.2 12.5835 3.2 12C3.2 11.4165 3.43178 10.8569 3.84436 10.4444C4.25694 10.0318 4.81652 9.8 5.4 9.8C5.98347 9.8 6.54305 10.0318 6.95563 10.4444C7.36821 10.8569 7.6 11.4165 7.6 12C7.6 12.5835 7.36821 13.1431 6.95563 13.5556C6.54305 13.9682 5.98347 14.2 5.4 14.2ZM18.6 14.2C18.0165 14.2 17.4569 13.9682 17.0444 13.5556C16.6318 13.1431 16.4 12.5835 16.4 12C16.4 11.4165 16.6318 10.8569 17.0444 10.4444C17.4569 10.0318 18.0165 9.8 18.6 9.8C19.1835 9.8 19.743 10.0318 20.1556 10.4444C20.5682 10.8569 20.8 11.4165 20.8 12C20.8 12.5835 20.5682 13.1431 20.1556 13.5556C19.743 13.9682 19.1835 14.2 18.6 14.2ZM8.7 19.7C8.11652 19.7 7.55694 19.4682 7.14436 19.0556C6.73178 18.6431 6.5 18.0835 6.5 17.5C6.5 16.9165 6.73178 16.3569 7.14436 15.9444C7.55694 15.5318 8.11652 15.3 8.7 15.3C9.28347 15.3 9.84305 15.5318 10.2556 15.9444C10.6682 16.3569 10.9 16.9165 10.9 17.5C10.9 18.0835 10.6682 18.6431 10.2556 19.0556C9.84305 19.4682 9.28347 19.7 8.7 19.7Z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/>
-</svg></div>
+                <div class="service-icon-box">${icon('package', 24)}</div>
                 <h3>3. Modern Web Storefront & Landing Pages</h3>
                 <p>พัฒนาเว็บไซต์หน้าร้าน E-Commerce และหน้า Landing Page โปรโมตแบรนด์ ที่มีเอกลักษณ์เฉพาะตัว โหลดไว และจัดวาง Typography สวยงามมีพลัง</p>
                 <ul class="service-list">
@@ -508,9 +543,7 @@
               </div>
 
               <div class="service-card">
-                <div class="service-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13.3896 1C14.1117 1.00001 14.7224 1.23335 15.2334 1.71094C15.7444 2.18858 15.9999 2.78877 16 3.51074V6.47754C16 7.1997 15.7445 7.7996 15.2334 8.27734C14.7334 8.75508 14.1118 8.99999 13.3896 9H13V10C13 10.5523 13.4477 11 14 11H18C18.5304 11 19.039 11.2109 19.4141 11.5859C19.7891 11.961 20 12.4696 20 13V15H20.3896C21.1117 15 21.7224 15.2334 22.2334 15.7109C22.7444 16.1886 22.9999 16.7888 23 17.5107V20.4775C23 21.1997 22.7445 21.7996 22.2334 22.2773C21.7334 22.7551 21.1118 23 20.3896 23H17.5996C16.8775 23 16.2558 22.755 15.7559 22.2773C15.2559 21.7996 15 21.1997 15 20.4775V17.5107C15.0001 16.7887 15.256 16.1886 15.7559 15.7109C16.2557 15.2335 16.8777 15 17.5996 15H18V13.5C18 13.2239 17.7761 13 17.5 13H13.8281C13.2978 12.9999 12.7891 12.7891 12.4141 12.4141L12 12L11.5859 12.4141C11.2109 12.7891 10.7022 12.9999 10.1719 13H6.5C6.22386 13 6 13.2239 6 13.5V15H6.38965C7.11168 15 7.72238 15.2334 8.2334 15.7109C8.74436 16.1886 8.99989 16.7888 9 17.5107V20.4775C9 21.1997 8.74446 21.7996 8.2334 22.2773C7.73345 22.7551 7.1118 23 6.38965 23H3.59961C2.87752 23 2.25578 22.755 1.75586 22.2773C1.25593 21.7996 1 21.1997 1 20.4775V17.5107C1.00009 16.7887 1.25599 16.1886 1.75586 15.7109C2.25572 15.2335 2.87769 15 3.59961 15H4V13C4 12.4696 4.21087 11.961 4.58594 11.5859C4.96101 11.2109 5.46957 11 6 11H10C10.5523 11 11 10.5523 11 10V9H10.5996C9.87753 8.99996 9.25578 8.75505 8.75586 8.27734C8.25593 7.79961 8 7.19969 8 6.47754V3.51074C8.00009 2.78874 8.25599 2.1886 8.75586 1.71094C9.25572 1.23346 9.87769 1.00004 10.5996 1H13.3896ZM3.68652 16.9785C3.21815 16.9786 2.98936 17.1872 2.98926 17.6035V20.3857C2.98942 20.802 3.21821 21.0106 3.68652 21.0107H6.30273C6.77129 21.0107 7 20.8013 7 20.3848V17.6035C6.99988 17.1872 6.77117 16.9796 6.30273 16.9795L5.20215 16.9785C5.1368 16.9919 5.06932 17 5 17C4.93001 17 4.86183 16.9922 4.7959 16.9785H3.68652ZM17.6865 16.9785C17.2182 16.9786 16.9894 17.1872 16.9893 17.6035V20.3857C16.9894 20.802 17.2182 21.0106 17.6865 21.0107H20.3027C20.7713 21.0107 21 20.8013 21 20.3848V17.6035C20.9999 17.1872 20.7712 16.9796 20.3027 16.9795L19.2021 16.9785C19.1368 16.9919 19.0693 17 19 17C18.93 17 18.8618 16.9922 18.7959 16.9785H17.6865ZM10.6865 2.97852C10.2182 2.97863 9.98936 3.18716 9.98926 3.60352V6.38574C9.98942 6.80199 10.2182 7.01063 10.6865 7.01074H11.8604C11.906 7.00435 11.9526 7 12 7C12.0474 7 12.094 7.00435 12.1396 7.01074H13.3027C13.7713 7.01066 14 6.80134 14 6.38477V3.60352C13.9999 3.18716 13.7712 2.97957 13.3027 2.97949L10.6865 2.97852Z" fill="currentColor"/>
-</svg></div>
+                <div class="service-icon-box">${icon('network', 24)}</div>
                 <h3>4. API Integration & System Architecture</h3>
                 <p>วางสถาปัตยกรรมระบบและเชื่อมต่อบริการภายนอก เช่น Proxy, Third-party APIs, ระบบขนส่ง และเตรียมความพร้อมสำหรับฐานข้อมูล Production</p>
                 <ul class="service-list">
@@ -595,35 +628,58 @@
 
           <!-- Footer -->
           <footer class="portal-footer">
-            <div>© ${new Date().getFullYear()} Preeya · Creative Developer Portfolio</div>
+            <div>© ${new Date().getFullYear()} LogisME / Preeya · Enterprise Architecture</div>
             <div>Modern Engineering Standards · Enterprise Ready Architecture</div>
           </footer>
         </div>
       `;
 
-      // Bind Filter Tab Events
+      // Event Bindings
       app.querySelectorAll('[data-filter]').forEach(btn => {
         btn.addEventListener('click', () => {
           activeFilter = btn.dataset.filter;
           renderPortalContent();
-  
         });
       });
 
-      // Bind Detail Modal Triggers
       app.querySelectorAll('[data-detail]').forEach(btn => {
         btn.addEventListener('click', () => {
           openProjectDetail(btn.dataset.detail);
         });
       });
 
-      // Bind Theme Toggle
-      const currentTheme = document.documentElement.dataset.theme || 'light';
-      const iconEl = document.getElementById('theme-icon');
-      if (iconEl) iconEl.innerHTML = currentTheme === 'dark' ? SVG_SUN : SVG_MOON;
+      // Topbar Theme Toggle Buttons
+      app.querySelectorAll('.theme-opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setTheme(btn.dataset.themeVal);
+        });
+      });
 
-      document.getElementById('theme-toggle')?.addEventListener('click', () => {
-        setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+      // Language Switcher Buttons
+      app.querySelectorAll('.lang-opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeLang = btn.dataset.lang;
+          renderPortalContent();
+        });
+      });
+
+      // Search Input
+      const searchInput = document.getElementById('topbar-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          renderPortalContent();
+          const renewedInput = document.getElementById('topbar-search-input');
+          if (renewedInput) {
+            renewedInput.focus();
+            renewedInput.setSelectionRange(searchQuery.length, searchQuery.length);
+          }
+        });
+      }
+
+      app.querySelector('.clear-search-btn')?.addEventListener('click', () => {
+        searchQuery = '';
+        renderPortalContent();
       });
     }
 
