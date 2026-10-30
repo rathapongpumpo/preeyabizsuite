@@ -247,20 +247,16 @@
 
       app.innerHTML = `
         <div class="portal-wrap">
-          <!-- Topbar Header (Exact LogisME Style) -->
+          <!-- Topbar Header (Enterprise Style) -->
           <nav class="portal-nav" id="top">
             <div class="nav-left">
-              <a class="logis-topbar-brand" href="/" aria-label="Home">
+              <a class="logis-topbar-brand" href="/" aria-label="Preeya Portfolio">
                 <span class="logis-brand-badge">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <rect width="24" height="24" rx="6" fill="#1677FF"/>
-                    <path d="M7 6h6a4 4 0 0 1 4 4c0 2.21-1.79 4-4 4H7V6z" fill="#FFFFFF"/>
-                    <circle cx="11.5" cy="10" r="1.5" fill="#1677FF"/>
-                  </svg>
+                  <span style="color:#fff;font-weight:900;font-size:18px">P</span>
                 </span>
                 <div class="logis-brand-text">
-                  <span class="brand-name">LogisME</span>
-                  <span class="brand-sub">Portfolio Edition</span>
+                  <span class="brand-name">Preeya</span>
+                  <span class="brand-sub">Systems & Full-Stack</span>
                 </div>
               </a>
 
@@ -271,7 +267,7 @@
               <div class="topbar-breadcrumb">
                 <span class="breadcrumb-item">My work</span>
                 <span class="breadcrumb-sep">›</span>
-                <span class="breadcrumb-item active">Home</span>
+                <span class="breadcrumb-item active">Systems Showcase</span>
               </div>
             </div>
 
@@ -301,25 +297,25 @@
               </button>
 
               <div class="topbar-user-badge">
-                <div class="user-avatar-circle">ป</div>
+                <div class="user-avatar-circle">P</div>
                 <div class="user-meta-lines">
-                  <span class="user-name-text">ปิยะนุช วงศ์สถิตย์</span>
-                  <span class="user-role-text">Administrator</span>
+                  <span class="user-name-text">Preeya</span>
+                  <span class="user-role-text">Systems Engineer</span>
                 </div>
                 <span class="user-chevron-icon">${icon('chevron-down', 13)}</span>
               </div>
             </div>
           </nav>
 
-          <!-- Hero Section (Exact LogisME Style with Tablet Device) -->
+          <!-- Hero Section (Tablet Device Style) -->
           <section class="hero-section">
             <div class="hero-content">
               <h1 class="hero-title">
-                <span class="hero-blue-lead">Track everything.</span>
-                <span class="hero-blue-lead">Move Forward</span>
+                <span class="hero-blue-lead">พัฒนาเว็บแอป ระบบหลังบ้าน</span>
+                <span class="hero-blue-lead">และระบบอัตโนมัติสำหรับธุรกิจ</span>
               </h1>
               <p class="hero-desc">
-                AI-powered visibility for your shipments, vehicles and assets - all in one place. ออกแบบสถาปัตยกรรมระบบคลังสินค้า (WMS), งานขายและสัญญา (CRM), จุดขายหน้าร้าน (POS) และระบบขนส่ง ครบวงจร พร้อมทดลอง Interactive Flow ได้จริง
+                ออกแบบและพัฒนาสถาปัตยกรรมระบบที่แม่นยำ ปลอดภัย และขยายตัวได้จริง รองรับงานคลังสินค้า (WMS), บริหารงานขายและสัญญา (CRM & E-Sign), จุดขายหน้าร้าน (POS) และระบบขนส่ง (Logistics) ครบวงจร พร้อมทดลอง Interactive Flow ได้จริงทุกระบบ
               </p>
               <div class="hero-ctas">
                 <a class="btn primary hero-btn" href="#projects">ดูระบบงานจริง (6 ระบบ) ↓</a>
@@ -370,57 +366,57 @@
             </div>
           </section>
 
-          <!-- Overview Dashboard Section (Exact replica of ref_home_cards.png) -->
+          <!-- Overview Dashboard Section (Architecture Overview) -->
           <section class="portal-section overview-section" id="overview">
             <div class="overview-header-row">
               <div>
-                <h2 class="overview-heading">Hello, Platform Administrator</h2>
-                <p class="overview-subtext">An overview of the work and status relevant to your role</p>
+                <h2 class="overview-heading">สถาปัตยกรรมและภาพรวมระบบ (Architecture Overview)</h2>
+                <p class="overview-subtext">ภาพรวมระบบ Enterprise และสถานะโมดูลที่เปิดให้ทดลองใช้งานจริง</p>
               </div>
               <a class="btn primary customize-btn" href="#projects">
-                ${icon('layout-dashboard', 16)} Customize home
+                ${icon('layout-dashboard', 16)} ดูระบบทั้งหมด
               </a>
             </div>
 
             <div class="overview-group-title">
-              <h3>Chats by type</h3>
+              <h3>ระบบและโมดูลการทำงาน (Enterprise System Modules)</h3>
             </div>
 
             <div class="logis-metric-cards-grid">
               <a class="logis-metric-card" href="/warehouse-management">
-                <div class="metric-card-icon-box">${icon('clipboard-list', 18)}</div>
-                <div class="metric-card-title">Tasks waiting for me</div>
-                <div class="metric-card-val">0</div>
-                <div class="metric-card-desc">Approval tasks you can act on</div>
+                <div class="metric-card-icon-box">${icon('warehousewarehouse', 18)}</div>
+                <div class="metric-card-title">NexusWMS · สต็อก & คลังสินค้า</div>
+                <div class="metric-card-val">1,420</div>
+                <div class="metric-card-desc">Active SKUs, Barcode Scanner & แผนผังคลัง 4 โซน</div>
+              </a>
+              <a class="logis-metric-card" href="/business-suite">
+                <div class="metric-card-icon-box">${icon('handshake', 18)}</div>
+                <div class="metric-card-title">Sales Flow CRM & สัญญา</div>
+                <div class="metric-card-val">18</div>
+                <div class="metric-card-desc">Deals Pipeline, ใบเสนอราคา & E-Signature</div>
+              </a>
+              <a class="logis-metric-card" href="/pos-system-smart">
+                <div class="metric-card-icon-box">${icon('zap', 18)}</div>
+                <div class="metric-card-title">SmartPOS ร้านอาหาร & ครัว</div>
+                <div class="metric-card-val">฿48,920</div>
+                <div class="metric-card-desc">Cashier POS, หน้าจอครัว KDS & Kiosk</div>
               </a>
               <a class="logis-metric-card" href="/usa-thai-shipping">
                 <div class="metric-card-icon-box">${icon('truck', 18)}</div>
-                <div class="metric-card-title">Orders awaiting review</div>
-                <div class="metric-card-val">0</div>
-                <div class="metric-card-desc">Work the system could not verify and nobody has decided yet</div>
+                <div class="metric-card-title">Thai Shipping · จัดการขนส่ง</div>
+                <div class="metric-card-val">156</div>
+                <div class="metric-card-desc">Air & Sea freight tracked with 4-stage timeline</div>
               </a>
               <div class="logis-metric-card">
-                <div class="metric-card-icon-box">${icon('circle-x', 18)}</div>
-                <div class="metric-card-title">Failed verifications today</div>
-                <div class="metric-card-val">0</div>
-                <div class="metric-card-desc">Times the Verification Gate stopped an order since midnight</div>
-              </div>
-              <div class="logis-metric-card">
-                <div class="metric-card-icon-box">${icon('clock', 18)}</div>
-                <div class="metric-card-title">Lots expiring soon</div>
-                <div class="metric-card-val">0</div>
-                <div class="metric-card-desc">Expire within 30 days</div>
-              </div>
-              <div class="logis-metric-card">
-                <div class="metric-card-icon-box">${icon('layers', 18)}</div>
-                <div class="metric-card-title">Lots on hold</div>
-                <div class="metric-card-val">0</div>
-                <div class="metric-card-desc">Waiting for release</div>
+                <div class="metric-card-icon-box">${icon('circle-check', 18)}</div>
+                <div class="metric-card-title">Security & State Architecture</div>
+                <div class="metric-card-val">100%</div>
+                <div class="metric-card-desc">Zero external leaks, Client-side state verified</div>
               </div>
             </div>
           </section>
 
-          <!-- Featured Works (3 Core Systems, Exact LogisME Cards) -->
+          <!-- Featured Works (3 Core Systems) -->
           <section class="portal-section" id="featured">
             <div class="section-header">
               <span class="eyebrow">Core Enterprise Systems</span>
@@ -628,7 +624,7 @@
 
           <!-- Footer -->
           <footer class="portal-footer">
-            <div>© ${new Date().getFullYear()} LogisME / Preeya · Enterprise Architecture</div>
+            <div>© ${new Date().getFullYear()} Preeya · Systems & Full-Stack Engineer</div>
             <div>Modern Engineering Standards · Enterprise Ready Architecture</div>
           </footer>
         </div>
