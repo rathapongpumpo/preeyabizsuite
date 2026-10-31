@@ -30,13 +30,15 @@ def run_tests():
         # 1. Homepage & Header UX
         print("\n[Test 1: Homepage & Header UX]", flush=True)
         page.goto(f"{BASE_URL}/", wait_until="networkidle")
-        brand_text = page.locator(".logis-brand-text .brand-name").inner_text()
+        brand_loc = page.locator(".portal-brand-name, .logis-brand-text .brand-name").first
+        brand_text = brand_loc.inner_text()
         record("Header Brand Name", "PREEYA SYSTEMS" in brand_text, brand_text)
 
-        badge_text = page.locator(".topbar-status-badge").inner_text()
-        record("Header Status Badge", "เปิดรับโปรเจกต์" in badge_text, badge_text)
+        badge_loc = page.locator(".hero-status-pill, .topbar-status-badge").first
+        badge_text = badge_loc.inner_text()
+        record("Header/Hero Status Badge", "เปิดรับโปรเจกต์" in badge_text, badge_text)
 
-        cta_btn = page.locator(".topbar-cta-btn").count()
+        cta_btn = page.locator(".portal-nav-cta, .topbar-cta-btn").count()
         record("Header CTA Button", cta_btn > 0)
 
         # Check Business Impact Badges before filtering

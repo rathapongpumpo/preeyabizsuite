@@ -249,46 +249,66 @@
         <div class="portal-wrap">
           <!-- Topbar Header (Enterprise Style) -->
           <nav class="portal-nav" id="top">
-            <div class="nav-left">
-              <a class="logis-topbar-brand" href="/" aria-label="Preeya Systems">
-                <span class="logis-brand-badge">
-                  <span style="color:#fff;font-weight:900;font-size:18px">P</span>
-                </span>
-                <div class="logis-brand-text">
-                  <span class="brand-name">PREEYA SYSTEMS</span>
-                  <span class="brand-sub">B2B SOFTWARE STUDIO & ARCHITECTURE</span>
+            <div class="portal-nav-container">
+              <div class="portal-nav-left">
+                <a class="portal-brand" href="/" aria-label="Preeya Systems">
+                  <span class="portal-brand-badge">P</span>
+                  <div class="portal-brand-info">
+                    <span class="portal-brand-name">PREEYA SYSTEMS</span>
+                    <span class="portal-brand-tag">B2B Software Studio</span>
+                  </div>
+                </a>
+
+                <!-- Desktop Navigation Menu -->
+                <div class="portal-nav-menu" role="navigation" aria-label="Main Navigation">
+                  <a href="#projects" class="portal-nav-item">ระบบงานเดโม (6)</a>
+                  <a href="#pricing" class="portal-nav-item">แพ็กเกจ & ราคา</a>
+                  <a href="#guarantees" class="portal-nav-item">การรับประกัน SLA</a>
+                  <a href="#about-architect" class="portal-nav-item">สถาปนิกผู้พัฒนา</a>
                 </div>
-              </a>
+              </div>
 
-              <button class="topbar-icon-btn sidebar-toggle-btn" type="button" aria-label="Toggle Navigation">
-                ${icon('panel-left-open', 18)}
-              </button>
+              <div class="portal-nav-right">
+                <div class="portal-search-box">
+                  <span class="search-icon-slot">${icon('search', 14)}</span>
+                  <input type="text" id="topbar-search-input" placeholder="ค้นหาระบบ..." value="${esc(searchQuery)}" aria-label="Search systems">
+                  ${searchQuery ? `<button class="clear-search-btn" type="button" aria-label="Clear search">×</button>` : ''}
+                </div>
 
-              <div class="topbar-breadcrumb">
-                <a href="#top" class="breadcrumb-item" style="color:inherit;text-decoration:none">Preeya Systems Studio</a>
-                <span class="breadcrumb-sep">›</span>
-                <a href="#projects" class="breadcrumb-item" style="color:inherit;text-decoration:none">ผลงานระบบเดโม (6)</a>
-                <span class="breadcrumb-sep">›</span>
-                <a href="#pricing" class="breadcrumb-item active" style="color:var(--primary);text-decoration:none">แพ็กเกจและราคา</a>
+                <div class="topbar-theme-pill" role="group" aria-label="Theme selector">
+                  <button class="theme-opt ${currentTheme === 'system' ? 'active' : ''}" type="button" data-theme-val="system" title="System Theme">${icon('monitor', 14)}</button>
+                  <button class="theme-opt ${currentTheme === 'light' ? 'active' : ''}" type="button" data-theme-val="light" title="Light Theme">${icon('sun', 14)}</button>
+                  <button class="theme-opt ${currentTheme === 'dark' ? 'active' : ''}" type="button" data-theme-val="dark" title="Dark Theme">${icon('moon', 14)}</button>
+                </div>
+
+                <a class="btn primary small portal-nav-cta" href="#estimator-form">ประเมินราคาฟรี</a>
+
+                <button class="portal-mobile-toggle" id="portal-mobile-toggle" type="button" aria-label="เปิดเมนู" aria-expanded="false">
+                  <span class="hamburger-bar"></span>
+                  <span class="hamburger-bar"></span>
+                  <span class="hamburger-bar"></span>
+                </button>
               </div>
             </div>
 
-            <div class="nav-right">
-              <div class="topbar-search-wrap">
-                <span class="search-icon-slot">${icon('search', 15)}</span>
-                <input type="text" id="topbar-search-input" placeholder="ค้นหาระบบ (เช่น สต็อก, POS, CRM)..." value="${esc(searchQuery)}" aria-label="Search systems">
-                ${searchQuery ? `<button class="clear-search-btn" type="button" aria-label="Clear search">×</button>` : ''}
-              </div>
-
-              <div class="topbar-theme-pill" role="group" aria-label="Theme selector">
-                <button class="theme-opt ${currentTheme === 'system' ? 'active' : ''}" type="button" data-theme-val="system" title="System Theme">${icon('monitor', 15)}</button>
-                <button class="theme-opt ${currentTheme === 'light' ? 'active' : ''}" type="button" data-theme-val="light" title="Light Theme">${icon('sun', 15)}</button>
-                <button class="theme-opt ${currentTheme === 'dark' ? 'active' : ''}" type="button" data-theme-val="dark" title="Dark Theme">${icon('moon', 15)}</button>
-              </div>
-
-              <div class="topbar-cta-group">
-                <span class="topbar-status-badge">🟢 เปิดรับโปรเจกต์ (Available for Q4/2026)</span>
-                <a class="btn primary small topbar-cta-btn" href="#estimator-form">ประเมินราคา / ปรึกษาฟรี</a>
+            <!-- Mobile Dropdown / Drawer -->
+            <div class="portal-mobile-menu" id="portal-mobile-menu" hidden>
+              <div class="mobile-menu-inner">
+                <div class="mobile-menu-search">
+                  <span class="search-icon-slot">${icon('search', 14)}</span>
+                  <input type="text" id="mobile-search-input" placeholder="ค้นหาระบบเดโม..." value="${esc(searchQuery)}">
+                </div>
+                <nav class="mobile-menu-nav">
+                  <a href="#projects" class="mobile-nav-link"><span>🚀 ระบบงานเดโม (6 ระบบ)</span><span class="badge primary">Interactive</span></a>
+                  <a href="#pricing" class="mobile-nav-link"><span>💰 แพ็กเกจและราคาเริ่มต้น</span></a>
+                  <a href="#guarantees" class="mobile-nav-link"><span>🛡️ มาตรฐานรับประกัน SLA 1 ปี</span></a>
+                  <a href="#about-architect" class="mobile-nav-link"><span>👨‍💻 ข้อมูล Lead Architect & Tech Stack</span></a>
+                  <a href="#estimator-form" class="mobile-nav-link highlight"><span>⚡ เครื่องคำนวณงบประมาณ (Estimator) →</span></a>
+                </nav>
+                <div class="mobile-menu-actions">
+                  <a class="btn primary small" href="#estimator-form" style="width:100%;justify-content:center">ประเมินราคา / ขอใบเสนอราคา</a>
+                  <a class="btn outline small" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755;width:100%;justify-content:center">ทัก LINE ปรึกษาด่วน ↗</a>
+                </div>
               </div>
             </div>
           </nav>
@@ -296,6 +316,10 @@
           <!-- Hero Section (Tablet Device Style) -->
           <section class="hero-section">
             <div class="hero-content">
+              <div class="hero-status-pill">
+                <span class="status-pulse-dot"></span>
+                <span>🟢 เปิดรับโปรเจกต์ใหม่ (Available for Q4/2026) • รับประกัน SLA 1 ปี</span>
+              </div>
               <h1 class="hero-title">
                 <span class="hero-blue-lead">ออกแบบและพัฒนาระบบเว็บแอปพลิเคชัน</span>
                 <span class="hero-blue-lead">ระบบหลังบ้าน และซอฟต์แวร์บริหารธุรกิจครบวงจร</span>
@@ -991,7 +1015,7 @@
         });
       });
 
-      // Search Input
+      // Search Inputs (Desktop & Mobile)
       const searchInput = document.getElementById('topbar-search-input');
       if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -1007,6 +1031,55 @@
           if (e.key === 'Enter') {
             e.preventDefault();
             document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      // Mobile Drawer Search & Toggle
+      const mobileSearchInput = document.getElementById('mobile-search-input');
+      if (mobileSearchInput) {
+        mobileSearchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          renderPortalContent();
+          const renewedMobileMenu = document.getElementById('portal-mobile-menu');
+          const renewedMobileToggle = document.getElementById('portal-mobile-toggle');
+          if (renewedMobileMenu) renewedMobileMenu.hidden = false;
+          if (renewedMobileToggle) {
+            renewedMobileToggle.classList.add('active');
+            renewedMobileToggle.setAttribute('aria-expanded', 'true');
+          }
+          const renewedMobileInput = document.getElementById('mobile-search-input');
+          if (renewedMobileInput) {
+            renewedMobileInput.focus();
+            renewedMobileInput.setSelectionRange(searchQuery.length, searchQuery.length);
+          }
+        });
+      }
+
+      const mobileToggle = document.getElementById('portal-mobile-toggle');
+      const mobileMenu = document.getElementById('portal-mobile-menu');
+      if (mobileToggle && mobileMenu) {
+        mobileToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = !mobileMenu.hidden;
+          mobileMenu.hidden = isOpen;
+          mobileToggle.classList.toggle('active', !isOpen);
+          mobileToggle.setAttribute('aria-expanded', String(!isOpen));
+        });
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.hidden = true;
+            mobileToggle.classList.remove('active');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+          });
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!mobileMenu.contains(e.target) && !mobileToggle.contains(e.target) && !mobileMenu.hidden) {
+            mobileMenu.hidden = true;
+            mobileToggle.classList.remove('active');
+            mobileToggle.setAttribute('aria-expanded', 'false');
           }
         });
       }
