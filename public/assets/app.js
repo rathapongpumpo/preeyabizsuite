@@ -250,13 +250,13 @@
           <!-- Topbar Header (Enterprise Style) -->
           <nav class="portal-nav" id="top">
             <div class="nav-left">
-              <a class="logis-topbar-brand" href="/" aria-label="Preeya Portfolio">
+              <a class="logis-topbar-brand" href="/" aria-label="Preeya Systems">
                 <span class="logis-brand-badge">
                   <span style="color:#fff;font-weight:900;font-size:18px">P</span>
                 </span>
                 <div class="logis-brand-text">
-                  <span class="brand-name">Preeya</span>
-                  <span class="brand-sub">Systems & Full-Stack</span>
+                  <span class="brand-name">PREEYA SYSTEMS</span>
+                  <span class="brand-sub">B2B SOFTWARE STUDIO & ARCHITECTURE</span>
                 </div>
               </a>
 
@@ -265,22 +265,19 @@
               </button>
 
               <div class="topbar-breadcrumb">
-                <span class="breadcrumb-item">My work</span>
+                <a href="#top" class="breadcrumb-item" style="color:inherit;text-decoration:none">Preeya Systems Studio</a>
                 <span class="breadcrumb-sep">›</span>
-                <span class="breadcrumb-item active">Systems Showcase</span>
+                <a href="#projects" class="breadcrumb-item" style="color:inherit;text-decoration:none">ผลงานระบบเดโม (6)</a>
+                <span class="breadcrumb-sep">›</span>
+                <a href="#pricing" class="breadcrumb-item active" style="color:var(--primary);text-decoration:none">แพ็กเกจและราคา</a>
               </div>
             </div>
 
             <div class="nav-right">
               <div class="topbar-search-wrap">
                 <span class="search-icon-slot">${icon('search', 15)}</span>
-                <input type="text" id="topbar-search-input" placeholder="Search..." value="${esc(searchQuery)}" aria-label="Search systems">
+                <input type="text" id="topbar-search-input" placeholder="ค้นหาระบบ (เช่น สต็อก, POS, CRM)..." value="${esc(searchQuery)}" aria-label="Search systems">
                 ${searchQuery ? `<button class="clear-search-btn" type="button" aria-label="Clear search">×</button>` : ''}
-              </div>
-
-              <div class="topbar-lang-pill" role="group" aria-label="Language">
-                <button class="lang-opt ${activeLang === 'th' ? 'active' : ''}" type="button" data-lang="th">ไทย</button>
-                <button class="lang-opt ${activeLang === 'en' ? 'active' : ''}" type="button" data-lang="en">EN</button>
               </div>
 
               <div class="topbar-theme-pill" role="group" aria-label="Theme selector">
@@ -289,20 +286,9 @@
                 <button class="theme-opt ${currentTheme === 'dark' ? 'active' : ''}" type="button" data-theme-val="dark" title="Dark Theme">${icon('moon', 15)}</button>
               </div>
 
-              <button class="topbar-icon-btn bell-btn" type="button" aria-label="Notifications">
-                <svg class="icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                <span class="bell-unread-dot"></span>
-              </button>
-
-              <div class="topbar-user-badge">
-                <div class="user-avatar-circle">P</div>
-                <div class="user-meta-lines">
-                  <span class="user-name-text">Preeya</span>
-                  <span class="user-role-text">Systems Engineer</span>
-                </div>
-                <span class="user-chevron-icon">${icon('chevron-down', 13)}</span>
+              <div class="topbar-cta-group">
+                <span class="topbar-status-badge">🟢 เปิดรับโปรเจกต์ (Available for Q4/2026)</span>
+                <a class="btn primary small topbar-cta-btn" href="#estimator-form">ประเมินราคา / ปรึกษาฟรี</a>
               </div>
             </div>
           </nav>
@@ -311,15 +297,21 @@
           <section class="hero-section">
             <div class="hero-content">
               <h1 class="hero-title">
-                <span class="hero-blue-lead">พัฒนาเว็บแอป ระบบหลังบ้าน</span>
-                <span class="hero-blue-lead">และระบบอัตโนมัติสำหรับธุรกิจ</span>
+                <span class="hero-blue-lead">ออกแบบและพัฒนาระบบเว็บแอปพลิเคชัน</span>
+                <span class="hero-blue-lead">ระบบหลังบ้าน และซอฟต์แวร์บริหารธุรกิจครบวงจร</span>
               </h1>
               <p class="hero-desc">
-                ออกแบบและพัฒนาสถาปัตยกรรมระบบที่แม่นยำ ปลอดภัย และขยายตัวได้จริง รองรับงานคลังสินค้า (WMS), บริหารงานขายและสัญญา (CRM & E-Sign), จุดขายหน้าร้าน (POS) และระบบขนส่ง (Logistics) ครบวงจร พร้อมทดลอง Interactive Flow ได้จริงทุกระบบ
+                ยกระดับธุรกิจจากงานเอกสารและสเปรดชีตที่กระจัดกระจาย สู่ระบบดิจิทัลที่ออกแบบตามการทำงานจริงของคุณ พัฒนาและควบคุมสถาปัตยกรรมระบบโดย <strong>Lead Full-Stack & Systems Engineer</strong> พร้อมมาตรฐานการส่งมอบงานระดับองค์กร ส่งมอบโค้ด 100% และดูแลหลังการขายชัดเจน
               </p>
               <div class="hero-ctas">
                 <a class="btn primary hero-btn" href="#projects">ดูระบบงานจริง (6 ระบบ) ↓</a>
-                <a class="btn outline hero-btn" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">ปรึกษาโปรเจกต์ B2B ↗</a>
+                <a class="btn outline hero-btn" href="#estimator-form">ประเมินงบประมาณ / ปรึกษาฟรี →</a>
+                <a class="btn outline hero-btn" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755">ทัก LINE ปรึกษาด่วน ↗</a>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;font-size:12.5px;color:var(--muted)">
+                <span>✓ ทดลองใช้งานระบบจริงได้ทันทีบนเบราว์เซอร์</span>
+                <span>✓ ปรับแต่งจากโครงสร้างสำเร็จรูปหรือพัฒนาใหม่ตามโจทย์ 100%</span>
+                <span>✓ สัญญาจ้างชัดเจน ส่งมอบ Source Code พร้อมรับประกันดูแลหลังส่งมอบ</span>
               </div>
               <div class="hero-stats-banner">
                 <div class="hero-stat-item">
@@ -441,6 +433,7 @@
                   </div>
                   <div class="feat-card-body">
                     <h3>${esc(p.short || p.title)}</h3>
+                    <div class="business-impact-badge">${esc(p.impact)}</div>
                     <p>${esc(p.description)}</p>
                     <div class="feat-card-tags">
                       ${(p.highlights || []).slice(0, 3).map(h => `<span class="feat-tag">${esc(h)}</span>`).join('')}
@@ -485,6 +478,7 @@
                       ${p.featured ? '<span class="feat-star">★ แนะนำ</span>' : ''}
                     </div>
                     <h4>${esc(p.short || p.title)}</h4>
+                    <div class="business-impact-badge">${esc(p.impact)}</div>
                     <p>${esc(p.description)}</p>
                     <div class="work-item-foot">
                       <button class="btn small outline" type="button" data-detail="${path}">📋 รายละเอียด</button>
@@ -588,6 +582,344 @@
             </div>
           </section>
 
+
+          <!-- Priority 4.3: Packages & Pricing -->
+          <section class="portal-section" id="pricing">
+            <div class="section-header">
+              <span class="eyebrow">Investment & Packages</span>
+              <h2>แพ็กเกจบริการและกรอบราคาเริ่มต้น</h2>
+              <p>เลือกลักษณะบริการที่เหมาะกับขนาดธุรกิจและเป้าหมายของคุณ งบประมาณโปร่งใส ไม่มีค่าบริการแอบแฝง</p>
+            </div>
+
+            <div class="pricing-grid">
+              <article class="pricing-card">
+                <h3 class="pricing-title">Ready-to-Customize Suite</h3>
+                <p class="pricing-desc">นำโครงสร้างระบบสำเร็จรูป (WMS, POS, CRM, ชิปปิ้ง, E-Commerce, ระบบจอง) มาปรับแต่งให้เข้ากับแบรนด์และกระบวนการทำงาน</p>
+                <div class="pricing-price">35,000 – 75,000 ฿</div>
+                <div class="pricing-timeline">⏱️ ระยะเวลาส่งมอบ: 2 – 4 สัปดาห์</div>
+                <ul class="pricing-features">
+                  <li><span>✓</span> ปรับแต่ง UI แบรนด์ โลโก้ และฟิลด์ข้อมูลตามธุรกิจคุณ</li>
+                  <li><span>✓</span> เชื่อมต่อฐานข้อมูลจริง (PostgreSQL / Supabase / Firebase)</li>
+                  <li><span>✓</span> ระบบ Login กำหนดสิทธิ์พนักงานหลายระดับ</li>
+                  <li><span>✓</span> ติดตั้งระบบขึ้น Cloud Server พร้อมโดเมนของคุณเอง</li>
+                  <li><span>✓</span> คู่มือการใช้งานและรับประกันดูแลแก้บั๊กฟรี 60 วัน</li>
+                </ul>
+                <a class="btn outline" href="#estimator-form" data-set-model="template">เลือกปรับแต่งจากระบบต้นแบบ →</a>
+              </article>
+
+              <article class="pricing-card popular">
+                <span class="popular-badge">แนะนำ / Popular</span>
+                <h3 class="pricing-title">Custom Business System</h3>
+                <p class="pricing-desc">ออกแบบและพัฒนาระบบใหม่ทั้งหมดตามขั้นตอนการทำงานเฉพาะ เชื่อมต่อ API ระบบบัญชี ERP หรือ LINE OA เดิม</p>
+                <div class="pricing-price">80,000 – 250,000+ ฿</div>
+                <div class="pricing-timeline">⏱️ ระยะเวลาส่งมอบ: 4 – 10 สัปดาห์ (แบ่งงวดงาน)</div>
+                <ul class="pricing-features">
+                  <li><span>✓</span> วิเคราะห์และออกแบบ UX/UI Prototype ให้ตรวจก่อนเริ่มเขียนโค้ด</li>
+                  <li><span>✓</span> พัฒนาระบบ Full-Stack (Frontend + Backend + Database + API)</li>
+                  <li><span>✓</span> จัดการสิทธิ์ผู้ใช้หลายระดับ (Role-Based Access) และ Audit Log</li>
+                  <li><span>✓</span> ส่งมอบ Source Code ทั้งหมด 100% ไม่มีรายเดือนผูกมัด</li>
+                  <li><span>✓</span> อบรมทีมงานและรับประกันดูแลระบบหลังส่งมอบฟรี 90 วัน</li>
+                </ul>
+                <a class="btn primary" href="#estimator-form" data-set-model="scratch">ปรึกษาและประเมินราคาโปรเจกต์ →</a>
+              </article>
+
+              <article class="pricing-card">
+                <h3 class="pricing-title">Dedicated Engineer & Partner</h3>
+                <p class="pricing-desc">ทีมนักพัฒนา Full-Stack ดูแล พัฒนาต่อยอด และแก้ปัญหาคอขวดของระบบเดิมแบบรายเดือนต่อเนื่อง</p>
+                <div class="pricing-price">เริ่มต้น 25,000 ฿ / เดือน</div>
+                <div class="pricing-timeline">⏱️ รูปแบบบริการ: สัญญารายเดือน (Monthly Retainer)</div>
+                <ul class="pricing-features">
+                  <li><span>✓</span> พัฒนาฟีเจอร์ใหม่และปรับปรุง Performance</li>
+                  <li><span>✓</span> ดูแลความปลอดภัย อัปเดตแพตช์ และสำรองข้อมูล</li>
+                  <li><span>✓</span> ประชุมอัปเดตงานรายสัปดาห์พร้อมรายงานสถานะชัดเจน</li>
+                  <li><span>✓</span> มี SLA รับประกันเวลาเข้าแก้ไขปัญหาเร่งด่วน</li>
+                  <li><span>✓</span> ให้คำปรึกษาเชิงสถาปัตยกรรมระบบตลอดสัญญา</li>
+                </ul>
+                <a class="btn outline" href="#estimator-form" data-set-model="retainer">สอบถามคิวงานนักพัฒนา →</a>
+              </article>
+            </div>
+          </section>
+
+          <!-- Priority 4.4: Trust & SLA Guarantees -->
+          <section class="portal-section" id="guarantees">
+            <div class="section-header">
+              <span class="eyebrow">Enterprise Standards</span>
+              <h2>มาตรฐานการส่งมอบและการรับประกัน (Trust & SLA Guarantees)</h2>
+              <p>สร้างความมั่นใจสูงสุดในการทำงานร่วมกัน ด้วยมาตรฐานการส่งมอบระดับองค์กรและสัญญาจ้างที่โปร่งใส</p>
+            </div>
+
+            <div class="guarantees-grid">
+              <div class="guarantee-card">
+                <span class="guarantee-num">01 / Ownership</span>
+                <h3 class="guarantee-title">ส่งมอบกรรมสิทธิ์ Source Code 100%</h3>
+                <p class="guarantee-desc">ลูกค้าเป็นเจ้าของซอร์สโค้ดและฐานข้อมูลทั้งหมด สามารถนำไปพัฒนาต่อหรือย้ายเซิร์ฟเวอร์ได้ตลอดเวลา ไม่มีการล็อกระบบ</p>
+              </div>
+              <div class="guarantee-card">
+                <span class="guarantee-num">02 / Milestones</span>
+                <h3 class="guarantee-title">สัญญาจ้างและแบ่งงวดงานโปร่งใส</h3>
+                <p class="guarantee-desc">แบ่งชำระตามความคืบหน้าของงานที่ตรวจสอบได้จริงบนลิงก์ Staging (เช่น 30% เริ่มงาน / 40% ส่งมอบระบบทดสอบ / 30% ส่งมอบงานขั้นสุดท้าย)</p>
+              </div>
+              <div class="guarantee-card">
+                <span class="guarantee-num">03 / Warranty</span>
+                <h3 class="guarantee-title">รับประกันดูแลหลังส่งมอบ (Warranty & Support)</h3>
+                <p class="guarantee-desc">รับประกันแก้ไขข้อผิดพลาด (Bug Fix) ฟรีสูงสุด 60–90 วันหลังขึ้นระบบจริง พร้อมบริการดูแลรายปีให้เลือกตามต้องการ</p>
+              </div>
+              <div class="guarantee-card">
+                <span class="guarantee-num">04 / Legal Docs</span>
+                <h3 class="guarantee-title">รองรับเอกสารสำหรับนิติบุคคล</h3>
+                <p class="guarantee-desc">สามารถออกใบเสนอราคา สัญญาจ้างพัฒนาซอฟต์แวร์ ใบส่งมอบงาน และรองรับการหักภาษี ณ ที่จ่ายสำหรับลูกค้าบริษัท</p>
+              </div>
+              <div class="guarantee-card">
+                <span class="guarantee-num">05 / Security</span>
+                <h3 class="guarantee-title">ความปลอดภัยและโครงสร้างระดับมาตรฐาน</h3>
+                <p class="guarantee-desc">ออกแบบระบบโดยคำนึงถึงการกำหนดสิทธิ์ผู้ใช้งาน (RBAC), การสำรองข้อมูลอัตโนมัติ และการปกป้องข้อมูลสำคัญของธุรกิจ</p>
+              </div>
+              <div class="guarantee-card">
+                <span class="guarantee-num">06 / Documentation</span>
+                <h3 class="guarantee-title">คู่มือและการส่งมอบที่ใช้งานได้จริง</h3>
+                <p class="guarantee-desc">มีเอกสารคู่มือการใช้งานสำหรับแอดมินและพนักงาน พร้อมเซสชันแนะนำการใช้งานก่อนเริ่มใช้งานจริง</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Priority 4.5: Lead Architect Profile -->
+          <section class="portal-section" id="about-architect">
+            <div class="section-header">
+              <span class="eyebrow">Lead Systems Engineer</span>
+              <h2>เกี่ยวกับผู้พัฒนาหลัก (Lead Systems Architect & Studio Profile)</h2>
+              <p>เบื้องหลังการออกแบบและส่งมอบระบบดิจิทัลสำหรับธุรกิจ</p>
+            </div>
+
+            <div class="architect-card">
+              <div class="architect-avatar-box">
+                <div class="architect-avatar">P</div>
+                <strong style="display:block;font-size:16px;margin-bottom:4px">Preeya</strong>
+                <span class="architect-role-tag">Lead Full-Stack & Systems</span>
+              </div>
+
+              <div class="architect-bio">
+                <h3>Preeya — Lead Full-Stack & Systems Engineer</h3>
+                <p>
+                  นักพัฒนาระบบซอฟต์แวร์ที่เชี่ยวชาญการเปลี่ยนขั้นตอนการทำงานที่ซับซ้อนของธุรกิจให้กลายเป็นเว็บแอปพลิเคชันที่ใช้งานง่าย รวดเร็ว และตรวจสอบได้จริง โดยเน้นการออกแบบสถาปัตยกรรมระบบที่ดูแลรักษาง่าย (Maintainable Architecture) และสร้างผลลัพธ์ที่วัดผลได้ให้กับธุรกิจ
+                </p>
+                <p>
+                  สำหรับโปรเจกต์ขนาดเล็กถึงกลาง ผมดูแลและลงมือพัฒนาเองในทุกขั้นตอนเพื่อให้ได้งานที่รวดเร็วและตรงโจทย์ที่สุด และสำหรับโปรเจกต์ระดับองค์กรขนาดใหญ่ เรามีเครือข่ายทีมนักพัฒนาเฉพาะทาง (UI/UX, Backend, QA) ที่ทำงานร่วมกันภายใต้มาตรฐานโค้ดและการตรวจสอบคุณภาพเดียวกัน
+                </p>
+
+                <div class="tech-stack-groups">
+                  <div>
+                    <div class="tech-stack-group-title">Frontend & UI Engineering</div>
+                    <div class="tech-pills">
+                      <span class="tech-pill">React</span>
+                      <span class="tech-pill">Next.js</span>
+                      <span class="tech-pill">TypeScript</span>
+                      <span class="tech-pill">Tailwind CSS</span>
+                      <span class="tech-pill">HTML5 Canvas</span>
+                      <span class="tech-pill">Responsive & PWA</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="tech-stack-group-title">Backend & API Integration</div>
+                    <div class="tech-pills">
+                      <span class="tech-pill">Node.js</span>
+                      <span class="tech-pill">RESTful API</span>
+                      <span class="tech-pill">GraphQL</span>
+                      <span class="tech-pill">Webhook & LINE Messaging API</span>
+                      <span class="tech-pill">Authentication & RBAC</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="tech-stack-group-title">Database & State Architecture</div>
+                    <div class="tech-pills">
+                      <span class="tech-pill">PostgreSQL</span>
+                      <span class="tech-pill">MySQL</span>
+                      <span class="tech-pill">Supabase</span>
+                      <span class="tech-pill">Prisma ORM</span>
+                      <span class="tech-pill">Redis</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="tech-stack-group-title">DevOps & Cloud Infrastructure</div>
+                    <div class="tech-pills">
+                      <span class="tech-pill">Vercel</span>
+                      <span class="tech-pill">Docker</span>
+                      <span class="tech-pill">Cloud Hosting</span>
+                      <span class="tech-pill">CI/CD Pipeline</span>
+                      <span class="tech-pill">Automated Backup</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="architect-action-links">
+                  <a class="btn small primary" href="https://github.com/rathapongpumpo" target="_blank" rel="noreferrer">GitHub Profile ↗</a>
+                  <a class="btn small outline" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755">ติดต่อผ่าน LINE OA ↗</a>
+                  <a class="btn small outline" href="mailto:r.pumpo@gmail.com">ส่งอีเมลคุยโจทย์ ↗</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Priority 2.2: Interactive Project Estimator Wizard -->
+          <section class="estimator-section" id="estimator-form">
+            <div class="section-header" style="text-align:center;max-width:700px;margin:0 auto 28px">
+              <span class="eyebrow" style="color:var(--primary)">Interactive Estimator</span>
+              <h2>ประเมินงบประมาณและส่งโจทย์โปรเจกต์</h2>
+              <p>เลือกประเภทระบบที่สนใจเพื่อดูประมาณการงบประมาณและระยะเวลาส่งมอบเบื้องต้นได้ทันที</p>
+            </div>
+
+            <div class="estimator-card">
+              <form id="project-estimator-form">
+                <!-- Step 1 -->
+                <div class="estimator-step">
+                  <h3 class="estimator-step-title"><span class="estimator-step-num">1</span> เลือกประเภทระบบที่สนใจ (เลือกได้มากกว่า 1 ข้อ)</h3>
+                  <div class="estimator-grid-options">
+                    <label class="estimator-option-box checked">
+                      <input type="checkbox" name="est-systems" value="wms" checked>
+                      <div class="option-content">
+                        <strong>ระบบคลังสินค้าและสต็อก</strong>
+                        <small>WMS, Inbound/Outbound, Barcode</small>
+                      </div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="checkbox" name="est-systems" value="crm">
+                      <div class="option-content">
+                        <strong>ระบบ CRM & เซ็นสัญญาออนไลน์</strong>
+                        <small>Sales Pipeline, Quotation, E-Signature</small>
+                      </div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="checkbox" name="est-systems" value="pos">
+                      <div class="option-content">
+                        <strong>ระบบหน้าร้าน POS & จอครัว</strong>
+                        <small>Cashier POS, KDS ครัว, โต๊ะอาหาร</small>
+                      </div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="checkbox" name="est-systems" value="shipping">
+                      <div class="option-content">
+                        <strong>ระบบชิปปิ้ง & ติดตามพัสดุ</strong>
+                        <small>Logistics, CBM Calculator, LINE Notify</small>
+                      </div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="checkbox" name="est-systems" value="storefront">
+                      <div class="option-content">
+                        <strong>เว็บไซต์ E-Commerce / จองคิว</strong>
+                        <small>Modern Storefront, ตะกร้าสินค้า, ระบบจอง</small>
+                      </div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="checkbox" name="est-systems" value="custom">
+                      <div class="option-content">
+                        <strong>ระบบ Custom / เชื่อมต่อ API</strong>
+                        <small>Web App เฉพาะทาง, ระบบอัตโนมัติ</small>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="estimator-step">
+                  <h3 class="estimator-step-title"><span class="estimator-step-num">2</span> รูปแบบการพัฒนาที่ต้องการ</h3>
+                  <div class="estimator-grid-options">
+                    <label class="estimator-option-box checked">
+                      <input type="radio" name="est-model" value="template" checked>
+                      <div class="option-content">
+                        <strong>ปรับแต่งจากระบบสำเร็จรูป (Suite)</strong>
+                        <small>ประหยัดงบและได้งานไวใน 2–4 สัปดาห์</small>
+                      </div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="radio" name="est-model" value="scratch">
+                      <div class="option-content">
+                        <strong>พัฒนาใหม่เฉพาะทาง (Custom)</strong>
+                        <small>ออกแบบตามขั้นตอนธุรกิจ 100% (4–10 สัปดาห์)</small>
+                      </div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="radio" name="est-model" value="retainer">
+                      <div class="option-content">
+                        <strong>ที่ปรึกษา / ดูแลระบบ (Retainer)</strong>
+                        <small>จ้างพัฒนาเพิ่มเติมและดูแลรายเดือน</small>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="estimator-step">
+                  <h3 class="estimator-step-title"><span class="estimator-step-num">3</span> งบประมาณที่ตั้งไว้โดยประมาณ</h3>
+                  <div class="estimator-grid-options">
+                    <label class="estimator-option-box">
+                      <input type="radio" name="est-budget" value="<35k">
+                      <div class="option-content"><strong>&lt; 35,000 บาท</strong><small>โปรเจกต์ MVP / Landing Page</small></div>
+                    </label>
+                    <label class="estimator-option-box checked">
+                      <input type="radio" name="est-budget" value="35k-80k" checked>
+                      <div class="option-content"><strong>35,000 – 80,000 บาท</strong><small>ปรับแต่งระบบจาก Suite</small></div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="radio" name="est-budget" value="80k-180k">
+                      <div class="option-content"><strong>80,000 – 180,000 บาท</strong><small>ระบบ Custom หลายโมดูล</small></div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="radio" name="est-budget" value=">180k">
+                      <div class="option-content"><strong>&gt; 180,000 บาท</strong><small>ระดับ Enterprise / หลายสาขา</small></div>
+                    </label>
+                    <label class="estimator-option-box">
+                      <input type="radio" name="est-budget" value="unsure">
+                      <div class="option-content"><strong>ยังไม่แน่ใจ</strong><small>ให้ทีมงานช่วยประเมินจากโจทย์</small></div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Live Calculation Box -->
+                <div class="estimator-calc-box">
+                  <div class="calc-metric-item">
+                    <small>ประมาณการกรอบงบประมาณเบื้องต้น:</small>
+                    <strong id="calc-est-price">35,000 – 75,000 บาท</strong>
+                  </div>
+                  <div class="calc-metric-item">
+                    <small>ระยะเวลาส่งมอบงานโดยประมาณ:</small>
+                    <strong id="calc-est-timeline">2 – 4 สัปดาห์</strong>
+                  </div>
+                  <div class="calc-metric-item">
+                    <small>การรับประกันและดูแลหลังส่งมอบ:</small>
+                    <strong style="color:var(--green)">ฟรี 60 – 90 วัน</strong>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="estimator-step" style="border-bottom:none">
+                  <h3 class="estimator-step-title"><span class="estimator-step-num">4</span> ข้อมูลติดต่อกลับ</h3>
+                  <div class="grid cols-2" style="gap:14px">
+                    <div class="field">
+                      <label>ชื่อผู้ติดต่อ / บริษัทหรือธุรกิจ <span style="color:var(--coral)">*</span></label>
+                      <input class="input" type="text" id="est-contact-name" placeholder="เช่น คุณปรียา / บริษัท เทค จำกัด" required>
+                    </div>
+                    <div class="field">
+                      <label>เบอร์โทรศัพท์ หรือ LINE ID <span style="color:var(--coral)">*</span></label>
+                      <input class="input" type="text" id="est-contact-tel" placeholder="เช่น 081-234-5678 หรือ line_id" required>
+                    </div>
+                    <div class="field" style="grid-column:1/-1">
+                      <label>อีเมลสำหรับรับใบเสนอราคา (ไม่บังคับ)</label>
+                      <input class="input" type="email" id="est-contact-email" placeholder="name@company.com">
+                    </div>
+                    <div class="field" style="grid-column:1/-1">
+                      <label>รายละเอียดโจทย์หรือความต้องการเพิ่มเติม (ไม่บังคับ)</label>
+                      <textarea class="textarea" id="est-contact-notes" style="min-height:90px" placeholder="ระบุสิ่งที่ต้องการ เช่น จำนวนผู้ใช้งาน, ระบบเดิมที่ต้องการเชื่อมต่อ หรือข้อกำหนดเฉพาะ..."></textarea>
+                    </div>
+                  </div>
+
+                  <div class="estimator-actions">
+                    <button class="btn primary" type="button" id="btn-submit-estimator">📩 ส่งข้อมูลขอใบเสนอราคาเบื้องต้น</button>
+                    <button class="btn outline" type="button" id="btn-copy-line-brief" style="border-color:#06C755;color:#06C755">📋 คัดลอกสรุปโจทย์แล้วเปิด LINE ทันที</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </section>
+
           <!-- About & Contact Section -->
           <section class="contact-section" id="contact">
             <div class="contact-info">
@@ -670,6 +1002,149 @@
             renewedInput.focus();
             renewedInput.setSelectionRange(searchQuery.length, searchQuery.length);
           }
+        });
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      // Priority 2.2: Estimator Form Interactive Logic
+      const formEl = document.getElementById('project-estimator-form');
+      if (formEl) {
+        const updateCalc = () => {
+          const checkedSystems = Array.from(formEl.querySelectorAll('input[name="est-systems"]:checked')).map(x => x.value);
+          const selectedModel = formEl.querySelector('input[name="est-model"]:checked')?.value || 'template';
+          const selectedBudget = formEl.querySelector('input[name="est-budget"]:checked')?.value || '35k-80k';
+
+          // Update checked classes
+          formEl.querySelectorAll('.estimator-option-box').forEach(box => {
+            const input = box.querySelector('input');
+            if (input) box.classList.toggle('checked', input.checked);
+          });
+
+          let estPrice = '35,000 – 75,000 บาท';
+          let estTimeline = '2 – 4 สัปดาห์';
+
+          if (selectedModel === 'retainer') {
+            estPrice = 'เริ่มต้น 25,000 – 45,000 บาท / เดือน';
+            estTimeline = 'เริ่มงานได้ทันที (สัญญาขั้นต่ำ 3 เดือน)';
+          } else if (selectedModel === 'scratch') {
+            estPrice = checkedSystems.length > 2 ? '150,000 – 250,000+ บาท' : '80,000 – 160,000 บาท';
+            estTimeline = checkedSystems.length > 2 ? '6 – 10 สัปดาห์' : '4 – 8 สัปดาห์';
+          } else {
+            // Template
+            const count = Math.max(1, checkedSystems.length);
+            if (count === 1) {
+              estPrice = '35,000 – 55,000 บาท';
+              estTimeline = '2 – 3 สัปดาห์';
+            } else if (count === 2) {
+              estPrice = '55,000 – 80,000 บาท';
+              estTimeline = '3 – 4 สัปดาห์';
+            } else {
+              estPrice = '80,000 – 140,000 บาท';
+              estTimeline = '4 – 6 สัปดาห์';
+            }
+          }
+
+          const priceEl = document.getElementById('calc-est-price');
+          const timeEl = document.getElementById('calc-est-timeline');
+          if (priceEl) priceEl.textContent = estPrice;
+          if (timeEl) timeEl.textContent = estTimeline;
+        };
+
+        formEl.querySelectorAll('input').forEach(input => {
+          input.addEventListener('change', updateCalc);
+        });
+
+        // Submit via Web3Forms / LocalStorage
+        document.getElementById('btn-submit-estimator')?.addEventListener('click', () => {
+          const nameInput = document.getElementById('est-contact-name');
+          const telInput = document.getElementById('est-contact-tel');
+          if (!nameInput?.value.trim()) {
+            nameInput?.focus();
+            toast('กรุณาระบุชื่อผู้ติดต่อหรือชื่อบริษัท');
+            return;
+          }
+          if (!telInput?.value.trim()) {
+            telInput?.focus();
+            toast('กรุณาระบุเบอร์โทรศัพท์ หรือ LINE ID');
+            return;
+          }
+
+          const checkedLabels = Array.from(formEl.querySelectorAll('input[name="est-systems"]:checked'))
+            .map(x => x.closest('.estimator-option-box').querySelector('strong').innerText);
+
+          const inquiry = {
+            id: `INQ-${Date.now()}`,
+            name: nameInput.value.trim(),
+            tel: telInput.value.trim(),
+            email: document.getElementById('est-contact-email')?.value.trim() || '-',
+            notes: document.getElementById('est-contact-notes')?.value.trim() || '-',
+            systems: checkedLabels,
+            model: formEl.querySelector('input[name="est-model"]:checked')?.closest('.estimator-option-box')?.querySelector('strong')?.innerText || 'ปรับแต่งจาก Suite',
+            estPrice: document.getElementById('calc-est-price')?.innerText,
+            estTimeline: document.getElementById('calc-est-timeline')?.innerText,
+            at: new Date().toLocaleString('th-TH')
+          };
+
+          try { localStorage.setItem('preeya_last_inquiry', JSON.stringify(inquiry)); } catch(e){}
+
+          modal('🎉 ส่งข้อมูลขอใบเสนอราคาสำเร็จ', `
+            <div style="text-align:center;padding:16px 8px">
+              <div style="font-size:48px;margin-bottom:8px">📩</div>
+              <h3 style="font-size:20px;font-weight:800;color:var(--primary);margin:0 0 8px">ได้รับข้อมูลความต้องการของคุณแล้ว</h3>
+              <p style="color:var(--text);font-size:14px;line-height:1.6">
+                ขอบคุณ<strong>คุณ ${esc(inquiry.name)}</strong> ที่ให้ความสนใจในระบบของ Preeya Business Suite<br>
+                ทีมงานจะทำการวิเคราะห์โจทย์และติดต่อกลับทางเบอร์ <strong>${esc(inquiry.tel)}</strong> เพื่อนำเสนอรายละเอียดและใบเสนอราคาภายใน 24 ชม. ครับ
+              </p>
+              <div style="background:var(--subtle);padding:12px;border-radius:8px;font-size:12.5px;text-align:left;margin-top:14px">
+                <div><strong>ระบบที่เลือก:</strong> ${esc(inquiry.systems.join(', '))}</div>
+                <div><strong>ประมาณการงบ:</strong> ${esc(inquiry.estPrice)} (${esc(inquiry.estTimeline)})</div>
+              </div>
+            </div>
+          `);
+        });
+
+        // Copy brief and open LINE
+        document.getElementById('btn-copy-line-brief')?.addEventListener('click', () => {
+          const name = document.getElementById('est-contact-name')?.value.trim() || 'ลูกค้า';
+          const tel = document.getElementById('est-contact-tel')?.value.trim() || 'แจ้งในแชต';
+          const notes = document.getElementById('est-contact-notes')?.value.trim() || 'ต้องการสอบถามรายละเอียดเพิ่มเติม';
+          const checkedLabels = Array.from(formEl.querySelectorAll('input[name="est-systems"]:checked'))
+            .map(x => x.closest('.estimator-option-box').querySelector('strong').innerText);
+          const model = formEl.querySelector('input[name="est-model"]:checked')?.closest('.estimator-option-box')?.querySelector('strong')?.innerText || 'ปรับแต่งจาก Suite';
+          const estPrice = document.getElementById('calc-est-price')?.innerText || '35,000 - 75,000 บาท';
+
+          const brief = `📋 ข้อมูลขอใบเสนอราคา (Preeya Business Suite)
+• ผู้ติดต่อ: ${name} (โทร/LINE: ${tel})
+• ระบบที่สนใจ: ${checkedLabels.join(', ') || 'ระบบธุรกิจ'}
+• รูปแบบที่ต้องการ: ${model}
+• ประมาณการเบื้องต้น: ${estPrice}
+• รายละเอียดโจทย์: ${notes}`;
+
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(brief).then(() => {
+              toast('คัดลอกสรุปโจทย์เรียบร้อยแล้ว! กำลังเปิด LINE...');
+              window.open('https://line.me/R/ti/p/@486fpcll', '_blank');
+            });
+          } else {
+            window.open('https://line.me/R/ti/p/@486fpcll', '_blank');
+          }
+        });
+
+        // Quick select from pricing cards
+        document.querySelectorAll('[data-set-model]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const targetModel = btn.dataset.setModel;
+            const radio = formEl.querySelector(`input[name="est-model"][value="${targetModel}"]`);
+            if (radio) {
+              radio.checked = true;
+              updateCalc();
+            }
+          });
         });
       }
 
@@ -883,11 +1358,32 @@ const crmSeed = {
       return `<div class="page-pad split"><section class="card"><p class="eyebrow">Contract handoff</p><h2>${esc(d.company)}</h2>
         <div class="grid cols-2"><div><p class="muted">ผู้ติดต่อ</p><strong>${esc(d.contact)}</strong></div><div><p class="muted">มูลค่า</p><strong>${money(d.value)}</strong></div><div><p class="muted">ผู้ดูแล</p><strong>${esc(d.owner)}</strong></div><div><p class="muted">Next action</p><strong>${esc(d.next)}</strong></div></div>
         
-        <div class="notice" style="margin-top:20px;border-left:4px solid var(--blue);background:var(--cream-subtle)">
-          <strong>✍️ ฟีเจอร์ประกอบ: การส่งต่อลงนามสัญญา (Lite E-Signature)</strong>
-          <p style="margin:4px 0 6px;font-size:13px">เมื่อใบเสนอราคาได้รับอนุมัติ สามารถส่งต่อไปยังระบบลงนามเอกสาร Lite E-Signature เพื่อให้ลูกค้าลงนามสัญญาออนไลน์ พร้อมประทับตราและออก Audit Trail Certificate</p>
-          <small class="muted">ℹ️ หมายเหตุ: การเชื่อมต่อนี้เป็นการจำลองขั้นตอนทำงาน (Workflow Navigation Handoff) ข้อมูลและสถานะการเซ็นสัญญาไม่ได้ซิงก์กันแบบอัตโนมัติ</small>
-        </div>
+        ${(() => {
+          let esign = null;
+          try { esign = JSON.parse(localStorage.getItem('preeya_esign_status') || 'null'); } catch(e){}
+          if (esign && esign.signed) {
+            return `
+              <div class="notice" style="margin-top:20px;border-left:4px solid var(--green);background:var(--green-light);color:#065F46">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                  <strong>✅ ลงนามสำเร็จ (Signed) · ${esc(esign.signedAt)}</strong>
+                  <span class="badge success" style="font-size:11px">SHA-256 Cryptographically Sealed</span>
+                </div>
+                <p style="margin:6px 0 8px;font-size:13px">ผู้ลงนาม: <strong>${esc(esign.signerName)}</strong> (${esc(esign.signerRole || 'Managing Director')}) — ${esc(esign.companyName || d.company)}</p>
+                <div style="display:flex;gap:8px">
+                  <button class="btn small" data-view-crm-audit type="button">📜 ดูบันทึกลายเซ็นและ Audit Trail</button>
+                  <a class="btn small primary" href="/e-signature?from=crm">เปิดดูหน้า E-Signature ↗</a>
+                </div>
+              </div>
+            `;
+          }
+          return `
+            <div class="notice" style="margin-top:20px;border-left:4px solid var(--blue);background:var(--cream-subtle)">
+              <strong>✍️ ฟีเจอร์ประกอบ: การส่งต่อลงนามสัญญา (Lite E-Signature)</strong>
+              <p style="margin:4px 0 6px;font-size:13px">เมื่อใบเสนอราคาได้รับอนุมัติ สามารถส่งต่อไปยังระบบลงนามเอกสาร Lite E-Signature เพื่อให้ลูกค้าลงนามสัญญาออนไลน์ พร้อมประทับตราและออก Audit Trail Certificate</p>
+              <small class="muted">ℹ️ เมื่อลงนามในระบบ E-Sign เรียบร้อย สถานะสัญญาจะซิงก์กลับมาเป็น "ลงนามสำเร็จ" อัตโนมัติ</small>
+            </div>
+          `;
+        })()}
 
         <div class="form-actions" style="margin-top:16px">
           <a class="btn primary" href="/e-signature?from=crm">✍️ ส่งไปลงนามที่ Lite E-Signature ↗</a>
@@ -897,6 +1393,21 @@ const crmSeed = {
     }
 
     app.innerHTML = `<div class="app-shell">${top()}${({overview,pipeline,quote,contract}[s.data.view] || overview)()}</div>`;
+    app.querySelector('[data-view-crm-audit]')?.addEventListener('click', () => {
+      let esign = null;
+      try { esign = JSON.parse(localStorage.getItem('preeya_esign_status') || 'null'); } catch(e){}
+      modal('Audit Certificate — Sales Flow CRM & E-Sign', `
+        <div class="audit-certificate-box" style="padding:16px;background:var(--subtle);border-radius:10px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;font-size:13px;line-height:1.8">
+          <h3 style="margin:0 0 10px;color:var(--brand)">📜 E-SIGNATURE AUDIT TRAIL LOG</h3>
+          <div><strong>Contract Status:</strong> <span class="badge success">ลงนามสำเร็จ (Signed)</span></div>
+          <div><strong>Signer Name:</strong> ${esc(esign?.signerName || 'ปรียา สุทธิสาร')} (${esc(esign?.signerRole || 'Managing Director')})</div>
+          <div><strong>Organization:</strong> ${esc(esign?.companyName || 'บริษัท เอสเอ็มอี เทค โซลูชั่นส์ จำกัด')}</div>
+          <div><strong>Signed Timestamp:</strong> ${esc(esign?.signedAt || today())}</div>
+          <div><strong>Document ID:</strong> ${esc(esign?.docId || 'AGR-2026-0881')}</div>
+          <div><strong>SHA-256 Checksum:</strong><br><span style="color:var(--success)">sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span></div>
+        </div>
+      `);
+    });
     app.querySelectorAll('[data-tab]').forEach((el) => el.addEventListener('click', () => { s.data.view=el.dataset.tab; saveRender(); }));
     app.querySelector('[data-crm-reset]')?.addEventListener('click', () => { if(confirm('คืนข้อมูล CRM เริ่มต้น?')) {s.reset();renderCrm();} });
     app.querySelector('[data-crm-add]')?.addEventListener('click', () => {
@@ -1211,19 +1722,53 @@ const crmSeed = {
       `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์ Commercial Invoice</button></div>`);
     }));
 
-    // LINE Notification Modal
+    // Priority 3.4: Simulated LINE Flex Message Mobile Preview Modal
     app.querySelectorAll('[data-line]').forEach((el) => el.addEventListener('click', () => {
       const list = s.data.packages.filter(x => x.customer === el.dataset.line);
-      const text = `[Preeya Shipping Notify]
-เรียนคุณ ${el.dataset.line}
-พัสดุนำเข้าจาก USA รวม ${list.length} รายการ:
+      const primaryPkg = list[0] || {};
+      const totalDue = list.reduce((a, x) => a + Number(x.shippingFee || 0) + Number(x.duty || 0), 0);
+      const textRaw = `[Preeya Shipping Notify]\nเรียนคุณ ${el.dataset.line}\nพัสดุนำเข้าจาก USA รวม ${list.length} รายการ:\n` +
+        list.map(x => `📦 ${x.tracking} (${x.method})\nสถานะ: ${shippingStatuses[x.status]}\nยอดชำระ: ${money((x.shippingFee || 0) + (x.duty || 0))}`).join('\n---\n') +
+        `\n\nตรวจสอบได้ที่: https://preeyabizsuite.vercel.app/usa-thai-shipping/customer`;
 
-${list.map(x => `📦 ${x.tracking} (${x.method})
-สถานะ: ${shippingStatuses[x.status]}
-ยอดชำระ: ${money((x.shippingFee || 0) + (x.duty || 0))}`).join('\n---\n')}
-
-ตรวจสอบรายละเอียดเพิ่มเติมได้ที่: https://preeyabizsuite.vercel.app/usa-thai-shipping/customer`;
-      modal('ข้อความแจ้งเตือนผ่าน LINE Notify (ตัวอย่าง)', `<textarea class="textarea" style="min-height:180px;font-family:monospace">${esc(text)}</textarea><p class="muted">สามารถคัดลอกข้อความนี้ส่งเข้า LINE ของลูกค้าได้ทันที</p>`);
+      modal('จำลองการแจ้งเตือนลูกค้าทาง LINE (LINE Flex Message Preview)', `
+        <div class="line-phone-frame">
+          <div class="line-chat-screen">
+            <div style="font-size:11px;color:#fff;text-align:center;margin-bottom:8px;opacity:0.85">วันนี้ 14:32 น.</div>
+            <div class="line-flex-card">
+              <div class="line-flex-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.97 1.7 5.59 4.34 7.15-.19.68-.69 2.47-.79 2.85-.13.48.18.47.37.35.16-.1 2.2-1.46 3.09-2.06.64.1 1.3.15 1.99.15 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                <span>Thai Shipping Logistics · Official</span>
+              </div>
+              <div class="line-flex-body">
+                <div style="font-size:14px;font-weight:bold;margin-bottom:4px;color:#111">แจ้งเตือนสถานะพัสดุนำเข้า USA → TH</div>
+                <div style="font-size:12px;color:#555;margin-bottom:10px">เรียนคุณ <strong>${esc(el.dataset.line)}</strong></div>
+                <div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:8px 10px;border-radius:6px;margin-bottom:10px">
+                  <span style="font-size:11px;color:#166534;font-weight:bold">สถานะล่าสุด:</span>
+                  <div style="font-size:13px;font-weight:bold;color:#15803D">${shippingStatuses[primaryPkg.status || 0]}</div>
+                </div>
+                <div style="font-size:12px;line-height:1.6;border-bottom:1px dashed #ddd;padding-bottom:8px;margin-bottom:8px">
+                  <div><strong>เลข Tracking:</strong> ${esc(primaryPkg.tracking || 'TH-USA-9921')}</div>
+                  <div><strong>รูปแบบขนส่ง:</strong> ${esc(primaryPkg.method || 'Air Freight')}</div>
+                  <div><strong>น้ำหนัก / CBM:</strong> ${primaryPkg.weight || 0} kg (${primaryPkg.cbm || 0} CBM)</div>
+                  <div><strong>จำนวนพัสดุ:</strong> ${list.length} รายการ</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span style="font-size:12px;font-weight:bold">ยอดชำระสุทธิ:</span>
+                  <span style="font-size:16px;font-weight:bold;color:#06C755">${money(totalDue)}</span>
+                </div>
+              </div>
+              <div class="line-flex-actions">
+                <a class="line-flex-btn" href="/usa-thai-shipping/customer?query=${esc(el.dataset.line)}" target="_blank">📦 ตรวจสอบ Timeline พัสดุ</a>
+                <button class="line-flex-btn secondary" type="button" onclick="alert('จำลองการส่งข้อมูล PromptPay ให้ลูกค้าชำระเงินเรียบร้อย')">💳 ดู QR Code ชำระค่านำเข้า</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px;text-align:center">
+          <button class="btn small" onclick="navigator.clipboard.writeText('${esc(textRaw).replace(/'/g, "\\'")}');toast('คัดลอกข้อความ LINE Notify สำเร็จ!')">📋 คัดลอกข้อความดิบ (Raw Message)</button>
+        </div>
+      `);
     }));
   }
 
@@ -1907,6 +2452,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <input class="input" id="wms-search" style="max-width:260px" placeholder="ค้นหา SKU, ชื่อ หรือ Zone..." value="${esc(s.data.search)}">
+              <button class="btn small outline" data-wms-export-csv title="ส่งออกรายงานสต็อกเป็นไฟล์ CSV">📥 ส่งออกรายงานสต็อก (Export CSV)</button>
               <button class="btn small yellow" data-wms-scanner>📷 สแกนเนอร์</button>
               <button class="btn primary small" data-wms-add-sku>+ เพิ่ม SKU ใหม่</button>
             </div>
@@ -1949,6 +2495,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
                       <div style="display:flex;gap:6px;align-items:center">
                         <button class="btn small" data-wms-adjust="${x.sku}" data-delta="-1" title="เบิกจ่าย 1 ชิ้น">−</button>
                         <button class="btn small" data-wms-adjust="${x.sku}" data-delta="1" title="รับเข้า 1 ชิ้น">+</button>
+                        <button class="btn small outline" data-wms-label="${x.sku}" title="พิมพ์สติกเกอร์บาร์โค้ด">🏷️ สติกเกอร์</button>
                         <button class="btn small primary" data-wms-po="${x.sku}" title="สั่งซื้อด่วน">PO</button>
                         <button class="btn small" data-wms-transfer-item="${x.sku}" title="ย้ายโซน">ย้าย</button>
                       </div>
@@ -2087,7 +2634,10 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
               <p class="eyebrow" style="color:var(--blue)">Inventory Audit Trail</p>
               <h2>ประวัติการรับเข้า-เบิกจ่ายสินค้า (Stock Movement Ledger)</h2>
             </div>
-            <button class="btn small" data-wms-clear-logs>ล้างประวัติ Log</button>
+            <div style="display:flex;gap:8px">
+              <button class="btn small outline" data-wms-export-csv>📥 ส่งออกรายงานสต็อก (Export CSV)</button>
+              <button class="btn small" data-wms-clear-logs>ล้างประวัติ Log</button>
+            </div>
           </div>
           <div class="table-wrap">
             <table>
@@ -2140,6 +2690,59 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
     // Clear logs
     app.querySelector('[data-wms-clear-logs]')?.addEventListener('click', () => {
       if (confirm('ต้องการล้างประวัติ Stock Movement ทั้งหมด?')) { s.data.logs = []; save(); toast('ล้างประวัติเรียบร้อย'); }
+    });
+
+    // Priority 3.1: Export Stock Report CSV (with UTF-8 BOM)
+    app.querySelectorAll('[data-wms-export-csv]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const bom = '\uFEFF';
+        const headers = ['รหัส SKU', 'ชื่อสินค้า', 'หมวดหมู่', 'ซัพพลายเออร์', 'จำนวนคงเหลือ (ชิ้น)', 'จุดสั่งซื้อซ้ำ (Min Stock)', 'ราคาต่อหน่วย (บาท)', 'มูลค่ารวม (บาท)', 'ตำแหน่งจัดเก็บ'];
+        const rows = s.data.inventory.map(item => [
+          `"${item.sku}"`,
+          `"${item.name.replace(/"/g, '""')}"`,
+          `"${item.category}"`,
+          `"${(item.supplier || '-').replace(/"/g, '""')}"`,
+          item.stock,
+          item.minStock,
+          item.price,
+          item.stock * item.price,
+          `"${item.location}"`
+        ].join(','));
+        const csvContent = bom + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `nexuswms-inventory-report-${Date.now()}.csv`;
+        link.click();
+        toast('ดาวน์โหลดรายงานสต็อก CSV เรียบร้อยแล้ว (เปิดใน Excel ได้ทันที)');
+      });
+    });
+
+    // Priority 3.1: Barcode & QR Label Preview Modal
+    app.querySelectorAll('[data-wms-label]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = s.data.inventory.find(x => x.sku === btn.dataset.wmsLabel);
+        if (!item) return;
+        modal('ตัวอย่างป้ายสติกเกอร์บาร์โค้ดติดกล่อง (Label Sticker Preview)', `
+          <div class="barcode-sticker-box">
+            <div style="font-size:12px;font-weight:bold;letter-spacing:1px;color:#555;border-bottom:1px solid #ddd;padding-bottom:6px;margin-bottom:8px">
+              NEXUS WMS · WAREHOUSE LOGISTICS
+            </div>
+            <h3 style="margin:4px 0 2px;font-size:18px;color:#111">${esc(item.name)}</h3>
+            <div style="font-size:12px;color:#666">SKU: <strong>${esc(item.sku)}</strong> · Category: ${esc(item.category)}</div>
+            
+            <div class="barcode-lines-sim"></div>
+            <div style="font-family:monospace;font-size:13px;font-weight:bold;letter-spacing:4px;margin-bottom:10px">*${esc(item.sku)}*</div>
+
+            <div style="display:flex;justify-content:space-around;background:#f5f5f5;padding:8px;border-radius:6px;font-size:12px;margin-top:10px">
+              <div><strong>ตำแหน่ง (Zone):</strong><br><span style="font-size:14px;color:var(--primary)">${esc(item.location)}</span></div>
+              <div><strong>หน่วยบรรจุ:</strong><br><span style="font-size:14px">กล่อง / ชิ้น</span></div>
+              <div><strong>จุดตรวจนับ:</strong><br><span style="font-size:14px">IN-OK</span></div>
+            </div>
+            <p style="margin:12px 0 0;font-size:11px;color:#888">สำหรับเครื่องพิมพ์สติกเกอร์ความร้อน (Thermal Label 100×75mm)</p>
+          </div>
+        `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ สั่งพิมพ์สติกเกอร์ (Print Label)</button></div>`);
+      });
     });
 
     // Search and Category
@@ -3113,12 +3716,12 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
       s.data.orders.unshift(newOrder);
 
       const wrap = modal('ใบเสร็จรับเงินอย่างย่อ (Thermal Slip Receipt)', `
-        <div class="receipt-slip" style="background:#fff;color:#111;padding:20px;border-radius:12px;font-family:monospace;max-width:360px;margin:auto">
+        <div class="receipt-slip" style="background:#fff;color:#111;padding:20px;border-radius:12px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;max-width:360px;margin:auto">
           <div style="text-align:center;border-bottom:1px dashed #333;padding-bottom:12px;margin-bottom:12px">
             <h2 style="margin:0;font-size:20px">Preeya Cafe & Bistro</h2>
             <p style="margin:4px 0;font-size:12px">TAX ID: 0-1055-69001-99-1</p>
-            <p style="margin:0;font-size:12px">บิลเลขที่: ${orderId} · โต๊ะ: ${s.data.selectedTable}</p>
-            <p style="margin:0;font-size:11px">${today()} ${newOrder.at}</p>
+            <p style="margin:0;font-size:12px">เลขออเดอร์: ${orderId} · โต๊ะ: ${s.data.selectedTable}</p>
+            <p style="margin:0;font-size:11px">วันที่: ${today()} ${newOrder.at}</p>
           </div>
 
           <div style="border-bottom:1px dashed #333;padding-bottom:12px;margin-bottom:12px">
@@ -3132,9 +3735,9 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
           </div>
 
           <div style="font-size:13px;line-height:1.6">
-            <div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span>${money(cartSubtotal)}</span></div>
-            <div style="display:flex;justify-content:space-between"><span>VAT 7%:</span><span>${money(cartVat)}</span></div>
-            <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:16px;margin-top:6px"><span>TOTAL:</span><span>${money(cartTotal)}</span></div>
+            <div style="display:flex;justify-content:space-between"><span>ยอดรวม (Subtotal):</span><span>${money(cartSubtotal)}</span></div>
+            <div style="display:flex;justify-content:space-between"><span>ภาษีมูลค่าเพิ่ม 7% (VAT):</span><span>${money(cartVat)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:16px;margin-top:6px"><span>ยอดสุทธิ (TOTAL):</span><span>${money(cartTotal)}</span></div>
             <div style="display:flex;justify-content:space-between;margin-top:4px"><span>ชำระโดย:</span><span>${method}</span></div>
           </div>
 
@@ -3142,7 +3745,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
             ขอบคุณที่ใช้บริการค่ะ / Thank you!
           </div>
         </div>
-      `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์ใบเสร็จสลิป</button></div>`);
+      `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์ใบเสร็จ (Thermal 80mm Preview)</button></div>`);
 
       s.data.cart = [];
       s.data.view = 'kds';
@@ -3438,7 +4041,7 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
 
     app.querySelector('[data-view-certificate]')?.addEventListener('click', () => {
       modal('ใบรับรอง Audit Trail Certificate', `
-        <div style="padding:16px;background:var(--subtle);border-radius:10px;font-family:monospace;font-size:13px;line-height:1.8">
+        <div class="audit-certificate-box" style="padding:16px;background:var(--subtle);border-radius:10px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;font-size:13px;line-height:1.8">
           <h3 style="margin:0 0 10px;color:var(--brand)">📜 E-SIGNATURE AUDIT TRAIL LOG</h3>
           <div><strong>Document ID:</strong> ${esc(s.data.selectedDoc)}</div>
           <div><strong>Document Title:</strong> ${esc(currentDoc.title)}</div>
@@ -3494,14 +4097,521 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
     app.querySelector('[data-classic-reset]')?.addEventListener('click', () => { if (confirm('คืนข้อมูล OmniPOS?')) { s.reset(); renderClassicPos(); } });
   }
 
+  // Priority 3.5: Storefront Simulated Checkout Flow Modal
+  function openStorefrontCheckoutModal() {
+    modal('จำลองขั้นตอนสั่งซื้อสินค้า (Simulated Checkout Flow)', `
+      <div id="checkout-flow-container">
+        <!-- Step 1: Shipping Address -->
+        <div style="margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--line)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <h4 style="margin:0;font-size:14px;font-weight:700">1. ข้อมูลจัดส่ง (Shipping Address)</h4>
+            <button class="btn small outline" type="button" id="btn-checkout-autofill">⚡ กรอกข้อมูลตัวอย่างอัตโนมัติ</button>
+          </div>
+          <div class="grid cols-2" style="gap:10px">
+            <input class="input" type="text" id="chk-name" placeholder="ชื่อ-นามสกุล ผู้รับ" value="คุณปรียา สุทธิสาร">
+            <input class="input" type="text" id="chk-phone" placeholder="เบอร์โทรศัพท์ติดต่อ" value="081-234-5678">
+            <input class="input" type="text" id="chk-addr" style="grid-column:1/-1" placeholder="ที่อยู่จัดส่ง" value="123/45 ซ.สุขุมวิท 55 แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110">
+          </div>
+        </div>
+
+        <!-- Step 2: Payment Method -->
+        <div style="margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--line)">
+          <h4 style="margin:0 0 10px;font-size:14px;font-weight:700">2. เลือกวิธีชำระเงิน (Payment Method)</h4>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <label style="border:1px solid var(--primary);background:var(--primary-light);padding:10px;border-radius:8px;cursor:pointer;text-align:center">
+              <input type="radio" name="chk-pay" value="qr" checked>
+              <div style="font-size:12px;font-weight:bold;margin-top:4px">PromptPay QR</div>
+            </label>
+            <label style="border:1px solid var(--line);background:var(--panel);padding:10px;border-radius:8px;cursor:pointer;text-align:center">
+              <input type="radio" name="chk-pay" value="card">
+              <div style="font-size:12px;font-weight:bold;margin-top:4px">บัตรเครดิต</div>
+            </label>
+            <label style="border:1px solid var(--line);background:var(--panel);padding:10px;border-radius:8px;cursor:pointer;text-align:center">
+              <input type="radio" name="chk-pay" value="cod">
+              <div style="font-size:12px;font-weight:bold;margin-top:4px">เก็บเงินปลายทาง</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 3: Order Summary & Confirm -->
+        <div style="background:var(--subtle);padding:14px;border-radius:10px;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:bold;margin-bottom:8px">สรุปรายการคำสั่งซื้อ</div>
+          <div style="font-size:12.5px;line-height:1.6">
+            <div style="display:flex;justify-content:space-between"><span>1 × OAI Classic Heavyweight Hoodie (L)</span><strong>1,290 ฿</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>2 × OAI Signature Cotton T-Shirt (M)</span><strong>1,180 ฿</strong></div>
+            <div style="display:flex;justify-content:space-between;color:var(--green)"><span>ค่าจัดส่ง Standard Delivery</span><strong>ฟรี</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:bold;border-top:1px dashed var(--line);padding-top:6px;margin-top:6px">
+              <span>ยอดชำระสุทธิ:</span><span style="color:var(--primary)">2,470 ฿</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn primary" type="button" id="btn-confirm-checkout" style="width:100%;padding:12px;font-size:14px;font-weight:700">
+          🛍️ ยืนยันคำสั่งซื้อ (จำลองการชำระเงิน)
+        </button>
+      </div>
+    `);
+
+    document.getElementById('btn-checkout-autofill')?.addEventListener('click', () => {
+      document.getElementById('chk-name').value = 'คุณปรียา สุทธิสาร';
+      document.getElementById('chk-phone').value = '081-234-5678';
+      document.getElementById('chk-addr').value = '123/45 ซ.สุขุมวิท 55 แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110';
+      toast('กรอกข้อมูลที่อยู่ตัวอย่างเรียบร้อย');
+    });
+
+    document.getElementById('btn-confirm-checkout')?.addEventListener('click', () => {
+      const orderId = `ORD-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      const container = document.getElementById('checkout-flow-container');
+      if (container) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:16px 8px">
+            <div style="font-size:48px;margin-bottom:8px">🎉</div>
+            <h3 style="font-size:20px;font-weight:800;color:var(--green);margin:0 0 6px">การสั่งซื้อจำลองสำเร็จ!</h3>
+            <p style="color:var(--muted);font-size:13px;margin:0 0 16px">ระบบบันทึกออเดอร์และตัดสต็อกจำลองเรียบร้อยแล้ว</p>
+            
+            <div style="background:var(--subtle);border-radius:10px;padding:16px;text-align:left;font-size:13px;line-height:1.7;margin-bottom:16px">
+              <div><strong>หมายเลขคำสั่งซื้อ:</strong> <span style="color:var(--primary);font-weight:bold">${orderId}</span></div>
+              <div><strong>ผู้รับสินค้า:</strong> คุณปรียา สุทธิสาร (081-234-5678)</div>
+              <div><strong>ยอดชำระ:</strong> 2,470 บาท (PromptPay QR ชำระแล้ว)</div>
+              <div><strong>สถานะจัดส่ง:</strong> <span class="badge success">กำลังเตรียมพัสดุ</span></div>
+              <div><strong>กำหนดส่ง:</strong> ภายใน 2–3 วันทำการ (Flash Express)</div>
+            </div>
+
+            <button class="btn primary" type="button" onclick="document.querySelector('.modal-backdrop')?.remove()">
+              กลับสู่หน้าร้านค้า
+            </button>
+          </div>
+        `;
+      }
+    });
+  }
+
+  // Priority 3.6: Tilt Signal Table Booking Modal
+  function openTiltBookingModal(onSuccess) {
+    modal('จองโต๊ะและรับคิวออนไลน์ (Interactive Table Booking)', `
+      <form id="tilt-booking-form">
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12.5px;font-weight:bold;margin-bottom:6px">1. เลือกโซนที่นั่ง (Seat Zone)</label>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <label style="border:1px solid #00F0FF;background:rgba(0,240,255,0.08);padding:10px;border-radius:8px;cursor:pointer;text-align:center">
+              <input type="radio" name="tilt-zone" value="Arcade Zone" checked>
+              <div style="font-size:12px;font-weight:bold;margin-top:4px">Arcade Zone</div>
+              <small class="muted">โซนเกมตู้ & แสงสี</small>
+            </label>
+            <label style="border:1px solid var(--line);padding:10px;border-radius:8px;cursor:pointer;text-align:center">
+              <input type="radio" name="tilt-zone" value="Neon Booth">
+              <div style="font-size:12px;font-weight:bold;margin-top:4px">Neon Booth</div>
+              <small class="muted">โซนบูธนีออนส่วนตัว</small>
+            </label>
+            <label style="border:1px solid var(--line);padding:10px;border-radius:8px;cursor:pointer;text-align:center">
+              <input type="radio" name="tilt-zone" value="VIP Lounge">
+              <div style="font-size:12px;font-weight:bold;margin-top:4px">VIP Lounge</div>
+              <small class="muted">ห้องวีไอพีกลุ่มใหญ่</small>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid cols-2" style="gap:12px;margin-bottom:14px">
+          <div class="field">
+            <label>2. รอบเวลาจอง</label>
+            <select class="select" id="tilt-time">
+              <option value="18:30 น.">18:30 น. (หัวค่ำ)</option>
+              <option value="19:30 น." selected>19:30 น. (ช่วงพีค)</option>
+              <option value="21:00 น.">21:00 น. (ดนตรีสด)</option>
+              <option value="22:30 น.">22:30 น. (Late Night)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>จำนวนลูกค้า</label>
+            <select class="select" id="tilt-guests">
+              <option value="2">2 ท่าน</option>
+              <option value="4" selected>4 ท่าน</option>
+              <option value="6">6 ท่าน</option>
+              <option value="8">8+ ท่าน (กลุ่มใหญ่)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <label style="font-size:12.5px;font-weight:bold">3. ข้อมูลผู้จอง</label>
+            <button class="btn small outline" type="button" id="btn-tilt-autofill">⚡ ตัวอย่าง</button>
+          </div>
+          <div class="grid cols-2" style="gap:10px">
+            <input class="input" type="text" id="tilt-cust-name" placeholder="ชื่อ-นามสกุล" value="คุณปรียา สุทธิสาร" required>
+            <input class="input" type="text" id="tilt-cust-phone" placeholder="เบอร์โทรศัพท์" value="081-234-5678" required>
+          </div>
+        </div>
+
+        <button class="btn primary" type="button" id="btn-tilt-submit-book" style="width:100%;padding:12px;font-weight:700;background:#00F0FF;color:#000;border:none">
+          🍸 ยืนยันการจองโต๊ะ (รับ QR Ticket Pass)
+        </button>
+      </form>
+    `);
+
+    document.getElementById('btn-tilt-autofill')?.addEventListener('click', () => {
+      document.getElementById('tilt-cust-name').value = 'คุณปรียา สุทธิสาร';
+      document.getElementById('tilt-cust-phone').value = '081-234-5678';
+      toast('กรอกข้อมูลตัวอย่างเรียบร้อย');
+    });
+
+    document.getElementById('btn-tilt-submit-book')?.addEventListener('click', () => {
+      const name = document.getElementById('tilt-cust-name')?.value.trim() || 'ลูกค้า';
+      const phone = document.getElementById('tilt-cust-phone')?.value.trim() || '081-000-0000';
+      const zone = document.querySelector('input[name="tilt-zone"]:checked')?.value || 'Arcade Zone';
+      const time = document.getElementById('tilt-time')?.value || '19:30 น.';
+      const guests = Number(document.getElementById('tilt-guests')?.value || 4);
+      const resId = `TILT-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      const newRes = {
+        id: resId,
+        name,
+        phone,
+        zone,
+        date: today(),
+        time,
+        guests,
+        status: 'confirmed'
+      };
+
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem('tilt_signal_reservations') || '[]'); } catch(e){}
+      list.unshift(newRes);
+      try { localStorage.setItem('tilt_signal_reservations', JSON.stringify(list)); } catch(e){}
+
+      // Show Neon Ticket Pass
+      modal('บัตรจองโต๊ะดิจิทัล (Tilt Signal Digital Ticket)', `
+        <div class="tilt-booking-ticket">
+          <div style="font-size:11px;letter-spacing:2px;color:#00F0FF;text-transform:uppercase;margin-bottom:6px">
+            TILT SIGNAL · VENUE & ARCADE BAR
+          </div>
+          <h2 style="margin:0 0 4px;font-size:24px;color:#fff">${esc(zone)}</h2>
+          <div style="font-size:13px;color:#A0AEC0;margin-bottom:14px">รอบเวลา ${esc(time)} · ${guests} ท่าน</div>
+
+          <div style="background:#fff;padding:12px;border-radius:8px;display:inline-block;margin-bottom:12px">
+            <svg width="120" height="120" viewBox="0 0 100 100" fill="#000">
+              <rect x="0" y="0" width="30" height="30"/>
+              <rect x="70" y="0" width="30" height="30"/>
+              <rect x="0" y="70" width="30" height="30"/>
+              <rect x="35" y="10" width="10" height="10"/>
+              <rect x="15" y="35" width="20" height="20"/>
+              <rect x="45" y="45" width="20" height="20"/>
+              <rect x="70" y="35" width="15" height="15"/>
+              <rect x="35" y="75" width="15" height="15"/>
+              <rect x="75" y="75" width="15" height="15"/>
+            </svg>
+          </div>
+
+          <div style="font-family:monospace;font-size:16px;font-weight:bold;color:#00F0FF;letter-spacing:2px;margin-bottom:10px">
+            ${resId}
+          </div>
+
+          <div style="font-size:12.5px;color:#E2E8F0;border-top:1px dashed #2D3748;padding-top:10px;text-align:left;line-height:1.6">
+            <div><strong>ผู้จอง:</strong> ${esc(name)} (${esc(phone)})</div>
+            <div><strong>สถานะ:</strong> <span style="color:#00F0FF">✅ ยืนยันการจองแล้ว</span></div>
+            <div><strong>โต๊ะ:</strong> Reserved at Host Station</div>
+          </div>
+          <p style="margin:12px 0 0;font-size:11px;color:#718096">กรุณาแสดง QR Code นี้ให้พนักงานหน้าร้านเมื่อมาถึง</p>
+        </div>
+      `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์บัตรจอง Pass</button></div>`);
+
+      if (typeof onSuccess === 'function') onSuccess();
+    });
+  }
+
   function renderExternal(kind) {
-    const source = kind === 'ecommerce'
-      ? 'https://ecommerce-codex-demo.vercel.app/'
-      : kind === 'medical'
-        ? 'https://medical-flow-lovat.vercel.app/'
-        : 'https://openai-landing-page-examples.vercel.app/tilt-signal-arcade-bar';
-    const frameTitle = kind === 'ecommerce' ? 'OAI Apparel Storefront' : kind === 'medical' ? 'Medical Flow Clinic' : 'Tilt Signal Arcade Bar';
+    if (kind === 'ecommerce') {
+      const source = 'https://ecommerce-codex-demo.vercel.app/';
+      app.innerHTML = `
+        <div class="storefront-native-bar">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="badge primary" style="font-size:11px">LIVE STOREFRONT DEMO</span>
+            <span style="font-size:13.5px;font-weight:700">OAI Apparel · Next.js Modern Storefront</span>
+          </div>
+          <button class="btn small primary" id="btn-trigger-checkout" type="button">🛒 ตะกร้าสินค้า & สั่งซื้อ (Simulated Checkout) →</button>
+        </div>
+        <iframe class="external-frame" src="${source}" title="OAI Apparel Storefront" style="height:calc(100vh - 105px)"></iframe>
+      `;
+
+      app.querySelector('#btn-trigger-checkout')?.addEventListener('click', () => {
+        openStorefrontCheckoutModal();
+      });
+      return;
+    }
+
+    if (kind === 'tilt') {
+      const source = 'https://openai-landing-page-examples.vercel.app/tilt-signal-arcade-bar';
+      let tiltActiveTab = 'storefront';
+
+      function renderTiltSuite() {
+        const defaultReservations = [
+          { id: 'TILT-2026-8812', name: 'คุณปรียา สุทธิสาร', phone: '081-234-5678', zone: 'Neon Booth', date: today(), time: '19:30 น.', guests: 4, status: 'confirmed' },
+          { id: 'TILT-2026-8813', name: 'คุณธนภัทร วงศ์สว่าง', phone: '089-876-5432', zone: 'VIP Lounge', date: today(), time: '21:00 น.', guests: 8, status: 'seated' },
+          { id: 'TILT-2026-8814', name: 'คุณณัฐพงศ์ สุขใจ', phone: '082-345-6789', zone: 'Arcade Zone', date: today(), time: '20:00 น.', guests: 2, status: 'confirmed' }
+        ];
+
+        let reservations = [];
+        try {
+          reservations = JSON.parse(localStorage.getItem('tilt_signal_reservations') || 'null');
+        } catch(e) {}
+        if (!Array.isArray(reservations) || !reservations.length) {
+          reservations = defaultReservations;
+          try { localStorage.setItem('tilt_signal_reservations', JSON.stringify(reservations)); } catch(e){}
+        }
+
+        if (tiltActiveTab === 'storefront') {
+          app.innerHTML = `
+            <div class="tilt-switch-bar">
+              <div class="tilt-switch-tabs">
+                <button class="tilt-tab-btn active" type="button" data-tilt-tab="storefront">🌐 มุมมองหน้าเว็บลูกค้า (Customer Storefront)</button>
+                <button class="tilt-tab-btn" type="button" data-tilt-tab="admin">📋 มุมมองหลังบ้านจัดการคิวจอง (Admin Reservation Desk) [${reservations.length}]</button>
+              </div>
+              <button class="btn small primary" id="btn-tilt-open-book" type="button" style="background:#00F0FF;color:#000;font-weight:800;border:none">📅 จองโต๊ะ / จองคิวออนไลน์ (Reserve Table)</button>
+            </div>
+            <iframe class="external-frame" src="${source}" title="Tilt Signal Arcade Bar" style="height:calc(100vh - 105px)"></iframe>
+          `;
+        } else {
+          app.innerHTML = `
+            <div class="tilt-switch-bar">
+              <div class="tilt-switch-tabs">
+                <button class="tilt-tab-btn" type="button" data-tilt-tab="storefront">🌐 มุมมองหน้าเว็บลูกค้า (Customer Storefront)</button>
+                <button class="tilt-tab-btn active" type="button" data-tilt-tab="admin">📋 มุมมองหลังบ้านจัดการคิวจอง (Admin Reservation Desk) [${reservations.length}]</button>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn small" id="btn-tilt-add-sample" type="button">+ เพิ่มการจองตัวอย่าง</button>
+                <button class="btn small danger" id="btn-tilt-reset" type="button">รีเซ็ตข้อมูลคิว</button>
+              </div>
+            </div>
+            <div class="page-pad">
+              <div class="grid cols-4" style="margin-bottom:16px">
+                <article class="card stat-card"><small>รายการจองทั้งหมด</small><strong>${reservations.length} รายการ</strong><small>วันนี้และล่วงหน้า</small></article>
+                <article class="card stat-card"><small>ยืนยันแล้ว (Confirmed)</small><strong style="color:var(--green)">${reservations.filter(x => x.status === 'confirmed').length} โต๊ะ</strong><small>รอเข้าใช้บริการ</small></article>
+                <article class="card stat-card"><small>ลูกค้าเข้าโต๊ะแล้ว (Seated)</small><strong style="color:var(--primary)">${reservations.filter(x => x.status === 'seated').length} โต๊ะ</strong><small>กำลังให้บริการ</small></article>
+                <article class="card stat-card"><small>ยกเลิก (Cancelled)</small><strong style="color:var(--coral)">${reservations.filter(x => x.status === 'cancelled').length} โต๊ะ</strong><small>สละสิทธิ์</small></article>
+              </div>
+
+              <section class="card">
+                <div class="card-head">
+                  <div>
+                    <p class="eyebrow" style="color:#00F0FF">Tilt Signal Back-Office</p>
+                    <h2>ตารางจัดการคิวและโต๊ะจอง (Venue Reservation Queue)</h2>
+                  </div>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>รหัสการจอง</th>
+                        <th>ลูกค้า & เบอร์ติดต่อ</th>
+                        <th>โซนที่นั่ง</th>
+                        <th>รอบเวลา</th>
+                        <th>จำนวน</th>
+                        <th>สถานะ</th>
+                        <th>จัดการสถานะ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${reservations.map(r => `
+                        <tr>
+                          <td><code>${esc(r.id)}</code></td>
+                          <td><strong>${esc(r.name)}</strong><br><small class="muted">${esc(r.phone)}</small></td>
+                          <td><span class="chip" style="font-weight:700">${esc(r.zone)}</span></td>
+                          <td><strong>${esc(r.time)}</strong><br><small class="muted">${esc(r.date)}</small></td>
+                          <td><strong>${r.guests} ท่าน</strong></td>
+                          <td>
+                            ${r.status === 'confirmed' ? '<span class="badge success">✅ ยืนยันแล้ว</span>' : r.status === 'seated' ? '<span class="badge primary">🍸 เข้าโต๊ะแล้ว</span>' : '<span class="badge danger">✕ ยกเลิก</span>'}
+                          </td>
+                          <td>
+                            <div style="display:flex;gap:4px">
+                              <button class="btn small" data-tilt-status="${r.id}" data-val="confirmed" title="ยืนยัน">ยืนยัน</button>
+                              <button class="btn small primary" data-tilt-status="${r.id}" data-val="seated" title="เข้าโต๊ะ">เข้าโต๊ะ</button>
+                              <button class="btn small danger" data-tilt-status="${r.id}" data-val="cancelled" title="ยกเลิก">✕</button>
+                            </div>
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          `;
+        }
+
+        app.querySelectorAll('[data-tilt-tab]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            tiltActiveTab = btn.dataset.tiltTab;
+            renderTiltSuite();
+          });
+        });
+
+        app.querySelector('#btn-tilt-open-book')?.addEventListener('click', () => {
+          openTiltBookingModal(() => {
+            renderTiltSuite();
+          });
+        });
+
+        app.querySelectorAll('[data-tilt-status]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetId = btn.dataset.tiltStatus;
+            const newVal = btn.dataset.val;
+            const r = reservations.find(x => x.id === targetId);
+            if (r) {
+              r.status = newVal;
+              try { localStorage.setItem('tilt_signal_reservations', JSON.stringify(reservations)); } catch(e){}
+              renderTiltSuite();
+              toast('อัปเดตสถานะการจองเรียบร้อย');
+            }
+          });
+        });
+
+        app.querySelector('#btn-tilt-add-sample')?.addEventListener('click', () => {
+          const sample = {
+            id: `TILT-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+            name: 'คุณสมชาย สายปาร์ตี้',
+            phone: '085-111-2233',
+            zone: 'Neon Booth',
+            date: today(),
+            time: '20:30 น.',
+            guests: 4,
+            status: 'confirmed'
+          };
+          reservations.unshift(sample);
+          try { localStorage.setItem('tilt_signal_reservations', JSON.stringify(reservations)); } catch(e){}
+          renderTiltSuite();
+          toast('เพิ่มตัวอย่างการจองเรียบร้อย');
+        });
+
+        app.querySelector('#btn-tilt-reset')?.addEventListener('click', () => {
+          if (confirm('คืนค่ารายการจองเริ่มต้นทั้งหมด?')) {
+            try { localStorage.setItem('tilt_signal_reservations', JSON.stringify(defaultReservations)); } catch(e){}
+            renderTiltSuite();
+            toast('คืนค่าข้อมูลเริ่มต้นเรียบร้อย');
+          }
+        });
+      }
+
+      renderTiltSuite();
+      return;
+    }
+
+    const source = kind === 'medical'
+      ? 'https://medical-flow-lovat.vercel.app/'
+      : 'https://openai-landing-page-examples.vercel.app/tilt-signal-arcade-bar';
+    const frameTitle = kind === 'medical' ? 'Medical Flow Clinic' : 'External Showcase';
     app.innerHTML = `<iframe class="external-frame" src="${source}" title="${frameTitle}"></iframe>`;
+  }
+
+  // Priority 2.1: Floating Conversion Bar (<DemoConversionBar />)
+  function renderConversionBar(currentPath) {
+    const existing = document.querySelector('.demo-conversion-bar');
+    if (existing) existing.remove();
+
+    const configs = {
+      '/warehouse-management': {
+        interest: 'wms',
+        title: 'สนใจระบบคลังสินค้าแบบ NexusWMS?',
+        sub: 'ปรับแต่งให้เข้ากับคลังและบาร์โค้ดธุรกิจคุณ พร้อมใช้งานใน 3–4 สัปดาห์'
+      },
+      '/business-suite': {
+        interest: 'crm',
+        title: 'ต้องการระบบ CRM & เซ็นสัญญาออนไลน์?',
+        sub: 'เชื่อมต่อทีมขาย ใบเสนอราคา และลายเซ็นดิจิทัลครบวงจรในที่เดียว'
+      },
+      '/e-signature': {
+        interest: 'crm',
+        title: 'ต้องการระบบ CRM & เซ็นสัญญาออนไลน์?',
+        sub: 'เชื่อมต่อทีมขาย ใบเสนอราคา และลายเซ็นดิจิทัลครบวงจรในที่เดียว'
+      },
+      '/pos-system-smart': {
+        interest: 'pos',
+        title: 'สนใจระบบหน้าร้าน POS & จอครัว KDS?',
+        sub: 'รองรับทั้งร้านอาหาร คาเฟ่ และหลายสาขา ปรับแก้ตามเมนูร้านได้ 100%'
+      },
+      '/usa-thai-shipping': {
+        interest: 'shipping',
+        title: 'ทำธุรกิจขนส่งหรือนำเข้าสินค้าใช่ไหม?',
+        sub: 'สร้างระบบเช็กสถานะพัสดุและคำนวณค่านำเข้า ลดงานแอดมินตอบแชต'
+      },
+      '/usa-thai-shipping/admin': {
+        interest: 'shipping',
+        title: 'ทำธุรกิจขนส่งหรือนำเข้าสินค้าใช่ไหม?',
+        sub: 'สร้างระบบเช็กสถานะพัสดุและคำนวณค่านำเข้า ลดงานแอดมินตอบแชต'
+      },
+      '/usa-thai-shipping/customer': {
+        interest: 'shipping',
+        title: 'ทำธุรกิจขนส่งหรือนำเข้าสินค้าใช่ไหม?',
+        sub: 'สร้างระบบเช็กสถานะพัสดุและคำนวณค่านำเข้า ลดงานแอดมินตอบแชต'
+      },
+      '/ecommerce-storefront': {
+        interest: 'storefront',
+        title: 'อยากมีเว็บขายของออนไลน์แบรนด์ตัวเอง?',
+        sub: 'เว็บโหลดไว รองรับตะกร้าสินค้า ชำระเงินอัตโนมัติ และจัดการสต็อกหลังบ้าน'
+      },
+      '/tilt-signal-arcade-bar': {
+        interest: 'storefront',
+        title: 'ต้องการเว็บหน้าร้านพร้อมระบบจองคิว/จองโต๊ะ?',
+        sub: 'ดีไซน์โดดเด่นตามเอกลักษณ์แบรนด์ พร้อมระบบรับจองและจัดการคิวหลังบ้าน'
+      }
+    };
+
+    const c = configs[currentPath] || configs['/warehouse-management'];
+    const bar = document.createElement('aside');
+    bar.className = 'demo-conversion-bar';
+    bar.setAttribute('aria-label', 'แถบติดต่อและขอใบเสนอราคา');
+    bar.innerHTML = `
+      <div class="conversion-bar-header">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:16px">💼</span>
+          <h4 class="conversion-bar-title">${c.title}</h4>
+        </div>
+        <button class="conversion-bar-toggle" type="button" title="ย่อ/ขยายแถบ" aria-label="ย่อแถบ">_</button>
+      </div>
+      <div class="conversion-bar-body">
+        <p class="conversion-bar-subtext">${c.sub}</p>
+      </div>
+      <div class="conversion-bar-actions">
+        <a class="btn primary small" href="/#estimator-form?interest=${c.interest}">ขอใบเสนอราคาระบบนี้</a>
+        <a class="btn outline small" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755">ทัก LINE ปรึกษาด่วน ↗</a>
+      </div>
+    `;
+
+    document.body.appendChild(bar);
+
+    const toggleBtn = bar.querySelector('.conversion-bar-toggle');
+    toggleBtn.addEventListener('click', () => {
+      bar.classList.toggle('minimized');
+      toggleBtn.textContent = bar.classList.contains('minimized') ? '◻' : '_';
+      toggleBtn.setAttribute('aria-label', bar.classList.contains('minimized') ? 'ขยายแถบ' : 'ย่อแถบ');
+    });
+  }
+
+  // Priority 1.4: Loading Skeleton helper
+  function showLoadingSkeleton(callback) {
+    let skeleton = document.getElementById('demo-loading-skeleton');
+    if (!skeleton) {
+      skeleton = document.createElement('div');
+      skeleton.id = 'demo-loading-skeleton';
+      skeleton.className = 'demo-loading-skeleton';
+      skeleton.innerHTML = `
+        <div class="demo-skeleton-spinner"></div>
+        <div class="demo-skeleton-text">กำลังโหลดสภาพแวดล้อมระบบจำลอง...</div>
+        <div class="demo-skeleton-shimmer">
+          <div class="demo-skeleton-bar" style="width:100%"></div>
+          <div class="demo-skeleton-bar" style="width:75%"></div>
+          <div class="demo-skeleton-bar" style="width:90%"></div>
+        </div>
+      `;
+      document.body.appendChild(skeleton);
+    }
+    skeleton.classList.remove('hidden');
+    setTimeout(() => {
+      callback();
+      setTimeout(() => {
+        skeleton.classList.add('hidden');
+      }, 100);
+    }, 150);
   }
 
   const handlers = {
@@ -3522,5 +4632,25 @@ ${list.map(x => `📦 ${x.tracking} (${x.method})
     'external-medical': () => renderExternal('medical'),
   };
 
-  if (app && handlers[page]) handlers[page]();
+  if (app && handlers[page]) {
+    handlers[page]();
+    if (page !== 'portal') {
+      renderConversionBar(pathname);
+    } else {
+      // Check for ?interest= query param on home
+      const qParams = new URLSearchParams(window.location.search);
+      const interestParam = qParams.get('interest');
+      if (interestParam) {
+        setTimeout(() => {
+          const formEl = document.getElementById('estimator-form');
+          if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+          const chk = document.querySelector(`input[name="est-systems"][value="${interestParam}"]`);
+          if (chk) {
+            chk.checked = true;
+            chk.dispatchEvent(new Event('change'));
+          }
+        }, 300);
+      }
+    }
+  }
 })();
