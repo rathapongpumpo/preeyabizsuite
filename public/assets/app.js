@@ -215,14 +215,14 @@
 
     const getPreview = (path) => {
       const custom = {
-        '/warehouse-management': '/assets/demo-previews/warehouse-management.png',
-        '/business-suite': '/assets/demo-previews/business-suite.png',
-        '/pos-system-smart': '/assets/demo-previews/pos-system-smart.png',
-        '/usa-thai-shipping': '/assets/demo-previews/usa-thai-shipping.png',
-        '/ecommerce-storefront': '/assets/demo-previews/ecommerce-storefront.png',
-        '/tilt-signal-arcade-bar': '/assets/demo-previews/tilt-signal-arcade-bar.png',
+        '/warehouse-management': '/assets/demo-previews/warehouse-management.webp',
+        '/business-suite': '/assets/demo-previews/business-suite.webp',
+        '/pos-system-smart': '/assets/demo-previews/pos-system-smart.webp',
+        '/usa-thai-shipping': '/assets/demo-previews/usa-thai-shipping.webp',
+        '/ecommerce-storefront': '/assets/demo-previews/ecommerce-storefront.webp',
+        '/tilt-signal-arcade-bar': '/assets/demo-previews/tilt-signal-arcade-bar.webp',
       };
-      return custom[path] || '/assets/demo-previews/warehouse-management.png';
+      return custom[path] || '/assets/demo-previews/warehouse-management.webp';
     };
 
     function renderPortalContent() {
@@ -1015,18 +1015,39 @@
         });
       });
 
-      // Search Inputs (Desktop & Mobile)
+      // Fast Debounced Search (Desktop & Mobile)
+      let searchTimer = null;
+      const triggerSearch = (val, isMobile) => {
+        searchQuery = val;
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          renderPortalContent();
+          if (isMobile) {
+            const renewedMobileMenu = document.getElementById('portal-mobile-menu');
+            const renewedMobileToggle = document.getElementById('portal-mobile-toggle');
+            if (renewedMobileMenu) renewedMobileMenu.hidden = false;
+            if (renewedMobileToggle) {
+              renewedMobileToggle.classList.add('active');
+              renewedMobileToggle.setAttribute('aria-expanded', 'true');
+            }
+            const renewedMobileInput = document.getElementById('mobile-search-input');
+            if (renewedMobileInput) {
+              renewedMobileInput.focus();
+              renewedMobileInput.setSelectionRange(searchQuery.length, searchQuery.length);
+            }
+          } else {
+            const renewedInput = document.getElementById('topbar-search-input');
+            if (renewedInput) {
+              renewedInput.focus();
+              renewedInput.setSelectionRange(searchQuery.length, searchQuery.length);
+            }
+          }
+        }, 80);
+      };
+
       const searchInput = document.getElementById('topbar-search-input');
       if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          searchQuery = e.target.value;
-          renderPortalContent();
-          const renewedInput = document.getElementById('topbar-search-input');
-          if (renewedInput) {
-            renewedInput.focus();
-            renewedInput.setSelectionRange(searchQuery.length, searchQuery.length);
-          }
-        });
+        searchInput.addEventListener('input', (e) => triggerSearch(e.target.value, false));
         searchInput.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
@@ -1035,25 +1056,9 @@
         });
       }
 
-      // Mobile Drawer Search & Toggle
       const mobileSearchInput = document.getElementById('mobile-search-input');
       if (mobileSearchInput) {
-        mobileSearchInput.addEventListener('input', (e) => {
-          searchQuery = e.target.value;
-          renderPortalContent();
-          const renewedMobileMenu = document.getElementById('portal-mobile-menu');
-          const renewedMobileToggle = document.getElementById('portal-mobile-toggle');
-          if (renewedMobileMenu) renewedMobileMenu.hidden = false;
-          if (renewedMobileToggle) {
-            renewedMobileToggle.classList.add('active');
-            renewedMobileToggle.setAttribute('aria-expanded', 'true');
-          }
-          const renewedMobileInput = document.getElementById('mobile-search-input');
-          if (renewedMobileInput) {
-            renewedMobileInput.focus();
-            renewedMobileInput.setSelectionRange(searchQuery.length, searchQuery.length);
-          }
-        });
+        mobileSearchInput.addEventListener('input', (e) => triggerSearch(e.target.value, true));
       }
 
       const mobileToggle = document.getElementById('portal-mobile-toggle');
@@ -1255,12 +1260,12 @@
     overlay.setAttribute('aria-labelledby', 'modal-proj-title');
 
     const previewImg = p.preview_image || (
-      path === '/warehouse-management' ? '/assets/demo-previews/warehouse-management.png' :
-      path === '/business-suite' ? '/assets/demo-previews/business-suite.png' :
-      path === '/pos-system-smart' ? '/assets/demo-previews/pos-system-smart.png' :
-      path === '/usa-thai-shipping' ? '/assets/demo-previews/usa-thai-shipping.png' :
-      path === '/ecommerce-storefront' ? '/assets/demo-previews/ecommerce-storefront.png' :
-      '/assets/demo-previews/tilt-signal-arcade-bar.png'
+      path === '/warehouse-management' ? '/assets/demo-previews/warehouse-management.webp' :
+      path === '/business-suite' ? '/assets/demo-previews/business-suite.webp' :
+      path === '/pos-system-smart' ? '/assets/demo-previews/pos-system-smart.webp' :
+      path === '/usa-thai-shipping' ? '/assets/demo-previews/usa-thai-shipping.webp' :
+      path === '/ecommerce-storefront' ? '/assets/demo-previews/ecommerce-storefront.webp' :
+      '/assets/demo-previews/tilt-signal-arcade-bar.webp'
     );
 
     overlay.innerHTML = `
@@ -4726,4 +4731,105 @@ const crmSeed = {
       }
     }
   }
+
+  // Instant SPA Navigation
+  function navigateTo(targetPath) {
+    if (targetPath === window.location.pathname) return;
+    window.history.pushState(null, '', targetPath);
+    handleRoute(targetPath);
+  }
+
+  function handleRoute(currentPath) {
+    const routeAliases = {
+      '/usa-thai-shipping/admin': '/usa-thai-shipping',
+      '/usa-thai-shipping/customer': '/usa-thai-shipping',
+    };
+    const projectPath = routeAliases[currentPath] || currentPath;
+    const staticPages = {
+      '/': 'portal',
+      '/business-suite': 'crm',
+      '/ecommerce-storefront': 'external-ecommerce',
+      '/tilt-signal-arcade-bar': 'external-tilt',
+      '/usa-thai-shipping': 'shipping-home',
+      '/usa-thai-shipping/admin': 'shipping-admin',
+      '/usa-thai-shipping/customer': 'shipping-customer',
+      '/warehouse-management': 'wms',
+      '/pos-system-smart': 'smartpos',
+      '/e-signature': 'esign',
+      '/course': 'course',
+      '/project-management': 'kanban',
+      '/medical-flow': 'external-medical',
+      '/dashboard-mini': 'dashboard',
+      '/pos-system': 'classicpos',
+    };
+    const targetPage = staticPages[currentPath] || 'portal';
+    document.body.dataset.page = targetPage;
+    document.body.dataset.route = currentPath;
+
+    let currentApp = document.getElementById('app');
+    const existingFrame = document.querySelector('.demo-frame');
+
+    if (targetPage === 'portal') {
+      if (existingFrame && currentApp) {
+        existingFrame.replaceWith(currentApp);
+        currentApp.className = 'portal-root';
+      }
+      renderPortal();
+    } else {
+      if (!existingFrame && currentApp) {
+        const frame = document.createElement('div');
+        frame.className = 'demo-frame';
+        const shell = document.createElement('header');
+        shell.className = 'demo-shell';
+        shell.innerHTML = `
+          <a class="shell-back" href="/" aria-label="กลับพอร์ตโฟลิโอ">← กลับพอร์ตโฟลิโอ</a>
+          <div class="shell-project">
+            <span class="status-dot" aria-hidden="true"></span>
+            <strong>${projects[currentPath]?.short || projects[currentPath]?.title || 'Demo'}</strong>
+            <span class="badge" style="font-size:11px">Interactive Showcase</span>
+          </div>
+          <div class="shell-actions">
+            <button class="btn small" type="button" onclick="window.openProjectDetail && window.openProjectDetail('${currentPath}')">ℹ️ รายละเอียดระบบ</button>
+            <a class="btn small" href="${currentPath}" target="_blank" rel="noopener noreferrer">↗ เปิดแท็บใหม่</a>
+          </div>
+        `;
+        currentApp.replaceWith(frame);
+        frame.append(shell, currentApp);
+        currentApp.className = 'demo-content';
+      } else if (existingFrame) {
+        const strong = existingFrame.querySelector('.shell-project strong');
+        if (strong) strong.textContent = projects[currentPath]?.short || projects[currentPath]?.title || 'Demo';
+        const infoBtn = existingFrame.querySelector('.shell-actions button');
+        if (infoBtn) infoBtn.onclick = () => window.openProjectDetail?.(currentPath);
+        const openBtn = existingFrame.querySelector('.shell-actions a');
+        if (openBtn) openBtn.href = currentPath;
+      }
+
+      if (handlers[targetPage]) {
+        handlers[targetPage]();
+        renderConversionBar(currentPath);
+      }
+    }
+
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  // Intercept all internal navigation clicks
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href) return;
+    if (a.target === '_blank' || a.hasAttribute('download')) return;
+    if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:') || href.startsWith('http://') || href.startsWith('https://')) return;
+    if (href.startsWith('/')) {
+      e.preventDefault();
+      navigateTo(href);
+    }
+  });
+
+  window.addEventListener('popstate', () => {
+    handleRoute(window.location.pathname);
+  });
+
 })();

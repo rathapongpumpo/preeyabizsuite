@@ -2788,10 +2788,10 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   background-color: #D4E4F1 !important;
-  background-image: url('/assets/logis-bg-light.png') !important;
+  background-image: url('/assets/logis-bg-light.webp') !important;
   background-size: 960px 960px !important;
   background-repeat: repeat !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
   color: var(--text);
   font-family: 'Plus Jakarta Sans', 'Prompt', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
@@ -2800,10 +2800,10 @@ body {
 
 html[data-theme="dark"] body {
   background-color: #0B111D !important;
-  background-image: url('/assets/logis-bg-dark.png') !important;
+  background-image: url('/assets/logis-bg-dark.webp') !important;
   background-size: 960px 960px !important;
   background-repeat: repeat !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
   color: var(--text);
 }
 
