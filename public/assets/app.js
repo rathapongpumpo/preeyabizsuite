@@ -246,8 +246,7 @@
       const currentTheme = localStorage.getItem('preeya_php_demo_v2:theme') || 'light';
 
       app.innerHTML = `
-        <div class="portal-wrap">
-          <!-- Topbar Header (Enterprise Style) -->
+          <!-- Topbar Header (Enterprise Style - Full Width Fixed Sticky) -->
           <nav class="portal-nav" id="top">
             <div class="portal-nav-container">
               <div class="portal-nav-left">
@@ -313,6 +312,7 @@
             </div>
           </nav>
 
+        <div class="portal-wrap">
           <!-- Hero Section (Tablet Device Style) -->
           <section class="hero-section">
             <div class="hero-content">
