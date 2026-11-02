@@ -67,7 +67,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/app.css?v=crm-sign-4"><link rel="stylesheet" href="/assets/featured-demos.css?v=crm-sign-4">
+    <link rel="stylesheet" href="/assets/app.css?v=shipping-2"><link rel="stylesheet" href="/assets/featured-demos.css?v=shipping-2">
 </head>
 <body data-page="<?= htmlspecialchars($pageKey, ENT_QUOTES) ?>" data-route="<?= htmlspecialchars($path, ENT_QUOTES) ?>">
 <?php if (file_exists(__DIR__ . '/assets/sprite.svg')) { readfile(__DIR__ . '/assets/sprite.svg'); } ?>
@@ -131,10 +131,10 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     </div>
 <?php endif; ?>
 <script>window.DEMO_PROJECTS = <?= $projectJson ?: '{}' ?>;</script>
-<script src="/assets/app.js?v=crm-sign-4" defer></script>
+<script src="/assets/app.js?v=shipping-2" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>
-<script src="/assets/featured-demos.js?v=crm-sign-4" defer></script>
+<script src="/assets/featured-demos.js?v=shipping-2" defer></script>
 </body>
 </html>

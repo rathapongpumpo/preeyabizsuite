@@ -1462,6 +1462,10 @@ html[data-theme="dark"] .contact-btn-card:not(.line):hover {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
+.shipping-invoice{width:100%;min-width:0;overflow-wrap:anywhere}
+.shipping-invoice table{min-width:0;table-layout:fixed;width:100%}
+.shipping-invoice th,.shipping-invoice td{white-space:normal;overflow-wrap:anywhere}
+.shipping-invoice th:last-child,.shipping-invoice td:last-child{width:90px;white-space:nowrap}
 
 .signed-mark {
   display: grid;

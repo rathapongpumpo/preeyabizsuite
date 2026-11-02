@@ -1542,6 +1542,18 @@ const crmSeed = {
 
     const shippingStatuses = ['รับของที่โกดัง US (Oregon)', 'กำลังเดินทางมาไทย (Flight/Vessel)', 'ถึงโกดังไทย (บางนา)', 'จัดส่งให้ลูกค้าเรียบร้อย'];
 
+  function shippingPrice(weight, dimensions, method) {
+    const parts = String(dimensions).trim().split(/\s*[xX×]\s*/).map(Number);
+    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n) || n <= 0) || !Number.isFinite(weight) || weight <= 0) throw new Error('กรอกน้ำหนักและขนาดทั้ง 3 ด้านเป็นตัวเลขมากกว่า 0 เช่น 30x20x15');
+    if (!['Air Freight','Sea Freight'].includes(method)) throw new Error('กรุณาเลือกประเภทการขนส่ง');
+    const volume = parts.reduce((a,b)=>a*b,1), cbm = volume/1000000, volumetricWeight = volume/5000;
+    const chargeableWeight = method==='Air Freight' ? Math.max(weight,volumetricWeight) : weight;
+    const weightFee = weight*(method==='Air Freight'?350:180), volumeFee = method==='Air Freight'?volumetricWeight*350:cbm*8500;
+    const shippingFee = Math.round(Math.max(weightFee,volumeFee));
+    if (![cbm,volumetricWeight,shippingFee].every(Number.isFinite) || !Number.isSafeInteger(shippingFee)) throw new Error('น้ำหนักหรือขนาดมากเกินช่วงที่ระบบคำนวณได้');
+    return {version:1,cbm,volumetricWeight,chargeableWeight,shippingFee,basis:volumeFee>weightFee?'volume':'weight',dim:parts.join('x')};
+  }
+
   const shippingSeed = {
     packages: [
       { id: 'PKG-801', tracking: 'US-982341102', customer: 'CUST-01', weight: 4.5, boxes: 1, method: 'Air Freight', dim: '30x20x15', cbm: 0.009, duty: 350, shippingFee: 1575, status: 1, flight: 'Flight TG-692 (Oregon -> BKK)', timeline: [{ status: 0, at: '26 ก.ค.' }, { status: 1, at: '28 ก.ค.' }] },
@@ -1603,14 +1615,14 @@ const crmSeed = {
             <div>
               <span class="eyebrow">🚢 THAI SHIPPING SUITE SYSTEM GUIDE</span>
               <h2 style="margin:4px 0 2px;font-size:18px">วิธีทดลองใช้งานระบบชิปปิ้งนำเข้า USA → Thailand</h2>
-              <p class="muted" style="margin:0;font-size:13px">1. คำนวณ CBM ค่าส่ง ➔ 2. ลงทะเบียนพัสดุ ➔ 3. ออก Commercial Invoice และส่งข้อความแจ้งเตือนลูกค้าทาง LINE</p>
+              <p class="muted" style="margin:0;font-size:13px">ลองคำนวณค่าส่ง ลงทะเบียนพัสดุ ดู Invoice แล้วเปลี่ยนสถานะเพื่อตรวจในพอร์ตัลลูกค้า · เรทและภาษีจำลอง ไม่มีการเรียกเก็บเงินจริง</p>
             </div>
           </div>
         </div>
 
         <div class="grid cols-4">
           <article class="card stat-card"><small>พัสดุในระบบ</small><strong>${s.data.packages.length} รายการ</strong><small>กล่องรวม ${s.data.packages.reduce((a, x) => a + x.boxes, 0)} กล่อง</small></article>
-          <article class="card stat-card"><small>น้ำหนักรวม (Chargeable)</small><strong>${totalWeight.toFixed(1)} kg</strong><small> Air/Sea Combined</small></article>
+          <article class="card stat-card"><small>น้ำหนักชั่งจริงรวม</small><strong>${totalWeight.toFixed(1)} kg</strong><small> Air/Sea Combined</small></article>
           <article class="card stat-card"><small>ปริมาตรรวม (CBM)</small><strong>${totalCbm.toFixed(3)} CBM</strong><small>สำหรับจัดสรรพื้นที่ตู้</small></article>
           <article class="card stat-card"><small>รายได้ค่าขนส่ง & ภาษี</small><strong>${money(totalRevenue)}</strong><small>สุทธิรอเก็บเงินลูกค้า</small></article>
         </div>
@@ -1681,10 +1693,10 @@ const crmSeed = {
     app.querySelector('[data-open-cbm-modal]')?.addEventListener('click', () => {
       const wrap = modal('เครื่องคำนวณค่าขนส่ง CBM & Volumetric Weight', `
         <form id="cbm-calc-form" class="form-grid">
-          <div class="field"><label>กว้าง (Width - cm)</label><input class="input" type="number" id="cbm-w" value="30" required></div>
-          <div class="field"><label>ยาว (Length - cm)</label><input class="input" type="number" id="cbm-l" value="40" required></div>
-          <div class="field"><label>สูง (Height - cm)</label><input class="input" type="number" id="cbm-h" value="25" required></div>
-          <div class="field"><label>น้ำหนักจริง (Actual Wt. kg)</label><input class="input" type="number" id="cbm-wt" value="5.0" step="0.1" required></div>
+          <div class="field"><label>กว้าง (Width - cm)</label><input class="input" type="number" id="cbm-w" value="30" min="0.001" step="any" required></div>
+          <div class="field"><label>ยาว (Length - cm)</label><input class="input" type="number" id="cbm-l" value="40" min="0.001" step="any" required></div>
+          <div class="field"><label>สูง (Height - cm)</label><input class="input" type="number" id="cbm-h" value="25" min="0.001" step="any" required></div>
+          <div class="field"><label>น้ำหนักจริง (Actual Wt. kg)</label><input class="input" type="number" id="cbm-wt" value="5.0" min="0.001" step="any" required></div>
 
           <div style="grid-column:1/-1;background:var(--subtle);padding:14px;border-radius:10px" id="cbm-result">
             <div style="display:flex;justify-content:space-between"><span>ปริมาตร (CBM):</span><strong id="res-cbm">0.030 CBM</strong></div>
@@ -1692,27 +1704,26 @@ const crmSeed = {
             <div style="display:flex;justify-content:space-between"><span>ประเมินค่าส่งทางเรือ (Sea Freight):</span><strong id="res-sea-fee">1,080 บาท</strong></div>
             <div style="display:flex;justify-content:space-between;color:var(--brand);font-weight:bold;margin-top:4px"><span>ประเมินค่าส่งทางอากาศ (Air Freight):</span><strong id="res-air-fee">2,100 บาท</strong></div>
           </div>
+          <p class="muted" style="grid-column:1/-1;font-size:12px">เรทจำลอง: Air ใช้ค่าสูงกว่าระหว่างน้ำหนักจริงกับปริมาตร ÷ 5000 × 350 บาท · Sea ใช้ค่าสูงกว่าระหว่าง kg × 180 กับ CBM × 8,500 บาท ปัดค่าส่งเป็นบาทเต็ม ไม่รวมภาษีจำลอง</p>
         </form>
       `);
 
       const calc = () => {
-        const w = Number(wrap.querySelector('#cbm-w').value) || 0;
-        const l = Number(wrap.querySelector('#cbm-l').value) || 0;
-        const h = Number(wrap.querySelector('#cbm-h').value) || 0;
-        const wt = Number(wrap.querySelector('#cbm-wt').value) || 0;
-
-        const cbm = (w * l * h) / 1000000;
-        const airVolWt = Math.max(wt, (w * l * h) / 5000);
-        const seaFee = Math.max(wt * 180, cbm * 8500);
-        const airFee = airVolWt * 350;
-
-        wrap.querySelector('#res-cbm').innerText = cbm.toFixed(3) + ' CBM';
-        wrap.querySelector('#res-air-wt').innerText = airVolWt.toFixed(1) + ' kg';
-        wrap.querySelector('#res-sea-fee').innerText = money(seaFee);
-        wrap.querySelector('#res-air-fee').innerText = money(airFee);
+        try {
+          const dim=['#cbm-w','#cbm-l','#cbm-h'].map(id=>wrap.querySelector(id).value).join('x'), wt=Number(wrap.querySelector('#cbm-wt').value);
+          const air=shippingPrice(wt,dim,'Air Freight'), sea=shippingPrice(wt,dim,'Sea Freight');
+          wrap.querySelector('#res-cbm').innerText=air.cbm.toFixed(6)+' CBM';
+          wrap.querySelector('#res-air-wt').innerText=air.chargeableWeight.toFixed(3)+' kg';
+          wrap.querySelector('#res-sea-fee').innerText=money(sea.shippingFee);
+          wrap.querySelector('#res-air-fee').innerText=money(air.shippingFee);
+        } catch {
+          for(const id of ['#res-cbm','#res-air-wt','#res-sea-fee','#res-air-fee'])wrap.querySelector(id).innerText='กรอกข้อมูลมากกว่า 0 ให้ครบ';
+        }
       };
 
       ['#cbm-w', '#cbm-l', '#cbm-h', '#cbm-wt'].forEach(id => wrap.querySelector(id)?.addEventListener('input', calc));
+      wrap.querySelector('form').addEventListener('submit',e=>e.preventDefault());
+      calc();
     });
 
     // Add Package Modal
@@ -1721,30 +1732,44 @@ const crmSeed = {
         <form id="package-form" class="form-grid">
           <div class="field"><label>Tracking No. (US)</label><input class="input" name="tracking" placeholder="เช่น US-991203841"></div>
           <div class="field"><label>Customer ID</label><input class="input" name="customer" value="CUST-01" required></div>
-          <div class="field"><label>ประเภทการขนส่ง</label><select class="select" name="method"><option value="Air Freight">ทางเครื่องบิน (Air Freight - 350฿/kg)</option><option value="Sea Freight">ทางเรือ (Sea Freight - 180฿/kg)</option></select></div>
+          <div class="field"><label>ประเภทการขนส่ง</label><select class="select" name="method"><option value="Air Freight">Air: max(น้ำหนักจริง, ปริมาตร/5000) × 350</option><option value="Sea Freight">Sea: max(kg × 180, CBM × 8,500)</option></select></div>
           <div class="field"><label>เที่ยวบิน / เที่ยวเรือ</label><input class="input" name="flight" value="Flight TG-692 (Oregon -> BKK)"></div>
-          <div class="field"><label>น้ำหนักชั่งจริง (kg)</label><input class="input" type="number" step="0.1" name="weight" value="3.5" required></div>
+          <div class="field"><label>น้ำหนักชั่งจริง (kg)</label><input class="input" type="number" min="0.001" step="any" name="weight" value="3.5" required></div>
           <div class="field"><label>ขนาด กว้างxยาวxสูง (cm)</label><input class="input" name="dim" value="30x20x15" required></div>
-          <div class="field"><label>ประมาณการภาษีศุลกากร (บาท)</label><input class="input" type="number" name="duty" value="250" required></div>
+          <div class="field"><label>ประมาณการภาษีศุลกากร (บาท)</label><input class="input" type="number" min="0" step="1" name="duty" value="250" required></div>
+          <p id="package-price-preview" role="status" aria-live="polite" class="notice" style="grid-column:1/-1">เรทสาธิตสำหรับพัสดุ 1 กล่อง ไม่มีการเรียกเก็บเงินจริง</p>
           <div class="form-actions" style="grid-column:1/-1"><button class="btn primary">บันทึกพัสดุ</button></div>
         </form>
       `);
 
+      const form=wrap.querySelector('#package-form'),preview=wrap.querySelector('#package-price-preview');
+      const updatePreview=()=>{
+        for(const field of form.querySelectorAll('input'))field.setCustomValidity('');
+        try {
+          const f=new FormData(form),price=shippingPrice(Number(f.get('weight')),f.get('dim'),f.get('method')),duty=Number(f.get('duty'));
+          if(!Number.isSafeInteger(duty)||duty<0)throw new Error('กรอกภาษีจำลองเป็นบาทเต็มตั้งแต่ 0 ขึ้นไป');
+          preview.textContent=`ค่าส่งจำลอง ${money(price.shippingFee)} + ภาษี ${money(duty)} = ${money(price.shippingFee+duty)} · ${price.cbm.toFixed(6)} CBM${f.get('method')==='Air Freight'?` · น้ำหนักคิดเงิน ${price.chargeableWeight.toFixed(3)} kg`:''}`;
+        }catch(error){preview.textContent=error.message;}
+      };
+      form.addEventListener('input',updatePreview);form.addEventListener('change',updatePreview);updatePreview();
       wrap.querySelector('form').addEventListener('submit', (e) => {
         e.preventDefault();
         const f = new FormData(e.currentTarget);
-        const tracking = String(f.get('tracking') || `US-${Math.floor(100000000 + Math.random() * 900000000)}`).trim().toUpperCase();
+        const tracking = (String(f.get('tracking') || '').trim() || `US-${Date.now()}`).toUpperCase();
         const customer = String(f.get('customer') || '').trim().toUpperCase();
         const method = String(f.get('method'));
-        const weight = Number(f.get('weight')) || 1;
+        const weight = Number(f.get('weight'));
         const dim = String(f.get('dim'));
-        const duty = Number(f.get('duty')) || 0;
+        const duty = Number(f.get('duty'));
         const flight = String(f.get('flight'));
 
-        const dims = dim.split('x').map(Number);
-        const cbm = dims.length === 3 ? (dims[0] * dims[1] * dims[2]) / 1000000 : 0.01;
-        const rate = method === 'Air Freight' ? 350 : 180;
-        const shippingFee = Math.round(weight * rate);
+        let pricing;
+        try {
+          pricing=shippingPrice(weight,dim,method);
+          if(!Number.isSafeInteger(duty)||duty<0||!Number.isSafeInteger(pricing.shippingFee+duty))throw new Error('กรอกภาษีจำลองเป็นบาทเต็มตั้งแต่ 0 และไม่เกินช่วงที่ระบบรองรับ');
+          if(!customer)throw new Error('กรุณากรอก Customer ID');
+          if(s.data.packages.some(p=>p.tracking.toUpperCase()===tracking))throw new Error('Tracking นี้มีอยู่แล้ว กรุณาใช้เลขใหม่');
+        }catch(error){preview.textContent=error.message;toast(error.message);return;}
 
         s.data.packages.unshift({
           id: id('PKG'),
@@ -1753,15 +1778,16 @@ const crmSeed = {
           method,
           weight,
           boxes: 1,
-          dim,
-          cbm: Number(cbm.toFixed(3)),
+          dim:pricing.dim,
+          cbm:pricing.cbm,
           duty,
-          shippingFee,
+          shippingFee:pricing.shippingFee,
+          pricing,
           flight,
           status: 0,
           timeline: [{ status: 0, at: today() }]
         });
-        save();
+        s.save();
         wrap.remove();
         render();
         toast('ลงทะเบียนพัสดุเข้าคลัง USA เรียบร้อย');
@@ -1773,13 +1799,15 @@ const crmSeed = {
       const p = s.data.packages.find(x => x.id === el.dataset.packageStatus);
       const st = Number(el.value);
       if (p && p.status !== st) {
+        if(!Number.isInteger(st)||st<0||st>=shippingStatuses.length)return;
         p.status = st;
+        p.timeline=p.timeline.filter(entry=>entry.status<=st);
         for (let i = 0; i <= st; i++) {
           if (!p.timeline.some(x => x.status === i)) {
             p.timeline.push({ status: i, at: today() });
           }
         }
-        save();
+        s.save();
         render();
         toast(`อัปเดตสถานะ ${p.tracking} เป็น ${shippingStatuses[st]}`);
       }
@@ -1791,7 +1819,7 @@ const crmSeed = {
       if (!p) return;
 
       modal('ใบแจ้งหนี้ค่าขนส่งนำเข้า (Commercial Shipping Invoice)', `
-        <div class="receipt-slip" style="background:#fff;color:#111;padding:24px;border-radius:12px;font-family:sans-serif;max-width:440px;margin:auto;border:1px solid #ddd">
+        <div class="receipt-slip shipping-invoice" style="background:#fff;color:#111;padding:24px;border-radius:12px;font-family:sans-serif;max-width:440px;margin:auto;border:1px solid #ddd">
           <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:12px;margin-bottom:12px">
             <h2 style="margin:0;font-size:22px;color:var(--brand)">Preeya Express Logistics</h2>
             <p style="margin:4px 0;font-size:12px">USA-Thailand Freight Forwarder & Customs Clearance</p>
@@ -1802,7 +1830,8 @@ const crmSeed = {
             <div><strong>ลูกค้า:</strong> ${esc(p.customer)}</div>
             <div><strong>Tracking ID:</strong> ${esc(p.tracking)}</div>
             <div><strong>รูปแบบขนส่ง:</strong> ${esc(p.method)} (${esc(p.flight || '-')})</div>
-            <div><strong>น้ำหนักคิดเงิน:</strong> ${p.weight} kg (ขนาด ${esc(p.dim || '-')} / ${p.cbm} CBM)</div>
+            <div><strong>น้ำหนักชั่งจริง:</strong> ${p.weight} kg (ขนาด ${esc(p.dim || '-')} / ${Number(p.cbm).toFixed(6)} CBM)</div>
+            ${p.pricing?`<div><strong>เกณฑ์คิดราคา:</strong> ${p.method==='Air Freight'?`น้ำหนักคิดเงิน ${p.pricing.chargeableWeight.toFixed(3)} kg × 350 บาท`:`ค่าสูงกว่าระหว่างน้ำหนัก × 180 กับ CBM × 8,500 (${p.pricing.basis==='volume'?'ใช้ปริมาตร':'ใช้น้ำหนัก'})`}</div>`:'<div>รายการเดิม: ใช้ค่าขนส่งที่บันทึกไว้</div>'}
           </div>
 
           <table style="width:100%;font-size:13px;border-collapse:collapse;margin-bottom:14px">
@@ -1813,14 +1842,14 @@ const crmSeed = {
               </tr>
             </thead>
             <tbody>
-              <tr><td style="padding:6px 0">ค่าขนส่ง (${p.method})</td><td style="text-align:right">${money(p.shippingFee)}</td></tr>
-              <tr><td style="padding:6px 0">ค่าธรรมเนียมภาษีศุลกากร (Estimated Duty)</td><td style="text-align:right">${money(p.duty)}</td></tr>
-              <tr style="border-top:2px solid #333;font-weight:bold"><td style="padding:8px 0">ยอดชำระสุทธิ (Total Due)</td><td style="text-align:right;font-size:16px">${money((p.shippingFee || 0) + (p.duty || 0))}</td></tr>
+              <tr><td style="padding:6px 0">ค่าขนส่ง (${p.method})</td><td data-shipping-fee style="text-align:right">${money(p.shippingFee)}</td></tr>
+              <tr><td style="padding:6px 0">ค่าธรรมเนียมภาษีศุลกากร (Estimated Duty)</td><td data-shipping-duty style="text-align:right">${money(p.duty)}</td></tr>
+              <tr style="border-top:2px solid #333;font-weight:bold"><td style="padding:8px 0">ยอดชำระสุทธิ (Total Due)</td><td data-shipping-total style="text-align:right;font-size:16px">${money((p.shippingFee || 0) + (p.duty || 0))}</td></tr>
             </tbody>
           </table>
 
           <div style="text-align:center;font-size:11px;color:#666">
-            กรุณาชำระเงินผ่าน QR PromptPay เพื่อปล่อยสินค้าออกจากโกดังไทย
+            ใบแจ้งหนี้ตัวอย่าง · เรทและภาษีจำลอง · ไม่มีการเรียกเก็บเงินจริง
           </div>
         </div>
       `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์ Commercial Invoice</button></div>`);
