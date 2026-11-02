@@ -26,4 +26,6 @@ Playwright CLI Chromium was used because in-app browser access had previously be
 
 Screenshots of the share card, label, booking form/ticket, admin table and loading/error states were visually inspected. Corrected clipped share-card framing and the old always-highlighted first seating zone before delivery. No physical scanner/thermal printer or real LINE/social-cache preview was tested. The estimator still prepares a brief for manual LINE/email delivery; no external message was sent.
 
+Production verification caught that this Vercel project publishes `public/`, so generated route entries reside in `public/route-pages/`. This corrects route-specific crawler metadata on the actual deployment, rather than relying only on local source checks.
+
 Dependencies are pinned and served locally: [JsBarcode](https://github.com/lindell/JsBarcode) 3.12.3 CODE128 build and [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator/blob/master/js/README.md) 2.0.4, with MIT notices retained in `public/assets/vendor/`.

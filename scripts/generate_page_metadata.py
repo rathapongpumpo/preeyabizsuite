@@ -44,7 +44,7 @@ def generate():
     fallback = {'title':'ตัวอย่างระบบ | PREEYA SYSTEMS','description':'ตัวอย่างระบบธุรกิจ ข้อมูลจำลองเก็บในเบราว์เซอร์','index':False}
     text = re.sub(r'<!-- PAGE METADATA -->.*?<!-- /PAGE METADATA -->',lambda _:'<!-- PAGE METADATA -->\n'+tags('/demo.html',fallback)+'\n<!-- /PAGE METADATA -->',text,flags=re.S)
     template.write_text(text,encoding='utf-8')
-    out = ROOT/'route-pages';out.mkdir(exist_ok=True)
+    out = ROOT/'public/route-pages';out.mkdir(exist_ok=True)
     rules=[]
     for path,meta in pages.items():
         if path=='/':continue
