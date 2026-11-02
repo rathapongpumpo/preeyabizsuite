@@ -2861,25 +2861,17 @@ const crmSeed = {
       btn.addEventListener('click', () => {
         const item = s.data.inventory.find(x => x.sku === btn.dataset.wmsLabel);
         if (!item) return;
-        modal('ตัวอย่างป้ายสติกเกอร์บาร์โค้ดติดกล่อง (Label Sticker Preview)', `
+        const wrap=modal('สติกเกอร์บาร์โค้ดสินค้า · 100 × 75 มม.', `
           <div class="barcode-sticker-box">
-            <div style="font-size:12px;font-weight:bold;letter-spacing:1px;color:#555;border-bottom:1px solid #ddd;padding-bottom:6px;margin-bottom:8px">
-              NEXUS WMS · WAREHOUSE LOGISTICS
-            </div>
-            <h3 style="margin:4px 0 2px;font-size:18px;color:#111">${esc(item.name)}</h3>
-            <div style="font-size:12px;color:#666">SKU: <strong>${esc(item.sku)}</strong> · Category: ${esc(item.category)}</div>
-            
-            <div class="barcode-lines-sim"></div>
-            <div style="font-family:monospace;font-size:13px;font-weight:bold;letter-spacing:4px;margin-bottom:10px">*${esc(item.sku)}*</div>
-
-            <div style="display:flex;justify-content:space-around;background:#f5f5f5;padding:8px;border-radius:6px;font-size:12px;margin-top:10px">
-              <div><strong>ตำแหน่ง (Zone):</strong><br><span style="font-size:14px;color:var(--primary)">${esc(item.location)}</span></div>
-              <div><strong>หน่วยบรรจุ:</strong><br><span style="font-size:14px">กล่อง / ชิ้น</span></div>
-              <div><strong>จุดตรวจนับ:</strong><br><span style="font-size:14px">IN-OK</span></div>
-            </div>
-            <p style="margin:12px 0 0;font-size:11px;color:#888">สำหรับเครื่องพิมพ์สติกเกอร์ความร้อน (Thermal Label 100×75mm)</p>
+            <div style="font-size:12px;font-weight:600;border-bottom:1px solid #ddd;padding-bottom:6px">NEXUS WMS · PRODUCT LABEL</div>
+            <h3 style="margin:8px 0;font-size:18px;color:#111">${esc(item.name)}</h3>
+            <div style="font-size:12px;color:#555">หมวดหมู่: ${esc(item.category)}</div>
+            <svg class="wms-barcode"></svg>
+            <div class="wms-label-meta"><div>ตำแหน่งจัดเก็บ<span>${esc(item.location)}</span></div><div>รหัสสินค้า<span>${esc(item.sku)}</span></div></div>
+            <p class="label-screen-note" style="font-size:12px;color:#626c80;margin-top:12px">บาร์โค้ด CODE128 จาก SKU · ตั้งกระดาษ 100 × 75 มม. และสเกล 100%</p>
           </div>
-        `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ สั่งพิมพ์สติกเกอร์ (Print Label)</button></div>`);
+        `, `<div class="form-actions"><button class="btn primary" type="button" data-wms-print>พิมพ์สติกเกอร์ 100 × 75 มม.</button></div>`);
+        try{window.DemoTools.barcode(wrap.querySelector('.wms-barcode'),item.sku);}catch{wrap.querySelector('[data-wms-print]').disabled=true;toast('สร้างบาร์โค้ดไม่ได้ กรุณาตรวจรหัส SKU');}
       });
     });
 
@@ -4169,6 +4161,7 @@ const crmSeed = {
 
   // Priority 3.6: Tilt Signal Table Booking Modal
   function openTiltBookingModal(onSuccess) {
+    const minDate=window.DemoTools.localDate();
     modal('จองโต๊ะและรับคิวออนไลน์ (Interactive Table Booking)', `
       <form id="tilt-booking-form">
         <div style="margin-bottom:14px">
@@ -4192,10 +4185,11 @@ const crmSeed = {
           </div>
         </div>
 
+        <div class="booking-date"><label for="tilt-date">วันที่จอง</label><input class="input" id="tilt-date" type="date" min="${minDate}" value="${minDate}" required></div>
         <div class="grid cols-2" style="gap:12px;margin-bottom:14px">
           <div class="field">
             <label>2. รอบเวลาจอง</label>
-            <select class="select" id="tilt-time">
+            <select class="select" id="tilt-time" aria-label="รอบเวลาจอง">
               <option value="18:30 น.">18:30 น. (หัวค่ำ)</option>
               <option value="19:30 น." selected>19:30 น. (ช่วงพีค)</option>
               <option value="21:00 น.">21:00 น. (ดนตรีสด)</option>
@@ -4204,7 +4198,7 @@ const crmSeed = {
           </div>
           <div class="field">
             <label>จำนวนลูกค้า</label>
-            <select class="select" id="tilt-guests">
+            <select class="select" id="tilt-guests" aria-label="จำนวนลูกค้า">
               <option value="2">2 ท่าน</option>
               <option value="4" selected>4 ท่าน</option>
               <option value="6">6 ท่าน</option>
@@ -4219,12 +4213,12 @@ const crmSeed = {
             <button class="btn small outline" type="button" id="btn-tilt-autofill">⚡ ตัวอย่าง</button>
           </div>
           <div class="grid cols-2" style="gap:10px">
-            <input class="input" type="text" id="tilt-cust-name" placeholder="ชื่อ-นามสกุล" value="คุณปรียา สุทธิสาร" required>
-            <input class="input" type="text" id="tilt-cust-phone" placeholder="เบอร์โทรศัพท์" value="081-234-5678" required>
+            <input class="input" type="text" id="tilt-cust-name" aria-label="ชื่อผู้จอง" maxlength="100" placeholder="ชื่อ-นามสกุล" value="คุณปรียา สุทธิสาร" required>
+            <input class="input" type="text" id="tilt-cust-phone" aria-label="เบอร์โทรศัพท์" maxlength="50" placeholder="เบอร์โทรศัพท์" value="081-234-5678" required>
           </div>
         </div>
 
-        <button class="btn primary" type="button" id="btn-tilt-submit-book" style="width:100%;padding:12px;font-weight:700;background:#00F0FF;color:#000;border:none">
+        <p id="tilt-booking-error" role="alert"></p><button class="btn primary" type="submit" id="btn-tilt-submit-book" style="width:100%;padding:12px;font-weight:700;background:#00F0FF;color:#000;border:none">
           🍸 ยืนยันการจองโต๊ะ (รับ QR Ticket Pass)
         </button>
       </form>
@@ -4236,20 +4230,27 @@ const crmSeed = {
       toast('กรอกข้อมูลตัวอย่างเรียบร้อย');
     });
 
-    document.getElementById('btn-tilt-submit-book')?.addEventListener('click', () => {
+    document.getElementById('tilt-booking-form')?.addEventListener('submit', event => {
+      event.preventDefault();
+      const form=event.currentTarget,error=document.getElementById('tilt-booking-error');
+      for(const id of ['tilt-cust-name','tilt-cust-phone']){const input=document.getElementById(id);input.setCustomValidity(input.value.trim()?'':'กรุณากรอกข้อมูล');input.oninput=()=>input.setCustomValidity('');}
+      if(!form.reportValidity())return;
+      const date=document.getElementById('tilt-date').value;
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date<window.DemoTools.localDate()){error.textContent='เลือกวันที่ตั้งแต่วันนี้เป็นต้นไป';return;}
+      error.textContent='';
       const name = document.getElementById('tilt-cust-name')?.value.trim() || 'ลูกค้า';
       const phone = document.getElementById('tilt-cust-phone')?.value.trim() || '081-000-0000';
       const zone = document.querySelector('input[name="tilt-zone"]:checked')?.value || 'Arcade Zone';
       const time = document.getElementById('tilt-time')?.value || '19:30 น.';
       const guests = Number(document.getElementById('tilt-guests')?.value || 4);
-      const resId = `TILT-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      const resId = `TILT-${date.slice(0,4)}-${crypto.randomUUID().slice(0,13).toUpperCase()}`;
 
       const newRes = {
         id: resId,
         name,
         phone,
         zone,
-        date: today(),
+        date,
         time,
         guests,
         status: 'confirmed'
@@ -4257,8 +4258,11 @@ const crmSeed = {
 
       let list = [];
       try { list = JSON.parse(localStorage.getItem('tilt_signal_reservations') || '[]'); } catch(e){}
+      let qrSvg;
+      try {qrSvg=window.DemoTools.reservationQR(newRes);}catch{error.textContent='สร้าง QR ไม่สำเร็จ กรุณาลองใหม่';return;}
+      if(!Array.isArray(list)){error.textContent='อ่านรายการจองในเบราว์เซอร์ไม่ได้ กรุณาคืนค่าข้อมูลตัวอย่างก่อน';return;}
       list.unshift(newRes);
-      try { localStorage.setItem('tilt_signal_reservations', JSON.stringify(list)); } catch(e){}
+      try { localStorage.setItem('tilt_signal_reservations', JSON.stringify(list)); } catch{error.textContent='เบราว์เซอร์บันทึกรายการจองไม่ได้ กรุณาเปิดการเก็บข้อมูลแล้วลองใหม่';return;}
 
       // Show Neon Ticket Pass
       modal('บัตรจองโต๊ะดิจิทัล (Tilt Signal Digital Ticket)', `
@@ -4267,21 +4271,9 @@ const crmSeed = {
             TILT SIGNAL · VENUE & ARCADE BAR
           </div>
           <h2 style="margin:0 0 4px;font-size:24px;color:#fff">${esc(zone)}</h2>
-          <div style="font-size:13px;color:#A0AEC0;margin-bottom:14px">รอบเวลา ${esc(time)} · ${guests} ท่าน</div>
+          <div style="font-size:13px;color:#A0AEC0;margin-bottom:14px">${esc(window.DemoTools.displayDate(date))} · ${esc(time)} · ${guests} ท่าน</div>
 
-          <div style="background:#fff;padding:12px;border-radius:8px;display:inline-block;margin-bottom:12px">
-            <svg width="120" height="120" viewBox="0 0 100 100" fill="#000">
-              <rect x="0" y="0" width="30" height="30"/>
-              <rect x="70" y="0" width="30" height="30"/>
-              <rect x="0" y="70" width="30" height="30"/>
-              <rect x="35" y="10" width="10" height="10"/>
-              <rect x="15" y="35" width="20" height="20"/>
-              <rect x="45" y="45" width="20" height="20"/>
-              <rect x="70" y="35" width="15" height="15"/>
-              <rect x="35" y="75" width="15" height="15"/>
-              <rect x="75" y="75" width="15" height="15"/>
-            </svg>
-          </div>
+          <div class="booking-qr" role="img" aria-label="QR อ้างอิงการจอง ${esc(resId)}">${qrSvg}</div>
 
           <div style="font-family:monospace;font-size:16px;font-weight:bold;color:#00F0FF;letter-spacing:2px;margin-bottom:10px">
             ${resId}
@@ -4289,10 +4281,10 @@ const crmSeed = {
 
           <div style="font-size:12.5px;color:#E2E8F0;border-top:1px dashed #2D3748;padding-top:10px;text-align:left;line-height:1.6">
             <div><strong>ผู้จอง:</strong> ${esc(name)} (${esc(phone)})</div>
-            <div><strong>สถานะ:</strong> <span style="color:#00F0FF">✅ ยืนยันการจองแล้ว</span></div>
-            <div><strong>โต๊ะ:</strong> Reserved at Host Station</div>
+            <div><strong>สถานะ:</strong> <span style="color:#00F0FF">บันทึกการจองจำลองแล้ว</span></div>
+            <div><strong>โต๊ะ:</strong> รอจัดโต๊ะในตัวอย่าง</div>
           </div>
-          <p style="margin:12px 0 0;font-size:11px;color:#718096">กรุณาแสดง QR Code นี้ให้พนักงานหน้าร้านเมื่อมาถึง</p>
+          <p style="margin:12px 0 0;font-size:11px;color:#718096">QR อ้างอิงเลขจอง วันที่ และรอบเวลาในเดโมนี้ · ข้อมูลเก็บในเบราว์เซอร์ ไม่ใช่การจองกับร้านจริง</p>
         </div>
       `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์บัตรจอง Pass</button></div>`);
 
@@ -4398,7 +4390,7 @@ const crmSeed = {
                           <td><code>${esc(r.id)}</code></td>
                           <td><strong>${esc(r.name)}</strong><br><small class="muted">${esc(r.phone)}</small></td>
                           <td><span class="chip" style="font-weight:700">${esc(r.zone)}</span></td>
-                          <td><strong>${esc(r.time)}</strong><br><small class="muted">${esc(r.date)}</small></td>
+                          <td><strong>${esc(r.time)}</strong><br><small class="muted">${esc(window.DemoTools.displayDate(r.date))}</small></td>
                           <td><strong>${r.guests} ท่าน</strong></td>
                           <td>
                             ${r.status === 'confirmed' ? '<span class="badge success">✅ ยืนยันแล้ว</span>' : r.status === 'seated' ? '<span class="badge primary">🍸 เข้าโต๊ะแล้ว</span>' : '<span class="badge danger">✕ ยกเลิก</span>'}
@@ -4569,33 +4561,6 @@ const crmSeed = {
     });
   }
 
-  // Priority 1.4: Loading Skeleton helper
-  function showLoadingSkeleton(callback) {
-    let skeleton = document.getElementById('demo-loading-skeleton');
-    if (!skeleton) {
-      skeleton = document.createElement('div');
-      skeleton.id = 'demo-loading-skeleton';
-      skeleton.className = 'demo-loading-skeleton';
-      skeleton.innerHTML = `
-        <div class="demo-skeleton-spinner"></div>
-        <div class="demo-skeleton-text">กำลังโหลดสภาพแวดล้อมระบบจำลอง...</div>
-        <div class="demo-skeleton-shimmer">
-          <div class="demo-skeleton-bar" style="width:100%"></div>
-          <div class="demo-skeleton-bar" style="width:75%"></div>
-          <div class="demo-skeleton-bar" style="width:90%"></div>
-        </div>
-      `;
-      document.body.appendChild(skeleton);
-    }
-    skeleton.classList.remove('hidden');
-    setTimeout(() => {
-      callback();
-      setTimeout(() => {
-        skeleton.classList.add('hidden');
-      }, 100);
-    }, 150);
-  }
-
   const handlers = {
     portal: renderPortal,
     crm: renderCrm,
@@ -4616,6 +4581,7 @@ const crmSeed = {
 
   if (app && handlers[page]) {
     handlers[page]();
+    window.DemoLoad?.ready();
     if (page !== 'portal') {
       renderConversionBar(pathname);
     } else {

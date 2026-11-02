@@ -4228,12 +4228,6 @@ html[data-theme="dark"] .estimator-option-box.checked {
   text-align: center;
   font-family: 'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;
 }
-.barcode-lines-sim {
-  height: 48px;
-  background: repeating-linear-gradient(90deg, #000 0, #000 2px, transparent 2px, transparent 4px, #000 4px, #000 7px, transparent 7px, transparent 9px);
-  margin: 12px 0;
-}
-
 .line-phone-frame {
   max-width: 360px;
   margin: 0 auto;

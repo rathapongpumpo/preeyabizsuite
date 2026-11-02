@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 $registry = require dirname(__DIR__) . '/src/ProjectRegistry.php';
 require_once dirname(__DIR__) . '/src/ExternalProxy.php';
+require_once dirname(__DIR__) . '/src/PageMetadata.php';
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $path = rtrim($path, '/') ?: '/';
@@ -60,19 +61,20 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= htmlspecialchars($title, ENT_QUOTES) ?></title>
-    <meta name="description" content="<?= htmlspecialchars($description, ENT_QUOTES) ?>">
+    <?= pageMetadata($path) ?>
     <meta name="theme-color" content="#FFF9F2">
     <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/app.css?v=restore-1"><link rel="stylesheet" href="/assets/featured-demos.css?v=restore-1">
+    <link rel="stylesheet" href="/assets/app.css?v=finish-1"><link rel="stylesheet" href="/assets/featured-demos.css?v=finish-1">
+<link rel="stylesheet" href="/assets/demo-enhancements.css?v=finish-1">
 </head>
 <body data-page="<?= htmlspecialchars($pageKey, ENT_QUOTES) ?>" data-route="<?= htmlspecialchars($path, ENT_QUOTES) ?>">
+<?php if ($pageKey !== 'not-found'): ?><div id="demo-loading" class="demo-load-status" role="status" aria-live="polite"><span data-load-message>กำลังโหลดตัวอย่างระบบ…</span><div class="demo-load-track" aria-hidden="true"></div><button type="button" data-load-retry onclick="location.reload()" hidden>โหลดใหม่</button></div><noscript><p>เดโมนี้ต้องใช้ JavaScript <a href="/">กลับหน้าแรกเพื่อติดต่อเรา</a></p></noscript><?php endif; ?>
 <?php if (file_exists(__DIR__ . '/assets/sprite.svg')) { readfile(__DIR__ . '/assets/sprite.svg'); } ?>
 <?php if ($pageKey === 'portal'): ?>
-    <div id="app" class="portal-root" aria-live="polite"></div>
+    <div id="app" class="portal-root" aria-live="polite" aria-busy="true"></div>
 <?php elseif ($pageKey === 'not-found'): ?>
     <main class="not-found oblo-box">
         <p class="eyebrow" style="color:var(--coral);font-weight:800">404</p>
@@ -131,10 +133,14 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     </div>
 <?php endif; ?>
 <script>window.DEMO_PROJECTS = <?= $projectJson ?: '{}' ?>;</script>
-<script src="/assets/app.js?v=restore-1" defer></script>
+<script src="/assets/demo-runtime.js?v=finish-1" defer onerror="const s=document.getElementById('demo-loading');if(s){s.classList.add('load-warning');s.querySelector('[data-load-message]').textContent='โหลดเดโมไม่สำเร็จ กรุณาโหลดใหม่';s.querySelector('[data-load-retry]').hidden=false;}"></script>
+<script src="/assets/vendor/jsbarcode-code128-3.12.3.min.js" defer></script>
+<script src="/assets/vendor/qrcode-generator-2.0.4.js" defer></script>
+<script src="/assets/demo-tools.js?v=finish-1" defer></script>
+<script src="/assets/app.js?v=finish-1" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>
-<script src="/assets/featured-demos.js?v=restore-1" defer></script>
+<script src="/assets/featured-demos.js?v=finish-1" defer></script>
 </body>
 </html>

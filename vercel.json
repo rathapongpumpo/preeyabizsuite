@@ -24,6 +24,42 @@
       "destination": "/index.html"
     },
     {
+      "source": "/warehouse-management",
+      "destination": "/route-pages/warehouse-management.html"
+    },
+    {
+      "source": "/pos-system-smart",
+      "destination": "/route-pages/pos-system-smart.html"
+    },
+    {
+      "source": "/business-suite",
+      "destination": "/route-pages/business-suite.html"
+    },
+    {
+      "source": "/usa-thai-shipping",
+      "destination": "/route-pages/usa-thai-shipping.html"
+    },
+    {
+      "source": "/tilt-signal-arcade-bar",
+      "destination": "/route-pages/tilt-signal-arcade-bar.html"
+    },
+    {
+      "source": "/ecommerce-storefront",
+      "destination": "/route-pages/ecommerce-storefront.html"
+    },
+    {
+      "source": "/e-signature",
+      "destination": "/route-pages/e-signature.html"
+    },
+    {
+      "source": "/usa-thai-shipping/admin",
+      "destination": "/route-pages/usa-thai-shipping--admin.html"
+    },
+    {
+      "source": "/usa-thai-shipping/customer",
+      "destination": "/route-pages/usa-thai-shipping--customer.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/demo.html"
     }

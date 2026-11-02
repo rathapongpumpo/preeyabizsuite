@@ -1,0 +1,17 @@
+.barcode-sticker-box .wms-barcode{display:block;max-width:100%;height:auto;margin:12px auto;background:#fff}
+.wms-label-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid #ddd;padding-top:8px;font-size:12px}.wms-label-meta span{display:block;overflow-wrap:anywhere}
+#wms-print-root{position:absolute;left:-10000px;top:0;width:92mm;height:67mm;background:#fff;color:#000;font-family:'IBM Plex Sans Thai',sans-serif}
+.booking-qr{background:#fff;padding:0;border-radius:8px;width:208px;max-width:100%;margin:0 auto 12px}.booking-qr svg{display:block;width:100%;height:auto}
+#tilt-booking-form label:has(input[name=tilt-zone]){border-color:#dce0e9!important;background:#fff!important}#tilt-booking-form label:has(input[name=tilt-zone]:checked){border-color:#00b9c5!important;background:#ecfcfd!important}#tilt-booking-form input[name=tilt-zone]{accent-color:#008d99}
+#tilt-booking-form .booking-date{margin-bottom:14px}#tilt-booking-form .booking-date label{display:block;margin-bottom:6px;font-size:13px;font-weight:600}#tilt-booking-error{color:#b42318;font-size:13px;line-height:1.7;min-height:22px;margin:10px 0}
+.demo-load-status{position:fixed;top:112px;left:50%;transform:translateX(-50%);z-index:60;width:min(440px,calc(100% - 32px));padding:18px 22px;border:1px solid #dce0e9;border-top:3px solid #3155f5;border-radius:10px;background:#fff;color:#131820;box-shadow:0 10px 32px #13182015;font:400 14px/1.8 'IBM Plex Sans Thai',sans-serif}.demo-load-status[hidden]{display:none}.demo-load-status button{margin-top:10px;min-height:44px;padding:8px 16px;font:500 14px 'IBM Plex Sans Thai',sans-serif;border:1px solid #3155f5;border-radius:6px;background:#fff;color:#3155f5}.demo-load-status button[hidden]{display:none}.demo-load-track{height:5px;border-radius:3px;overflow:hidden;background:#e8edff;margin-top:12px}.demo-load-track:after{content:'';display:block;width:40%;height:100%;background:#3155f5;animation:demo-progress 1.3s ease-in-out infinite alternate}.load-warning .demo-load-track{display:none}@keyframes demo-progress{to{transform:translateX(150%)}}@media(prefers-reduced-motion:reduce){.demo-load-track:after{animation:none;width:100%}}
+@media print{
+  .demo-load-status{display:none!important}
+  body.wms-printing{margin:0!important;padding:0!important;background:#fff!important;min-width:0!important}
+  body.wms-printing> :not(#wms-print-root){display:none!important}
+  body.wms-printing #wms-print-root{display:block!important;position:static!important;left:auto;width:92mm;height:67mm;margin:0;padding:0}
+  #wms-print-root .barcode-sticker-box{box-sizing:border-box;display:grid;grid-template-rows:5mm 11mm 4mm 25mm 14mm;align-content:center;width:100%;height:100%;max-width:none;border:0!important;border-radius:0;padding:2mm;margin:0;box-shadow:none;background:#fff;color:#000;overflow:hidden}
+  #wms-print-root .barcode-sticker-box h3{font-size:14px!important;line-height:1.4;margin:0!important;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;align-self:center}
+  #wms-print-root .wms-barcode{width:80mm;height:25mm;max-height:25mm;margin:0 auto}
+  #wms-print-root .label-screen-note{display:none}
+}

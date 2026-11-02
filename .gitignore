@@ -7,4 +7,5 @@
 /.playwright-cli/
 /output/
 /.vercel/
+__pycache__/
 
