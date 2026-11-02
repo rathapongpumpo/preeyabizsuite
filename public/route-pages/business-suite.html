@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/app.css?v=finish-1"><link rel="stylesheet" href="/assets/featured-demos.css?v=finish-1">
+    <link rel="stylesheet" href="/assets/app.css?v=polish-2"><link rel="stylesheet" href="/assets/featured-demos.css?v=polish-2">
 
     <!-- Structured Data (Schema.org JSON-LD) -->
     <script>
@@ -57,7 +57,7 @@
           "description": "ระบบบริหารจัดการสต็อก คลังสินค้า บันทึกรับเข้า (Inbound) เบิกจ่าย (Outbound) ตรวจสอบยอดคงเหลือ และแจ้งเตือนสินค้าใกล้หมด",
           "problem": "การจัดการสต็อกด้วยสเปรดชีตหรือกระดาษทำให้ข้อมูลคลาดเคลื่อน ตรวจนับช้า และเกิดปัญหาสินค้าขาดสต็อกโดยไม่รู้ตัว",
           "audience": "ธุรกิจค้าปลีก ค้าส่ง เจ้าของคลังสินค้า และทีมปฏิบัติการฝ่ายโลจิสติกส์",
-          "impact": "📉 ลดความคลาดเคลื่อนของสต็อกและเวลาเช็กสินค้าคงคลังได้กว่า 60%",
+          "impact": "ทดลองรับเข้า เบิกออก ตรวจยอดคงเหลือ และดูประวัติการเคลื่อนไหวของสินค้า",
           "scope": "พัฒนา UX/UI แบบ Responsive, ตรรกะคำนวณยอดสต็อกอัตโนมัติ, ระบบบันทึก Inbound/Outbound ใน LocalStorage, ตัวกรองและค้นหาข้อมูล",
           "tech": ["HTML5 / Semantic CSS", "Vanilla JavaScript ES6+", "LocalStorage API", "Modal & Notification Pattern"],
           "highlights": ["Zone Capacity Map", "Inbound & Outbound", "Barcode Scanner Simulator", "Re-order Alerts"],
@@ -76,7 +76,7 @@
           "description": "ระบบจัดการลูกค้า ติดตาม Lead และ Pipeline ออกใบเสนอราคา (Quotation) และส่งต่อสัญญาเพื่อลงนามผ่าน Lite E-Signature",
           "problem": "ทีมขายติดตามสถานะลูกค้ากระจัดกระจาย ไม่เห็นมูลค่า Pipeline ที่แท้จริง และส่งเอกสารเสนอราคาล่าช้า",
           "audience": "ทีมขาย B2B, บริษัทให้บริการ, ฟรีแลนซ์ และธุรกิจรับเหมา/โปรเจกต์",
-          "impact": "⚡ ย่นเวลาตั้งแต่การออกใบเสนอราคาจนถึงการเซ็นสัญญาจากหลายวันเหลือไม่กี่นาที",
+          "impact": "ทดลองส่งต่อใบเสนอราคาไปยังสัญญา ลงนาม และตรวจสถานะในดีลเดียวกัน",
           "scope": "ออกแบบ Pipeline แบบ Drag & Drop, ตรรกะคำนวณใบเสนอราคาและส่วนลด, และการส่งต่อไปยังโมดูลลงนาม Lite E-Signature",
           "tech": ["Drag & Drop API", "JavaScript Store Pattern", "Quotation Engine", "Cross-module Routing"],
           "highlights": ["Kanban Pipeline", "Quotation Builder", "E-Signature Handoff", "Sales Metrics"],
@@ -95,7 +95,7 @@
           "description": "ระบบจุดขายหน้าร้านสำหรับร้านอาหารและคาเฟ่ พร้อมหน้าจอในครัว (Kitchen Display System) และระบบ Kiosk สั่งอาหาร",
           "problem": "คิวสั่งอาหารหน้าร้านแออัด ออเดอร์ตกหล่นระหว่างหน้าร้านกับในครัว และสรุปยอดขายประจำวันล่าช้า",
           "audience": "ร้านอาหาร คาเฟ่ เบเกอรี่ ร้านเครื่องดื่ม และศูนย์อาหาร",
-          "impact": "🍽️ เชื่อมต่อออเดอร์หน้าร้านสู่จอครัวแบบเรียลไทม์ ลดปัญหาออเดอร์ตกหล่นและคิวซ้ำซ้อน",
+          "impact": "ทดลองรับออเดอร์หน้าร้าน และตรวจรายการเดียวกันในจอครัว",
           "scope": "พัฒนาหน้าจอ Cashier POS, หน้าจอครัว KDS, เมนูสั่งอาหารสำหรับลูกค้า (Kiosk), ตรรกะคิดเงินและภาษีมูลค่าเพิ่ม",
           "tech": ["JavaScript SPA", "LocalStorage Sync", "Responsive Touch UI", "Tax & Bill Engine"],
           "highlights": ["Cashier POS", "Kitchen Display (KDS)", "Self-service Kiosk", "Shift Report"],
@@ -114,7 +114,7 @@
           "description": "ระบบจัดการพัสดุสำหรับธุรกิจชิปปิ้งนำเข้า ครอบคลุมระบบจัดการหลังบ้าน (Admin) และหน้าค้นหาติดตามสถานะของลูกค้า (Customer Tracking)",
           "problem": "ลูกค้าทักถามสถานะพัสดุซ้ำๆ ทีมงานต้องคอยค้นหาสถานะทีละรายการ และจัดการข้อมูลพัสดุหลายร้อยกล่องไม่เป็นระเบียบ",
           "audience": "ธุรกิจขนส่งระหว่างประเทศ, ตัวแทนนำเข้าพัสดุ และบริการชิปปิ้ง",
-          "impact": "📦 ลูกค้าเช็กสถานะพัสดุและค่านำเข้าได้เอง 24 ชม. ลดภาระแอดมินตอบแชตซ้ำๆ กว่า 70%",
+          "impact": "ทดลองคำนวณค่าส่ง ลงทะเบียนพัสดุ และค้นหาสถานะจากข้อมูลในเบราว์เซอร์",
           "scope": "พัฒนาระบบแอดมินจัดการ Tracking, คำนวณค่าน้ำหนัก/ปริมาตร, สร้างข้อความสรุปส่ง LINE, หน้า Tracking Timeline สำหรับลูกค้า",
           "tech": ["HTML5 / CSS3", "JavaScript State", "Dynamic Timeline Renderer", "LocalStorage Storage"],
           "highlights": ["Admin Portal", "Customer Tracking", "4-Stage Timeline", "LINE Message Generator"],
@@ -130,10 +130,10 @@
           "short": "OAI Apparel Storefront",
           "category": "website",
           "category_name": "เว็บไซต์และงานออกแบบ",
-          "description": "หน้าเว็บหน้าร้านขายเสื้อผ้าแฟชั่น ดีไซน์ทันสมัย โหลดรวดเร็ว พร้อมระบบแคตตาล็อกสินค้า ตัวกรองไซส์ และตะกร้าสินค้า (Cart Drawer)",
+          "description": "ตัวอย่างหน้าร้านค้าแฟชั่นจากเว็บไซต์ภายนอก สำหรับดูแคตตาล็อกและหน้าตาของเว็บไซต์",
           "problem": "ร้านค้าต้องการเว็บขายสินค้าที่สวยงาม ดูน่าเชื่อถือ ใช้งานง่ายบนมือถือ และให้ประสบการณ์เลือกซื้อสินค้าที่ลื่นไหล",
           "audience": "แบรนด์แฟชั่น, ร้านค้าออนไลน์ D2C, และธุรกิจค้าปลีก",
-          "impact": "🛒 หน้าเว็บโหลดไว รองรับการสั่งซื้อและชำระเงินครบวงจรโดยไม่ต้องพึ่งแพลตฟอร์มตัวกลาง",
+          "impact": "ตัวอย่างการเชื่อมหน้าร้านภายนอก เพื่อดูแคตตาล็อกและหน้าตาเว็บไซต์",
           "scope": "บูรณาการและเชื่อมต่อ Storefront ผ่านระบบ Upstream Proxy / Iframe, ตรวจสอบ Responsive Layout",
           "tech": ["Next.js / React (Upstream)", "Reverse Proxy Integration", "Responsive Design", "Cart Drawer State"],
           "highlights": ["Product Catalog", "Slide-over Cart", "Campaign Hero", "Mobile-first"],
@@ -153,7 +153,7 @@
           "description": "เว็บไซต์หน้าร้านสไตล์โมเดิร์นพร้อมระบบจองโต๊ะ เลือกโซนที่นั่ง ออกคิวอาร์โค้ดรับคิว และแดชบอร์ดหลังบ้านสำหรับร้านอาหาร บาร์ คลินิก และธุรกิจบริการ",
           "problem": "สถานที่และร้านอาหารต้องการเว็บไซต์ที่มีเอกลักษณ์เฉพาะตัว สื่ออารมณ์และบรรยากาศร้านได้ดีกว่าเทมเพลตทั่วไป พร้อมระบบรับจองและจัดการคิวหลังบ้าน",
           "audience": "ร้านอาหาร, บาร์, สถานบันเทิง, สถานที่จัดอีเวนต์ และแบรนด์ไลฟ์สไตล์",
-          "impact": "📅 รับจองคิวและโต๊ะออนไลน์อัตโนมัติ 24 ชม. พร้อมตารางจัดการคิวหลังบ้านแบบเรียลไทม์",
+          "impact": "ทดลองเลือกวันและโซนจอง รับ QR อ้างอิง และดูรายการจองในตารางจัดการ",
           "scope": "บูรณาการหน้าเว็บหน้าร้าน พร้อมระบบ Interactive Table Booking, ระบบออก QR Ticket Pass และแดชบอร์ด Admin Reservation Desk",
           "tech": ["Editorial Web Design", "Interactive Booking Engine", "QR Code Pass", "Admin Reservation Desk"],
           "highlights": ["Table & Queue Booking", "Seat Zone Selector", "QR Ticket Pass", "Admin Reservation Desk"],
@@ -185,7 +185,7 @@
         }
       };
     </script>
-<link rel="stylesheet" href="/assets/demo-enhancements.css?v=finish-1">
+<link rel="stylesheet" href="/assets/demo-enhancements.css?v=polish-2">
 </head>
 <body>
 <div id="demo-loading" class="demo-load-status" role="status" aria-live="polite"><span data-load-message>กำลังโหลดตัวอย่างระบบ…</span><div class="demo-load-track" aria-hidden="true"></div><button type="button" data-load-retry onclick="location.reload()" hidden>โหลดใหม่</button></div><noscript><p>เดโมนี้ต้องใช้ JavaScript <a href="/">กลับหน้าแรกเพื่อติดต่อเรา</a></p></noscript>
@@ -261,11 +261,12 @@
 <symbol id="icon-check" viewBox="0 0 24 24"><path d="M21.3014 5.36338C21.6872 5.74923 21.6872 6.37482 21.3014 6.76067L10.0838 17.9783C9.50497 18.557 8.56681 18.557 7.98804 17.9783L2.69865 12.6889C2.31279 12.303 2.31279 11.6774 2.69865 11.2916L3.39707 10.5932C3.78292 10.2073 4.40851 10.2073 4.79436 10.5932L9.03589 14.8347L19.2056 4.66495C19.5915 4.2791 20.2171 4.2791 20.6029 4.66496L21.3014 5.36338Z" fill="currentColor"/></symbol>
 </svg>
     <div id="app" class="portal-root" aria-live="polite" aria-busy="true"></div>
-    <script src="/assets/demo-runtime.js?v=finish-1" defer onerror="const s=document.getElementById('demo-loading');if(s){s.classList.add('load-warning');s.querySelector('[data-load-message]').textContent='โหลดเดโมไม่สำเร็จ กรุณาโหลดใหม่';s.querySelector('[data-load-retry]').hidden=false;}"></script>
+    <script src="/assets/demo-runtime.js?v=polish-2" defer onerror="const s=document.getElementById('demo-loading');if(s){s.classList.add('load-warning');s.querySelector('[data-load-message]').textContent='โหลดเดโมไม่สำเร็จ กรุณาโหลดใหม่';s.querySelector('[data-load-retry]').hidden=false;}"></script>
 <script src="/assets/vendor/jsbarcode-code128-3.12.3.min.js" defer></script>
 <script src="/assets/vendor/qrcode-generator-2.0.4.js" defer></script>
-<script src="/assets/demo-tools.js?v=finish-1" defer></script>
-<script defer src="/assets/app.js?v=finish-1"></script>
-<script src="/assets/featured-demos.js?v=finish-1" defer></script>
+<script src="/assets/demo-tools.js?v=polish-2" defer></script>
+<script src="/assets/dialog-focus.js?v=polish-2" defer></script>
+<script defer src="/assets/app.js?v=polish-2"></script>
+<script src="/assets/featured-demos.js?v=polish-2" defer></script>
 </body>
 </html>

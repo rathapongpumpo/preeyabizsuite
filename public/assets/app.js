@@ -123,28 +123,20 @@
   }
 
   function modal(title, body, footer = '') {
-    document.querySelector('.modal-backdrop')?.remove();
+    const origin=window.DemoDialogs.capture();
     const wrap = document.createElement('div');
     wrap.className = 'modal-backdrop';
     wrap.innerHTML = `<section class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}">
       <div class="card-head"><h2>${esc(title)}</h2><button class="icon-btn" data-close-modal>✕ ปิด</button></div>
       ${body}${footer}
     </section>`;
-    const onKey = (e) => {
-      if (e.key === 'Escape') {
-        wrap.remove();
-        window.removeEventListener('keydown', onKey);
-      }
-    };
-    window.addEventListener('keydown', onKey);
     wrap.addEventListener('click', (event) => {
       if (event.target === wrap || event.target.closest('[data-close-modal]')) {
-        wrap.remove();
-        window.removeEventListener('keydown', onKey);
+        window.DemoDialogs.close();
       }
     });
     document.body.appendChild(wrap);
-    wrap.querySelector('input,select,textarea,button')?.focus();
+    window.DemoDialogs.open(wrap,origin);
     return wrap;
   }
 
@@ -203,8 +195,8 @@
   });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
-      document.querySelector('.modal-backdrop')?.remove();
       if (info) info.hidden = true;
+      infoButton?.setAttribute('aria-expanded','false');
     }
   });
 
@@ -1252,6 +1244,7 @@
   function openProjectDetail(path) {
     const p = projects[path];
     if (!p) return;
+    const origin=window.DemoDialogs.capture();
 
     // Update URL query state without full reload
     const url = new URL(window.location);
@@ -1337,13 +1330,13 @@
       </div>
     `;
 
-    const closeModal = () => {
-      overlay.remove();
+    const clearDetailUrl = () => {
       const cleanUrl = new URL(window.location);
       cleanUrl.searchParams.delete('view');
       cleanUrl.searchParams.delete('project');
       window.history.replaceState({}, '', cleanUrl);
     };
+    const closeModal=()=>window.DemoDialogs.close();
 
     overlay.querySelector('.detail-modal-close').addEventListener('click', closeModal);
     overlay.querySelector('#close-modal-btn').addEventListener('click', closeModal);
@@ -1351,14 +1344,8 @@
       if (e.target === overlay) closeModal();
     });
 
-    document.addEventListener('keydown', function escHandler(e) {
-      if (e.key === 'Escape') {
-        closeModal();
-        document.removeEventListener('keydown', escHandler);
-      }
-    });
-
     document.body.appendChild(overlay);
+    window.DemoDialogs.open(overlay,origin,clearDetailUrl);
   }
   window.openProjectDetail = openProjectDetail;
 
@@ -4286,7 +4273,7 @@ const crmSeed = {
           </div>
           <p style="margin:12px 0 0;font-size:11px;color:#718096">QR อ้างอิงเลขจอง วันที่ และรอบเวลาในเดโมนี้ · ข้อมูลเก็บในเบราว์เซอร์ ไม่ใช่การจองกับร้านจริง</p>
         </div>
-      `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์บัตรจอง Pass</button></div>`);
+      `, `<div class="form-actions"><button class="btn primary" type="button" data-booking-print>🖨️ พิมพ์บัตรจอง Pass</button></div>`);
 
       if (typeof onSuccess === 'function') onSuccess();
     });
@@ -4485,7 +4472,7 @@ const crmSeed = {
       '/warehouse-management': {
         interest: 'wms',
         title: 'สนใจระบบคลังสินค้าแบบ NexusWMS?',
-        sub: 'ปรับแต่งให้เข้ากับคลังและบาร์โค้ดธุรกิจคุณ พร้อมใช้งานใน 3–4 สัปดาห์'
+        sub: 'ปรับขั้นตอนคลังและบาร์โค้ดตามโจทย์ธุรกิจ ประเมินขอบเขตและเวลาก่อนเริ่มงาน'
       },
       '/business-suite': {
         interest: 'crm',
@@ -4500,7 +4487,7 @@ const crmSeed = {
       '/pos-system-smart': {
         interest: 'pos',
         title: 'สนใจระบบหน้าร้าน POS & จอครัว KDS?',
-        sub: 'รองรับทั้งร้านอาหาร คาเฟ่ และหลายสาขา ปรับแก้ตามเมนูร้านได้ 100%'
+        sub: 'ปรับเมนูและขั้นตอนสำหรับร้านอาหารหรือคาเฟ่ ตามขอบเขตที่ตกลง'
       },
       '/usa-thai-shipping': {
         interest: 'shipping',
@@ -4520,7 +4507,7 @@ const crmSeed = {
       '/ecommerce-storefront': {
         interest: 'storefront',
         title: 'อยากมีเว็บขายของออนไลน์แบรนด์ตัวเอง?',
-        sub: 'เว็บโหลดไว รองรับตะกร้าสินค้า ชำระเงินอัตโนมัติ และจัดการสต็อกหลังบ้าน'
+        sub: 'ออกแบบแคตตาล็อก ตะกร้า และการเชื่อมชำระเงินตามขอบเขตงาน'
       },
       '/tilt-signal-arcade-bar': {
         interest: 'storefront',
