@@ -20,8 +20,12 @@
       "destination": "https://openai-landing-page-examples.vercel.app/:path*"
     },
     {
-      "source": "/(.*)",
+      "source": "/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/demo.html"
     }
   ]
 }

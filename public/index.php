@@ -7,6 +7,12 @@ require_once dirname(__DIR__) . '/src/ExternalProxy.php';
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $path = rtrim($path, '/') ?: '/';
 
+if ($path === '/') {
+    readfile(__DIR__ . '/index.html');
+    exit;
+}
+
+
 if (preg_match('#^/external/(ecommerce|tilt)(/.*)?$#', $path, $match)) {
     ExternalProxy::handle($match[1], $match[2] ?? '/');
 }
@@ -61,7 +67,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/app.css">
+    <link rel="stylesheet" href="/assets/app.css?v=crm-sign-4"><link rel="stylesheet" href="/assets/featured-demos.css?v=crm-sign-4">
 </head>
 <body data-page="<?= htmlspecialchars($pageKey, ENT_QUOTES) ?>" data-route="<?= htmlspecialchars($path, ENT_QUOTES) ?>">
 <?php if (file_exists(__DIR__ . '/assets/sprite.svg')) { readfile(__DIR__ . '/assets/sprite.svg'); } ?>
@@ -72,12 +78,12 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
         <p class="eyebrow" style="color:var(--coral);font-weight:800">404</p>
         <h1 style="font-size:36px;margin:10px 0">ไม่พบหน้าที่ต้องการ</h1>
         <p style="margin-bottom:24px;color:var(--muted)">หน้านี้ไม่อยู่ในรายการระบบที่เปิดให้บริการ หรือถูกปรับปรุงเรียบร้อยแล้ว</p>
-        <a class="btn primary" href="/">← กลับหน้าแรกพอร์ตโฟลิโอ</a>
+        <a class="btn primary" href="/">← กลับหน้าแรก</a>
     </main>
 <?php else: ?>
     <div class="demo-frame">
         <header class="demo-shell">
-            <a class="shell-back" href="/" aria-label="กลับหน้าแรก">← <span>กลับพอร์ตโฟลิโอ</span></a>
+            <a class="shell-back" href="/" aria-label="กลับหน้าแรก">← <span>กลับหน้าแรก</span></a>
             <div class="shell-project">
                 <span class="status-dot" aria-hidden="true"></span>
                 <strong><?= htmlspecialchars($project['short'] ?? $project['title'], ENT_QUOTES) ?></strong>
@@ -125,9 +131,10 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     </div>
 <?php endif; ?>
 <script>window.DEMO_PROJECTS = <?= $projectJson ?: '{}' ?>;</script>
-<script src="/assets/app.js" defer></script>
+<script src="/assets/app.js?v=crm-sign-4" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>
+<script src="/assets/featured-demos.js?v=crm-sign-4" defer></script>
 </body>
 </html>

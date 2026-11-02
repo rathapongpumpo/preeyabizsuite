@@ -4,4 +4,7 @@
 /var/
 /scratch/
 *.log
+/.playwright-cli/
+/output/
+/.vercel/
 

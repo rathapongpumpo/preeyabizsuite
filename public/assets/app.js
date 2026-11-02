@@ -1,6 +1,12 @@
 (() => {
   'use strict';
 
+  // Marketing has one canonical entry. Old cached shells must load it too.
+  if (['/', '/index.html', '/demo.html'].includes(location.pathname)) {
+    location.replace('/' + location.search + location.hash);
+    return;
+  }
+
   const app = document.getElementById('app');
   const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
   const staticPages = {
@@ -35,8 +41,8 @@
     const back = document.createElement('a');
     back.className = 'shell-back';
     back.href = '/';
-    back.setAttribute('aria-label', 'กลับพอร์ตโฟลิโอ');
-    back.textContent = '← กลับพอร์ตโฟลิโอ';
+    back.setAttribute('aria-label', 'กลับหน้าแรก');
+    back.textContent = '← กลับหน้าแรก';
     const projectName = document.createElement('div');
     projectName.className = 'shell-project';
     const status = document.createElement('span');
@@ -1369,12 +1375,54 @@ const crmSeed = {
       {id:'D-004',company:'Glow Spa Studio',contact:'คุณแอน',value:145000,stage:'new',probability:28,owner:'Preeya C.',source:'LINE',next:'โทรแนะนำบริการ'},
       {id:'D-005',company:'SkillBridge Academy',contact:'คุณนัท',value:310000,stage:'won',probability:100,owner:'Preeya C.',source:'Existing',next:'เริ่มโครงการ'},
     ],
-    quotes: {},
+    quotes: {}, contracts: {},
     activities: [{deal:'D-001',text:'ส่งใบเสนอราคาเริ่มต้น',at:today()}],
   };
 
-  function renderCrm() {
+  const signatureRegistryKey = 'preeya_esign_status';
+  function signatureRecords() {
+    try {
+      const data = JSON.parse(localStorage.getItem(signatureRegistryKey) || 'null');
+      return data?.version === 2 && data.records && typeof data.records === 'object' && !Array.isArray(data.records) ? data.records : {};
+    } catch { return {}; }
+  }
+  const signatureKey = (dealId, docId) => `${dealId || 'standalone'}:${docId}`;
+  function signatureFor(dealId, docId) {
+    if (!docId) return null;
+    const record = signatureRecords()[signatureKey(dealId, docId)];
+    return record?.docId === docId && record.dealId === (dealId || null) && /^data:image\/png;base64,/.test(record.image || '') ? record : null;
+  }
+  function writeSignature(dealId, docId, record) {
+    const records = signatureRecords(), key = signatureKey(dealId, docId);
+    if (record) records[key] = record; else delete records[key];
+    localStorage.setItem(signatureRegistryKey, JSON.stringify({version:2, records}));
+  }
+  function contractSnapshot(deal, quote) {
+    const subtotal = quote.items.reduce((sum, item) => sum + item[1] * item[2], 0);
+    return {id:id('AGR'), dealId:deal.id, company:deal.company, contact:deal.contact, items:clone(quote.items), discount:quote.discount, subtotal, total:subtotal*(1-quote.discount/100), createdAt:new Date().toISOString()};
+  }
+  function crmReturnUrl(dealId) { return `/business-suite?deal=${encodeURIComponent(dealId)}&tab=contract`; }
+  function signatureAudit(record) {
+    return `<div class="audit-certificate-box" style="padding:16px;line-height:1.9;overflow-wrap:anywhere">
+      <h3>บันทึกการลงนามในต้นแบบ</h3><p class="notice">ข้อมูลบันทึกในเบราว์เซอร์นี้ สำหรับทดลองขั้นตอนทำงาน</p>
+      <p><strong>เลขสัญญา:</strong> ${esc(record.docId)}<br><strong>เลขดีล:</strong> ${esc(record.dealId || 'เอกสารสาธิตแยกจาก CRM')}<br><strong>ผู้ลงนาม:</strong> ${esc(record.signerName)} (${esc(record.signerRole)})<br><strong>องค์กร:</strong> ${esc(record.companyName)}<br><strong>เวลาบันทึก:</strong> ${esc(new Date(record.signedAt).toLocaleString('th-TH'))}<br><strong>รหัสบันทึก:</strong> ${esc(record.id)}</p>
+      <img src="${esc(record.image)}" alt="ลายเซ็นที่บันทึกในสัญญานี้" style="display:block;max-width:100%;max-height:150px;background:#fff;border:1px solid var(--line);border-radius:8px">
+      <p class="muted">เป็นบันทึกการทดลอง ไม่ใช่ใบรับรองลายเซ็นดิจิทัลหรือการยืนยันตัวตนจากผู้ให้บริการภายนอก</p></div>`;
+  }
+  let crmLocationApplied = false;
+  function renderCrm(preserveView = false) {
     const s = store('crm', crmSeed);
+    if (preserveView) {
+      const view = app.querySelector('[data-tab].active')?.dataset.tab;
+      if (['overview','pipeline','quote','contract'].includes(view)) s.data.view = view;
+      if (s.data.deals.some(d=>d.id===app.dataset.crmSelected)) s.data.selected = app.dataset.crmSelected;
+    }
+    if (!crmLocationApplied) {
+      const params = new URLSearchParams(location.search), dealId = params.get('deal');
+      if (s.data.deals.some(d => d.id === dealId)) { s.data.selected = dealId; if (['contract','quote','pipeline'].includes(params.get('tab'))) s.data.view = params.get('tab'); s.save(); }
+      crmLocationApplied = true;
+    }
+    const signedDeal = d => signatureFor(d.id, s.data.contracts[d.id]?.id);
     const stageMap = Object.fromEntries(s.data.stages.map((x) => [x[0], x]));
     const current = () => s.data.deals.find((x) => x.id === s.data.selected) || s.data.deals[0];
     const saveRender = () => { s.save(); renderCrm(); };
@@ -1407,6 +1455,7 @@ const crmSeed = {
           <div class="stage-head"><span>${label}</span>${badge(`${s.data.deals.filter(x=>x.stage===key).length} ดีล`)}</div>
           ${s.data.deals.filter((x)=>x.stage===key).map((d)=>`<article class="deal-card" draggable="true" data-deal="${d.id}">
             <h4>${esc(d.company)}</h4><p>${esc(d.contact)} · ${esc(d.next)}</p>
+            ${signedDeal(d) ? '<span class="badge success" data-signature-status>ลงนามแล้ว (Signed)</span>' : ''}
             <div class="summary-line"><strong>${money(d.value)}</strong><span>${d.probability}%</span></div>
             <div class="progress"><span style="width:${d.probability}%"></span></div>
           </article>`).join('')}
@@ -1417,15 +1466,14 @@ const crmSeed = {
     function quote() {
       const d = current();
       let q = s.data.quotes[d.id];
-      if (!q) q = { status:'draft', discount:4, items:[['Discovery & UX',1,Math.round(d.value*.18)],['Development',1,Math.round(d.value*.62)],['Testing & Launch',1,Math.round(d.value*.24)]] };
-      s.data.quotes[d.id] = q; s.save();
+      if (!q) { q = { status:'draft', discount:4, items:[['Discovery & UX',1,Math.round(d.value*.18)],['Development',1,Math.round(d.value*.62)],['Testing & Launch',1,Math.round(d.value*.24)]] }; s.data.quotes[d.id] = q; s.save(); }
       const subtotal = q.items.reduce((a,x)=>a+x[1]*x[2],0);
       const total = subtotal * (1 - q.discount/100);
       return `<div class="page-pad split">
         <section class="card"><div class="card-head"><div><p class="eyebrow">Quote ${esc(d.id)}</p><h2>${esc(d.company)}</h2></div>${badge(q.status,q.status==='approved'?'success':'warning')}</div>
           <div class="table-wrap"><table><thead><tr><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>รวม</th></tr></thead><tbody>${q.items.map(x=>`<tr><td>${esc(x[0])}</td><td>${x[1]}</td><td>${money(x[2])}</td><td>${money(x[1]*x[2])}</td></tr>`).join('')}</tbody></table></div>
           <div style="max-width:360px;margin:16px 0 0 auto"><div class="summary-line"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-line"><span>Discount ${q.discount}%</span><strong>-${money(subtotal*q.discount/100)}</strong></div><div class="summary-line total"><span>Total</span><strong>${money(total)}</strong></div></div>
-          <div class="form-actions"><button class="btn" data-quote-status="sent">ส่งใบเสนอราคา</button><button class="btn primary" data-quote-status="approved">อนุมัติใบเสนอราคา</button></div>
+          <div class="form-actions"><button class="btn" data-quote-status="sent" ${signedDeal(d)?'disabled':''}>ส่งใบเสนอราคา</button><button class="btn primary" data-quote-status="approved" ${q.status==='approved'?'disabled':''}>อนุมัติใบเสนอราคา</button>${q.status==='approved'?'<button class="btn" data-tab="contract">ไปดูสัญญา →</button>':''}</div>
         </section>
         <aside class="card sidebar-card"><h3>เลือกลูกค้า</h3>${s.data.deals.map(x=>`<button class="deal-card" style="width:100%;text-align:left;margin-top:8px" data-select-deal="${x.id}"><h4>${esc(x.company)}</h4><p>${money(x.value)} · ${esc(stageMap[x.stage][1])}</p></button>`).join('')}</aside>
       </div>`;
@@ -1433,61 +1481,36 @@ const crmSeed = {
 
     function contract() {
       const d = current();
+      const q = s.data.quotes[d.id];
+      if (q?.status === 'approved' && !s.data.contracts[d.id]) { s.data.contracts[d.id] = contractSnapshot(d, q); s.save(); }
+      const doc = s.data.contracts[d.id], signed = signedDeal(d);
+      const signUrl = doc ? `/e-signature?from=crm&deal=${encodeURIComponent(d.id)}&doc=${encodeURIComponent(doc.id)}` : '';
       return `<div class="page-pad split"><section class="card"><p class="eyebrow">Contract handoff</p><h2>${esc(d.company)}</h2>
-        <div class="grid cols-2"><div><p class="muted">ผู้ติดต่อ</p><strong>${esc(d.contact)}</strong></div><div><p class="muted">มูลค่า</p><strong>${money(d.value)}</strong></div><div><p class="muted">ผู้ดูแล</p><strong>${esc(d.owner)}</strong></div><div><p class="muted">Next action</p><strong>${esc(d.next)}</strong></div></div>
-        
-        ${(() => {
-          let esign = null;
-          try { esign = JSON.parse(localStorage.getItem('preeya_esign_status') || 'null'); } catch(e){}
-          if (esign && esign.signed) {
-            return `
-              <div class="notice" style="margin-top:20px;border-left:4px solid var(--green);background:var(--green-light);color:#065F46">
-                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-                  <strong>✅ ลงนามสำเร็จ (Signed) · ${esc(esign.signedAt)}</strong>
-                  <span class="badge success" style="font-size:11px">SHA-256 Cryptographically Sealed</span>
-                </div>
-                <p style="margin:6px 0 8px;font-size:13px">ผู้ลงนาม: <strong>${esc(esign.signerName)}</strong> (${esc(esign.signerRole || 'Managing Director')}) — ${esc(esign.companyName || d.company)}</p>
-                <div style="display:flex;gap:8px">
-                  <button class="btn small" data-view-crm-audit type="button">📜 ดูบันทึกลายเซ็นและ Audit Trail</button>
-                  <a class="btn small primary" href="/e-signature?from=crm">เปิดดูหน้า E-Signature ↗</a>
-                </div>
-              </div>
-            `;
-          }
-          return `
-            <div class="notice" style="margin-top:20px;border-left:4px solid var(--blue);background:var(--cream-subtle)">
-              <strong>✍️ ฟีเจอร์ประกอบ: การส่งต่อลงนามสัญญา (Lite E-Signature)</strong>
-              <p style="margin:4px 0 6px;font-size:13px">เมื่อใบเสนอราคาได้รับอนุมัติ สามารถส่งต่อไปยังระบบลงนามเอกสาร Lite E-Signature เพื่อให้ลูกค้าลงนามสัญญาออนไลน์ พร้อมประทับตราและออก Audit Trail Certificate</p>
-              <small class="muted">ℹ️ เมื่อลงนามในระบบ E-Sign เรียบร้อย สถานะสัญญาจะซิงก์กลับมาเป็น "ลงนามสำเร็จ" อัตโนมัติ</small>
-            </div>
-          `;
-        })()}
-
-        <div class="form-actions" style="margin-top:16px">
-          <a class="btn primary" href="/e-signature?from=crm">✍️ ส่งไปลงนามที่ Lite E-Signature ↗</a>
-          <button class="btn" data-close-deal ${d.stage==='won'?'disabled':''}>${d.stage==='won'?'ปิดการขายแล้ว':'ปิดการขาย'}</button>
+        <div class="grid cols-2"><div><p class="muted">ผู้ติดต่อ</p><strong>${esc(d.contact)}</strong></div><div><p class="muted">มูลค่าตาม${doc?'ใบเสนอราคาที่อนุมัติ':'ดีล'}</p><strong data-contract-total>${money(doc?.total ?? d.value)}</strong></div><div><p class="muted">ผู้ดูแล</p><strong>${esc(d.owner)}</strong></div><div><p class="muted">เลขสัญญา</p><strong data-contract-id>${esc(doc?.id || 'ยังไม่ได้อนุมัติใบเสนอราคา')}</strong></div></div>
+        <div class="notice" style="margin-top:20px">
+          ${signed ? `<strong data-signature-status>ลงนามแล้ว (Signed)</strong><p>ผู้ลงนาม: ${esc(signed.signerName)} · ${esc(new Date(signed.signedAt).toLocaleString('th-TH'))}</p><img src="${esc(signed.image)}" alt="ลายเซ็นที่บันทึกในสัญญานี้" style="display:block;max-width:100%;max-height:110px;background:#fff;border:1px solid var(--line);border-radius:8px"><button class="btn small" data-view-crm-audit type="button" style="margin-top:12px">ดูบันทึกการลงนาม</button>` : `<strong data-signature-status>${doc?'รอลงนาม':'รออนุมัติใบเสนอราคา'}</strong><p>${doc?'เปิดสัญญาเพื่อตรวจรายการและลงนาม สถานะจะปรากฏเฉพาะดีลนี้':'อนุมัติใบเสนอราคาก่อน เพื่อสร้างสัญญาที่อ้างอิงลูกค้าและยอดเงินเดียวกัน'}</p>`}
+          <p class="muted" style="font-size:12px">ต้นแบบสาธิต บันทึกข้อมูลในเบราว์เซอร์นี้</p>
         </div>
-      </section><aside class="card sidebar-card"><h3>Activity ล่าสุด</h3>${s.data.activities.filter(x=>x.deal===d.id).slice(-12).reverse().map(a=>`<div class="timeline-item"><strong>${esc(a.text)}</strong><p class="muted">${esc(a.at)}</p></div>`).join('') || '<p class="muted">ยังไม่มีกิจกรรม</p>'}</aside></div>`;
+        <div class="form-actions" style="margin-top:16px">
+          ${doc?`<a class="btn primary" data-open-esign href="${esc(signUrl)}">${signed?'เปิดดูสัญญาที่ลงนามแล้ว':'เปิดสัญญาเพื่อลงนาม'} →</a>`:'<button class="btn primary" data-tab="quote">ไปดูใบเสนอราคา →</button>'}
+          <button class="btn" data-close-deal ${d.stage==='won'||!signed?'disabled':''}>${d.stage==='won'?'ปิดการขายแล้ว':'ปิดการขายหลังลงนาม'}</button>
+        </div>
+      </section><aside class="card sidebar-card"><h3>Activity ล่าสุด</h3>${[...s.data.activities.filter(x=>x.deal===d.id),...(signed?[{text:`ลงนามสัญญา ${signed.docId} โดย ${signed.signerName}`,at:new Date(signed.signedAt).toLocaleString('th-TH')}]:[])].slice(-12).reverse().map(a=>`<div class="timeline-item"><strong>${esc(a.text)}</strong><p class="muted">${esc(a.at)}</p></div>`).join('') || '<p class="muted">ยังไม่มีกิจกรรม</p>'}</aside></div>`;
     }
 
     app.innerHTML = `<div class="app-shell">${top()}${({overview,pipeline,quote,contract}[s.data.view] || overview)()}</div>`;
+    app.dataset.crmSelected = s.data.selected;
     app.querySelector('[data-view-crm-audit]')?.addEventListener('click', () => {
-      let esign = null;
-      try { esign = JSON.parse(localStorage.getItem('preeya_esign_status') || 'null'); } catch(e){}
-      modal('Audit Certificate — Sales Flow CRM & E-Sign', `
-        <div class="audit-certificate-box" style="padding:16px;background:var(--subtle);border-radius:10px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;font-size:13px;line-height:1.8">
-          <h3 style="margin:0 0 10px;color:var(--brand)">📜 E-SIGNATURE AUDIT TRAIL LOG</h3>
-          <div><strong>Contract Status:</strong> <span class="badge success">ลงนามสำเร็จ (Signed)</span></div>
-          <div><strong>Signer Name:</strong> ${esc(esign?.signerName || 'ปรียา สุทธิสาร')} (${esc(esign?.signerRole || 'Managing Director')})</div>
-          <div><strong>Organization:</strong> ${esc(esign?.companyName || 'บริษัท เอสเอ็มอี เทค โซลูชั่นส์ จำกัด')}</div>
-          <div><strong>Signed Timestamp:</strong> ${esc(esign?.signedAt || today())}</div>
-          <div><strong>Document ID:</strong> ${esc(esign?.docId || 'AGR-2026-0881')}</div>
-          <div><strong>SHA-256 Checksum:</strong><br><span style="color:var(--success)">sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span></div>
-        </div>
-      `);
+      const record = signedDeal(current());
+      if (record) modal('บันทึกการลงนาม — CRM', signatureAudit(record));
     });
     app.querySelectorAll('[data-tab]').forEach((el) => el.addEventListener('click', () => { s.data.view=el.dataset.tab; saveRender(); }));
-    app.querySelector('[data-crm-reset]')?.addEventListener('click', () => { if(confirm('คืนข้อมูล CRM เริ่มต้น?')) {s.reset();renderCrm();} });
+    app.querySelector('[data-crm-reset]')?.addEventListener('click', () => { if(confirm('คืนข้อมูล CRM เริ่มต้นและล้างลายเซ็นสัญญาที่เชื่อมกับ CRM?')) {
+      const records = signatureRecords();
+      for (const key of Object.keys(records)) if (records[key].dealId) delete records[key];
+      localStorage.setItem(signatureRegistryKey, JSON.stringify({version:2,records}));
+      s.reset();renderCrm();
+    } });
     app.querySelector('[data-crm-add]')?.addEventListener('click', () => {
       const next=s.data.deals.length+1; const d={id:id('D'),company:`New Demo Client ${next}`,contact:'คุณลูกค้า',value:235000,stage:'qualified',probability:50,owner:'Preeya C.',source:'Demo',next:'เก็บ requirement'};
       s.data.deals.unshift(d); s.data.selected=d.id; s.data.view='pipeline'; s.data.activities.push({deal:d.id,text:'เพิ่มลูกค้าตัวอย่าง',at:today()}); saveRender(); toast('เพิ่มลูกค้าตัวอย่างแล้ว');
@@ -1501,8 +1524,11 @@ const crmSeed = {
       }
     }));
     app.querySelectorAll('[data-quote-status]').forEach((el)=>el.addEventListener('click',()=>{
-      const d=current(); const q=s.data.quotes[d.id]; q.status=el.dataset.quoteStatus;
-      if(q.status==='approved'){d.stage='contract';d.probability=84;}
+      const d=current(); const q=s.data.quotes[d.id];
+      if(signedDeal(d))return;
+      q.status=el.dataset.quoteStatus;
+      if(q.status==='approved'){d.stage='contract';d.probability=84;s.data.contracts[d.id] ||= contractSnapshot(d,q);}
+      else delete s.data.contracts[d.id];
       s.data.activities.push({deal:d.id,text:`Quote status: ${q.status}`,at:today()});saveRender();toast('อัปเดตใบเสนอราคาแล้ว');
     }));
     app.querySelector('[data-close-deal]')?.addEventListener('click',()=>{const d=current();d.stage='won';d.probability=100;s.data.activities.push({deal:d.id,text:'ปิดการขายสำเร็จ',at:today()});saveRender();});
@@ -2337,16 +2363,21 @@ const crmSeed = {
     ]
   };
 
+  function featuredDemoGuide(kind) {
+    const wms=kind==='wms';
+    return `<section class="demo-guide" aria-label="วิธีทดลองระบบ"><div class="demo-guide-copy"><strong>${wms?'ลองรับสินค้า แล้วดูยอดเปลี่ยน':'ลองสั่งเมนู แล้วดูออเดอร์ในครัว'}</strong><p>${wms?'รับสินค้าเข้า 20 ชิ้น ยอดคงเหลือและประวัติจะอัปเดตตามจริงในตัวอย่างนี้':'เลือกเมนูและตัวเลือก ชำระเงินจำลอง แล้วติดตามรายการเดียวกันในจอครัว'} · ข้อมูลจำลองในเครื่องคุณ</p></div><div class="demo-guide-steps">${(wms?['รับสินค้า 20 ชิ้น','เช็กยอดคงเหลือ','ดูประวัติรับเข้า']:['เลือกเมนู','ชำระเงินจำลอง','ดูจอครัว']).map((label,i)=>`<button type="button" data-guided-step="${i+1}"><b>${i+1}</b>${label}</button>`).join('')}</div></section>`;
+  }
+
   function renderWms() {
     const s = store('wms', wmsSeed);
     const save = () => { s.save(); renderWms(); };
     const views = [
-      ['dashboard', 'Dashboard'],
-      ['inventory', 'Inventory & Stock'],
-      ['inbound', `Inbound (${s.data.inboundOrders.filter(x => x.status === 'Pending').length})`],
-      ['outbound', `Outbound (${s.data.outboundOrders.filter(x => x.status === 'Picking').length})`],
-      ['suppliers', 'Suppliers'],
-      ['reports', 'Stock Ledger & Reports']
+      ['dashboard', 'ภาพรวมคลัง'],
+      ['inventory', 'สินค้าและยอดคงเหลือ'],
+      ['inbound', `รับเข้าสินค้า (${s.data.inboundOrders.filter(x => x.status === 'Pending').length})`],
+      ['outbound', `เบิกสินค้า (${s.data.outboundOrders.filter(x => x.status === 'Picking').length})`],
+      ['suppliers', 'ผู้จำหน่าย'],
+      ['reports', 'ประวัติและรายงาน']
     ];
 
     const categories = ['All', 'Electronics', 'Furniture', 'Stationery', 'Networking'];
@@ -2749,7 +2780,7 @@ const crmSeed = {
       </div>`;
     }
 
-    app.innerHTML = `<div class="app-shell">${appHeader('NexusWMS', 'ระบบจัดการคลังสินค้าและสต็อก (Warehouse Management)', views, s.data.view, `<button class="btn small danger" data-wms-reset>รีเซ็ตคลัง</button>`)}${body}</div>`;
+    app.innerHTML = `<div class="app-shell">${appHeader('NexusWMS', 'ระบบจัดการคลังสินค้าและสต็อก (Warehouse Management)', views, s.data.view, `<button class="btn small danger" data-wms-reset>รีเซ็ตคลัง</button>`)}${featuredDemoGuide('wms')}${body}</div>`;
 
     // Tab Navigation
     app.querySelectorAll('[data-tab]').forEach(el => el.addEventListener('click', () => { s.data.view = el.dataset.tab; save(); }));
@@ -3456,11 +3487,11 @@ const crmSeed = {
     const s = store('smartpos', smartPosSeed);
     const save = () => { s.save(); renderSmartPos(); };
     const views = [
-      ['pos', 'POS Register'],
-      ['tables', 'ผังโต๊ะอาหาร (Tables)'],
-      ['kds', `Kitchen Display (${(s.data.orders || []).filter(x => ['pending', 'cooking'].includes(x.status)).length})`],
-      ['dashboard', 'Z-Report & สรุปยอดขาย'],
-      ['kiosk', 'Self-Order Kiosk']
+      ['pos', 'รับออเดอร์และคิดเงิน'],
+      ['tables', 'ผังโต๊ะอาหาร'],
+      ['kds', `จอครัว (${(s.data.orders || []).filter(x => ['pending', 'cooking'].includes(x.status)).length})`],
+      ['dashboard', 'สรุปยอดขาย'],
+      ['kiosk', 'หน้าจอลูกค้าสั่งเอง']
     ];
 
     const cartSubtotal = (s.data.cart || []).reduce((a, x) => a + x.price * x.qty, 0);
@@ -3485,7 +3516,7 @@ const crmSeed = {
           <div class="product-grid">
             ${filtered.map(p => `
               <article class="product-card">
-                <span class="stat-icon">${p.cat === 'Coffee' ? '☕' : p.cat === 'Tea' ? '🍵' : p.cat === 'Bakery' ? '🥐' : '🍽'}</span>
+                <span class="menu-photo" role="img" aria-label="${esc(p.name)}" style="background-position:${((Number(p.id.slice(1))-1)%5)*25}% ${Number(p.id.slice(1))>5?100:0}%"></span>
                 <h3 style="font-size:16px;margin:12px 0 4px">${esc(p.name)}</h3>
                 <p class="muted" style="font-size:12px">${esc(p.cat)}</p>
                 <div class="summary-line" style="margin-top:auto;padding-top:10px">
@@ -3646,7 +3677,7 @@ const crmSeed = {
       else body = `<div class="page-pad split"><section><h2>รายการอาหาร Kiosk</h2><div class="product-grid">${posProducts.map(p => `<article class="product-card"><h3>${esc(p.name)}</h3><p class="muted">${esc(p.cat)}</p><div class="summary-line"><strong>${money(p.price)}</strong><button class="btn small primary" data-pos-add-item="${p.id}">+ สั่งสินค้า</button></div></article>`).join('')}</div></section><aside class="card sidebar-card"><h2>รายการของคุณ</h2>${lines.map(x => `<div class="summary-line"><span>${x.qty} × ${esc(x.name)}</span><strong>${money(x.qty * x.price)}</strong></div>`).join('') || '<div class="empty">ยังไม่มีสินค้า</div>'}<div class="summary-line total"><span>Total</span><strong>${money(cartTotal)}</strong></div><button class="btn primary" style="width:100%" data-kiosk-pay ${lines.length ? '' : 'disabled'}>ชำระเงิน QR PromptPay</button></aside></div>`;
     }
 
-    app.innerHTML = `<div class="app-shell">${appHeader('SmartPOS', 'ระบบจุดขายร้านอาหาร & คาเฟ่ (POS / KDS / Table Layout)', views, s.data.view, `<button class="btn small danger" data-pos-reset>รีเซ็ตระบบ POS</button>`)}${body}</div>`;
+    app.innerHTML = `<div class="app-shell">${appHeader('SmartPOS', 'ระบบจุดขายร้านอาหาร & คาเฟ่ (POS / KDS / Table Layout)', views, s.data.view, `<button class="btn small danger" data-pos-reset>รีเซ็ตระบบ POS</button>`)}${featuredDemoGuide('pos')}${body}</div>`;
 
     app.querySelectorAll('[data-tab]').forEach(el => el.addEventListener('click', () => { s.data.view = el.dataset.tab; save(); }));
     app.querySelector('[data-pos-reset]')?.addEventListener('click', () => { if (confirm('ล้างข้อมูลคำสั่งซื้อ POS ทั้งหมด?')) { s.reset(); renderSmartPos(); } });
@@ -3794,17 +3825,17 @@ const crmSeed = {
       s.data.orders.unshift(newOrder);
 
       const wrap = modal('ใบเสร็จรับเงินอย่างย่อ (Thermal Slip Receipt)', `
-        <div class="receipt-slip" style="background:#fff;color:#111;padding:20px;border-radius:12px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;max-width:360px;margin:auto">
+        <div class="receipt-slip pos-receipt" style="background:#fff;color:#111;padding:20px;border-radius:12px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;max-width:360px;margin:auto">
           <div style="text-align:center;border-bottom:1px dashed #333;padding-bottom:12px;margin-bottom:12px">
             <h2 style="margin:0;font-size:20px">Preeya Cafe & Bistro</h2>
-            <p style="margin:4px 0;font-size:12px">TAX ID: 0-1055-69001-99-1</p>
+            <p style="margin:4px 0;font-size:12px">ใบเสร็จตัวอย่าง · การชำระเงินจำลอง</p>
             <p style="margin:0;font-size:12px">เลขออเดอร์: ${orderId} · โต๊ะ: ${s.data.selectedTable}</p>
             <p style="margin:0;font-size:11px">วันที่: ${today()} ${newOrder.at}</p>
           </div>
 
           <div style="border-bottom:1px dashed #333;padding-bottom:12px;margin-bottom:12px">
             ${(s.data.cart || []).map(x => `
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <div class="receipt-item" style="display:flex;justify-content:space-between;margin-bottom:4px">
                 <span>${x.qty} × ${esc(x.name)}</span>
                 <span>${money(x.price * x.qty)}</span>
               </div>
@@ -3823,12 +3854,12 @@ const crmSeed = {
             ขอบคุณที่ใช้บริการค่ะ / Thank you!
           </div>
         </div>
-      `, `<div class="form-actions"><button class="btn primary" onclick="window.print()">🖨️ พิมพ์ใบเสร็จ (Thermal 80mm Preview)</button></div>`);
+      `, `<div class="form-actions"><button class="btn primary" type="button" data-pos-print>พิมพ์ใบเสร็จ 80 มม.</button><button class="btn" type="button" data-guided-step="3">ไปดูออเดอร์ในครัว →</button></div>`);
 
       s.data.cart = [];
       s.data.view = 'kds';
       save();
-      toast('ส่ง Order เข้าครัว KDS และพิมพ์ใบเสร็จเรียบร้อย');
+      toast('ส่งออเดอร์เข้าครัวแล้ว ดูหรือพิมพ์ใบเสร็จได้');
     }));
 
     app.querySelectorAll('[data-order-next]').forEach(el => el.addEventListener('click', () => {
@@ -3916,230 +3947,73 @@ const crmSeed = {
   };
 
   function renderEsign() {
-    const s = store('esign', esignSeed);
-    const save = () => { s.save(); renderEsign(); };
-    let drawing = false, dirty = false, ctx = null, canvas = null;
-
-    const currentDoc = esignDocs[s.data.selectedDoc] || esignDocs['DOC-2026-0430'];
-    const signed = s.data.signed;
-
-    const views = [
-      ['doc', 'หน้าต่างลงนามสัญญา'],
-      ['audit', 'ตรวจสอบ Audit Certificate & Hash']
-    ];
-
-    let body = '';
-
+    const s = store('esign', esignSeed), params = new URLSearchParams(location.search);
+    const linked = params.get('from') === 'crm' || params.has('deal');
+    const crm = linked ? store('crm', crmSeed) : null;
+    const dealId = linked ? params.get('deal') : null;
+    const snapshot = crm?.data.contracts[dealId];
+    const deal = crm?.data.deals.find(d => d.id === dealId);
+    if (linked && (!deal || !snapshot || snapshot.id !== params.get('doc') || crm.data.quotes[dealId]?.status !== 'approved')) {
+      app.innerHTML = `${appHeader('ลงนามสัญญาตัวอย่าง','เอกสารที่เชื่อมกับ CRM',[],'')}<div class="page-pad"><section class="card"><h2>ไม่พบสัญญาที่พร้อมลงนาม</h2><p>สัญญาอาจถูกรีเซ็ตหรือใบเสนอราคามีการเปลี่ยนแปลง กรุณาเปิดเอกสารจากดีลใน CRM อีกครั้ง</p><a class="btn primary" href="/business-suite">กลับ CRM</a></section></div>`;
+      return;
+    }
+    if (!esignDocs[s.data.selectedDoc]) s.data.selectedDoc = esignSeed.selectedDoc;
+    const docId = linked ? snapshot.id : s.data.selectedDoc;
+    const currentDoc = linked ? {
+      title:`สัญญาพัฒนาระบบ — ${snapshot.company}`, type:'สัญญาตัวอย่างจากใบเสนอราคาที่อนุมัติ', value:money(snapshot.total),
+      body:`<p><strong>ลูกค้า:</strong> ${esc(snapshot.company)}<br><strong>ผู้ติดต่อ:</strong> ${esc(snapshot.contact)}<br><strong>เลขดีล:</strong> ${esc(dealId)}</p><h3>รายการตามใบเสนอราคาที่อนุมัติ</h3><div class="table-wrap"><table><thead><tr><th>รายการ</th><th>จำนวน</th><th>รวม</th></tr></thead><tbody>${snapshot.items.map(item=>`<tr><td>${esc(item[0])}</td><td>${item[1]}</td><td>${money(item[1]*item[2])}</td></tr>`).join('')}</tbody></table></div><p>ยอดก่อนส่วนลด: ${money(snapshot.subtotal)}<br>ส่วนลด: ${snapshot.discount}%<br><strong>ยอดสุทธิ: ${money(snapshot.total)}</strong></p><p class="muted">เอกสารตัวอย่างสำหรับทดลองอนุมัติและลงนาม ไม่ใช่สัญญาจ้างงานจริง</p>`
+    } : esignDocs[docId];
+    const key = signatureKey(dealId,docId), signed = signatureFor(dealId,docId);
+    s.data.drafts ||= {};
+    const draft = s.data.drafts[key] ||= {signerName:linked?snapshot.contact:s.data.signerName,signerRole:linked?'':s.data.signerRole,companyName:linked?snapshot.company:s.data.companyName};
+    s.save();
+    const returnUrl = linked ? crmReturnUrl(dealId) : '/business-suite';
+    const back = `<a class="btn small primary" data-return-crm href="${esc(returnUrl)}">← ${linked?'กลับดีลนี้ใน CRM':'ไป CRM'}</a>`;
+    const warning = '<p class="notice">ต้นแบบสาธิต · ข้อมูลและลายเซ็นเก็บในเบราว์เซอร์นี้ ใช้ทดลองขั้นตอนทำงานเท่านั้น</p>';
+    let body;
     if (signed) {
-      body = `<div class="page-pad">
-        <section class="signed-mark card" style="max-width:780px;margin:auto;padding:32px;text-align:center">
-          <div style="font-size:64px;color:var(--success);margin-bottom:10px">✓</div>
-          <p class="eyebrow" style="color:var(--success)">OFFICIALLY SIGNED & VERIFIED</p>
-          <h1 style="margin:6px 0 16px">${esc(currentDoc.title)}</h1>
-          
-          <div class="grid cols-2" style="text-align:left;background:var(--subtle);padding:16px;border-radius:10px;margin:20px 0">
-            <div>
-              <small class="muted">ผู้ลงนาม (Signer)</small><br>
-              <strong>${esc(signed.signerName)}</strong> (${esc(signed.signerRole)})<br>
-              <small class="muted">${esc(signed.companyName)}</small>
-            </div>
-            <div>
-              <small class="muted">เวลาและรหัสการลงนาม</small><br>
-              <strong>${esc(signed.time)}</strong><br>
-              <small class="muted">Hash: ${esc(signed.docHash.slice(0, 24))}...</small>
-            </div>
-          </div>
-
-          <div style="border:2px dashed var(--line);padding:16px;border-radius:12px;display:inline-block;background:#fff;margin-bottom:20px">
-            <img src="${signed.image}" alt="ลายเซ็นดิจิทัล" style="max-height:100px;display:block;margin:auto">
-            ${signed.withSeal ? `<div style="font-size:11px;color:var(--brand);margin-top:6px;font-weight:bold">🛡️ ประทับตราบริษัทดิจิทัลเรียบร้อย</div>` : ''}
-          </div>
-
-          <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
-            <a class="btn coral" href="/business-suite">← กลับไป Sales Flow CRM</a>
-            <button class="btn primary" data-download-pdf>🖨️ ดาวน์โหลด / พิมพ์สัญญา (PDF)</button>
-            <button class="btn" data-view-certificate>📜 ดูใบรับรอง Audit Certificate</button>
-            <button class="btn danger" data-esign-reset>ล้างสัญญาลองใหม่</button>
-          </div>
-        </section>
-      </div>`;
+      body = `<div class="page-pad"><section class="card signed-mark" style="max-width:820px;margin:auto;padding:24px"><span class="badge success" data-signature-status>ลงนามแล้ว (Signed)</span><h2>${esc(currentDoc.title)}</h2>${warning}<p><strong>เลขสัญญา:</strong> ${esc(docId)}${linked?`<br><strong>เลขดีล:</strong> ${esc(dealId)}`:''}<br><strong>ผู้ลงนาม:</strong> ${esc(signed.signerName)} (${esc(signed.signerRole)})<br><strong>องค์กร:</strong> ${esc(signed.companyName)}<br><strong>เวลาบันทึก:</strong> ${esc(new Date(signed.signedAt).toLocaleString('th-TH'))}</p><img src="${esc(signed.image)}" alt="ลายเซ็นที่บันทึกในสัญญานี้" style="display:block;width:320px;max-width:100%;border:1px solid var(--line);border-radius:8px;background:#fff"><details style="margin-top:20px"><summary>ดูเนื้อหาเอกสารที่ลงนาม</summary><div>${currentDoc.body}</div></details><div class="form-actions">${back}<button class="btn" data-view-certificate>ดูบันทึกการลงนาม</button><button class="btn danger" data-esign-reset>ยกเลิกลายเซ็นสาธิต</button></div></section></div>`;
     } else {
-      body = `<div class="page-pad split">
-        <section>
-          <div class="card" style="margin-bottom:14px;padding:14px">
-            <label style="font-size:12px;font-weight:bold" class="muted">เลือกรูปแบบเอกสารสัญญา</label>
-            <select class="select" id="doc-selector" style="margin-top:6px">
-              ${Object.entries(esignDocs).map(([key, doc]) => `<option value="${key}" ${key === s.data.selectedDoc ? 'selected' : ''}>${doc.title} (${doc.value})</option>`).join('')}
-            </select>
-          </div>
-
-          <article class="contract-paper card" style="padding:28px">
-            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:16px">
-              <div>
-                <p class="eyebrow">${esc(s.data.selectedDoc)} · ${esc(currentDoc.type)}</p>
-                <h1 style="font-size:22px;margin:4px 0">${esc(currentDoc.title)}</h1>
-              </div>
-              ${badge(currentDoc.value, 'primary')}
-            </div>
-
-            ${currentDoc.body}
-
-            <div style="margin-top:24px;border-top:1px dashed var(--line);padding-top:16px">
-              <p class="muted" style="font-size:12px">การลงนามในเอกสารนี้ถือเป็นลายมือชื่อดิจิทัลที่มีผลผูกพันตามกฎหมาย พ.ร.บ. ว่าด้วยธุรกรรมทางอิเล็กทรอนิกส์</p>
-            </div>
-          </article>
-        </section>
-
-        <aside class="card sidebar-card">
-          <h2>ข้อมูลผู้ลงนาม & ลายเซ็น</h2>
-          
-          <form id="signer-info-form" class="form-grid" style="margin-bottom:14px">
-            <div class="field" style="grid-column:1/-1">
-              <label>ชื่อ-นามสกุล ผู้ลงนาม</label>
-              <input class="input" id="signer-name" value="${esc(s.data.signerName)}" required>
-            </div>
-            <div class="field" style="grid-column:1/-1">
-              <label>ตำแหน่ง</label>
-              <input class="input" id="signer-role" value="${esc(s.data.signerRole)}" required>
-            </div>
-            <div class="field" style="grid-column:1/-1">
-              <label>ชื่อบริษัท / หน่วยงาน</label>
-              <input class="input" id="company-name" value="${esc(s.data.companyName)}" required>
-            </div>
-            <div class="field" style="grid-column:1/-1">
-              <label><input type="checkbox" id="seal-toggle" ${s.data.withSeal ? 'checked' : ''}> แนบตราประทับบริษัทดิจิทัล (Digital Company Seal)</label>
-            </div>
-          </form>
-
-          <div class="card-head" style="margin-top:10px">
-            <div><p class="eyebrow">Signature Pad</p><h3 style="margin:0">กล่องจรดลายเซ็น</h3></div>
-            <button class="btn small" data-clear-sign>ล้างใหม่</button>
-          </div>
-
-          <canvas class="signature-pad" id="signature-pad" style="border:2px dashed var(--brand);border-radius:8px;width:100%;height:150px;background:#fff;margin:10px 0;cursor:crosshair"></canvas>
-          <p class="muted" style="font-size:11px">ใช้นิ้ว เมาส์ หรือปากกา Stylus วาดลายเซ็นภายในกล่อง</p>
-
-          <button class="btn primary" style="width:100%;margin-top:10px" data-submit-sign disabled>✍️ ยืนยันการลงนามสัญญา</button>
-        </aside>
-      </div>`;
+      body = `<div class="page-pad split"><section>${warning}${linked?'':`<div class="card" style="padding:14px;margin-bottom:14px"><label for="doc-selector">เลือกเอกสารสาธิต</label><select class="select" id="doc-selector">${Object.entries(esignDocs).map(([key,doc])=>`<option value="${key}" ${key===docId?'selected':''}>${esc(doc.title)}</option>`).join('')}</select></div>`}<article class="contract-paper card" style="padding:24px"><p class="eyebrow">${esc(docId)} · ${esc(currentDoc.type)}</p><h2>${esc(currentDoc.title)}</h2><p><strong>${esc(currentDoc.value)}</strong></p>${currentDoc.body}</article></section><aside class="card sidebar-card"><h2>ผู้ลงนามและลายเซ็น</h2><form id="signer-info-form" class="form-grid"><div class="field"><label for="signer-name">ชื่อผู้ลงนาม</label><input class="input" id="signer-name" value="${esc(draft.signerName)}" required></div><div class="field"><label for="signer-role">ตำแหน่ง</label><input class="input" id="signer-role" value="${esc(draft.signerRole)}" required></div><div class="field"><label for="company-name">บริษัท / หน่วยงาน</label><input class="input" id="company-name" value="${esc(draft.companyName)}" required></div></form><div class="card-head" style="margin-top:20px"><h3>วาดลายเซ็น</h3><button class="btn small" data-clear-sign>ล้างใหม่</button></div><canvas id="signature-pad" class="signature-pad" style="display:block;width:100%;height:150px;border:2px dashed var(--brand);border-radius:8px;background:#fff;touch-action:none"></canvas><p class="muted">วาดด้วยเมาส์ นิ้ว หรือปากกา แล้วกดยืนยัน</p><button class="btn primary" style="width:100%;min-height:44px" data-submit-sign disabled>บันทึกลายเซ็นสาธิต</button></aside></div>`;
     }
-
-    app.innerHTML = `<div class="app-shell">${appHeader('Lite E-Signature', `${esc(s.data.selectedDoc)} · ฟีเจอร์ประกอบ Sales Flow CRM สำหรับลงนามสัญญาพร้อม Audit Trail`, [], '', `<a class="btn small primary" href="/business-suite" style="margin-right:8px">← กลับไป Sales Flow CRM</a><button class="btn small danger" data-esign-reset>รีเซ็ตข้อมูล</button>`)}${body}</div>`;
-
-    app.querySelector('#doc-selector')?.addEventListener('change', (e) => {
-      s.data.selectedDoc = e.target.value;
-      save();
-    });
-
-    app.querySelector('#signer-name')?.addEventListener('input', (e) => { s.data.signerName = e.target.value; s.save(); });
-    app.querySelector('#signer-role')?.addEventListener('input', (e) => { s.data.signerRole = e.target.value; s.save(); });
-    app.querySelector('#company-name')?.addEventListener('input', (e) => { s.data.companyName = e.target.value; s.save(); });
-    app.querySelector('#seal-toggle')?.addEventListener('change', (e) => { s.data.withSeal = e.target.checked; s.save(); });
-
-    app.querySelector('[data-esign-reset]')?.addEventListener('click', () => {
-      if (confirm('ยกเลิกลายเซ็นและรีเซ็ตสัญญา?')) {
-        s.reset();
-        renderEsign();
-      }
-    });
-
-    if (!signed) {
-      canvas = app.querySelector('#signature-pad');
-      if (canvas) {
-        ctx = canvas.getContext('2d');
-        const resize = () => {
-          const ratio = Math.max(window.devicePixelRatio || 1, 1);
-          const rect = canvas.getBoundingClientRect();
-          canvas.width = rect.width * ratio;
-          canvas.height = rect.height * ratio;
-          ctx.scale(ratio, ratio);
-          ctx.lineWidth = 2.5;
-          ctx.lineCap = 'round';
-          ctx.strokeStyle = '#0f172a';
-        };
-        resize();
-
-        const point = (e) => {
-          const r = canvas.getBoundingClientRect();
-          const p = e.touches?.[0] || e;
-          return [p.clientX - r.left, p.clientY - r.top];
-        };
-
-        const start = (e) => {
-          e.preventDefault();
-          drawing = true;
-          const [x, y] = point(e);
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-        };
-
-        const move = (e) => {
-          if (!drawing) return;
-          e.preventDefault();
-          const [x, y] = point(e);
-          ctx.lineTo(x, y);
-          ctx.stroke();
-          dirty = true;
-          const btn = app.querySelector('[data-submit-sign]');
-          if (btn) btn.disabled = false;
-        };
-
-        const end = () => drawing = false;
-
-        ['pointerdown', 'touchstart'].forEach(n => canvas.addEventListener(n, start, { passive: false }));
-        ['pointermove', 'touchmove'].forEach(n => canvas.addEventListener(n, move, { passive: false }));
-        ['pointerup', 'pointerleave', 'touchend'].forEach(n => canvas.addEventListener(n, end));
-
-        app.querySelector('[data-clear-sign]')?.addEventListener('click', () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          dirty = false;
-          const btn = app.querySelector('[data-submit-sign]');
-          if (btn) btn.disabled = true;
-        });
-
-        app.querySelector('[data-submit-sign]')?.addEventListener('click', () => {
-          if (!dirty) return;
-          const docHash = 'sha256:' + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2) + 'e3b0c442';
-          s.data.signed = {
-            image: canvas.toDataURL('image/png'),
-            time: new Date().toLocaleString('th-TH'),
-            signerName: s.data.signerName || 'คุณสมศักดิ์ พัฒนากุล',
-            signerRole: s.data.signerRole || 'กรรมการผู้จัดการ',
-            companyName: s.data.companyName || 'บริษัท สยาม อินโนเวชั่น จำกัด',
-            withSeal: s.data.withSeal,
-            docHash,
-            ip: '182.52.198.42',
-            location: 'Bangkok, Thailand'
-          };
-          save();
-          toast('ลงนามในเอกสารสัญญาเรียบร้อยแล้ว');
-        });
-      }
+    app.innerHTML = `<div class="app-shell">${appHeader('Lite E-Signature',linked?`${dealId} · ${snapshot.company}`:'เลือกเอกสารสาธิตและทดลองวาดลายเซ็น',[],'',back)}${body}</div>`;
+    app.querySelector('#doc-selector')?.addEventListener('change',e=>{s.data.selectedDoc=e.target.value;s.save();renderEsign();});
+    for (const [selector,field] of [['#signer-name','signerName'],['#signer-role','signerRole'],['#company-name','companyName']]) {
+      app.querySelector(selector)?.addEventListener('input',e=>{draft[field]=e.target.value;s.save();});
     }
-
-    app.querySelector('[data-view-certificate]')?.addEventListener('click', () => {
-      modal('ใบรับรอง Audit Trail Certificate', `
-        <div class="audit-certificate-box" style="padding:16px;background:var(--subtle);border-radius:10px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;font-size:13px;line-height:1.8">
-          <h3 style="margin:0 0 10px;color:var(--brand)">📜 E-SIGNATURE AUDIT TRAIL LOG</h3>
-          <div><strong>Document ID:</strong> ${esc(s.data.selectedDoc)}</div>
-          <div><strong>Document Title:</strong> ${esc(currentDoc.title)}</div>
-          <div><strong>Signer Name:</strong> ${esc(signed?.signerName)} (${esc(signed?.signerRole)})</div>
-          <div><strong>Organization:</strong> ${esc(signed?.companyName)}</div>
-          <div><strong>Signed Timestamp:</strong> ${esc(signed?.time)}</div>
-          <div><strong>IP Address:</strong> ${esc(signed?.ip)}</div>
-          <div><strong>Geo Location:</strong> ${esc(signed?.location)}</div>
-          <div style="word-break:break-all;margin-top:8px"><strong>SHA-256 Checksum:</strong><br><span style="color:var(--success)">${esc(signed?.docHash)}</span></div>
-          <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);color:var(--muted)">
-            Status: VALID & Cryptographically Sealed via SHA-256
-          </div>
-        </div>
-      `);
+    app.querySelector('[data-esign-reset]')?.addEventListener('click',()=>{
+      if(!confirm('ยกเลิกลายเซ็นสาธิตของเอกสารนี้? สถานะใน CRM จะกลับเป็นรอลงนาม'))return;
+      try {
+        writeSignature(dealId,docId,null);
+        if(linked){const fresh=store('crm',crmSeed),d=fresh.data.deals.find(d=>d.id===dealId);if(d?.stage==='won'){d.stage='contract';d.probability=84;fresh.save();}}
+        renderEsign();toast('ยกเลิกลายเซ็นของเอกสารนี้แล้ว');
+      } catch {toast('บันทึกการยกเลิกไม่ได้ กรุณาตรวจพื้นที่จัดเก็บของเบราว์เซอร์');}
     });
-
-    app.querySelector('[data-download-pdf]')?.addEventListener('click', () => {
-      window.print();
+    app.querySelector('[data-view-certificate]')?.addEventListener('click',()=>modal('บันทึกการลงนาม',signatureAudit(signed)));
+    if(signed)return;
+    const canvas=app.querySelector('#signature-pad'),ctx=canvas.getContext('2d');
+    const ratio=Math.max(devicePixelRatio||1,1),rect=canvas.getBoundingClientRect();
+    canvas.width=rect.width*ratio;canvas.height=rect.height*ratio;ctx.scale(ratio,ratio);ctx.lineWidth=2.5;ctx.lineCap='round';ctx.strokeStyle='#0f172a';
+    let drawing=false,dirty=false;
+    canvas.addEventListener('pointerdown',e=>{e.preventDefault();drawing=true;canvas.setPointerCapture(e.pointerId);const r=canvas.getBoundingClientRect();ctx.beginPath();ctx.moveTo(e.clientX-r.left,e.clientY-r.top);});
+    canvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const r=canvas.getBoundingClientRect();ctx.lineTo(e.clientX-r.left,e.clientY-r.top);ctx.stroke();dirty=true;app.querySelector('[data-submit-sign]').disabled=false;});
+    for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,()=>{drawing=false;});
+    app.querySelector('[data-clear-sign]').addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);dirty=false;app.querySelector('[data-submit-sign]').disabled=true;});
+    app.querySelector('[data-submit-sign]').addEventListener('click',()=>{
+      if(!dirty)return;
+      const fields=[...app.querySelectorAll('#signer-info-form input')];
+      for(const field of fields){if(!field.value.trim()){field.value='';field.reportValidity();return;}}
+      if(linked){const fresh=store('crm',crmSeed);if(fresh.data.contracts[dealId]?.id!==docId||fresh.data.quotes[dealId]?.status!=='approved'){renderEsign();return;}}
+      const record={id:id('SIGN'),dealId:dealId||null,docId,docTitle:currentDoc.title,signedAt:new Date().toISOString(),image:canvas.toDataURL('image/png'),signerName:draft.signerName.trim(),signerRole:draft.signerRole.trim(),companyName:draft.companyName.trim()};
+      try {writeSignature(dealId,docId,record);renderEsign();toast(linked?'บันทึกลายเซ็นแล้ว กลับไปดูสถานะในดีลนี้ได้':'บันทึกลายเซ็นสาธิตแล้ว');}
+      catch {toast('บันทึกลายเซ็นไม่ได้ กรุณาตรวจพื้นที่จัดเก็บของเบราว์เซอร์');}
     });
   }
+
+  // Other tabs and browser Back must read the current registry rather than cached state.
+  function refreshSignatureView(){if(pathname==='/business-suite')renderCrm(true);else if(pathname==='/e-signature')renderEsign();}
+  addEventListener('storage',e=>{if(e.key===signatureRegistryKey||e.key==='preeya_php_demo_v5:crm'||e.key===null)refreshSignatureView();});
+  addEventListener('pageshow',e=>{if(e.persisted)refreshSignatureView();});
 
   const dashboardSeed = {
     search: '', transactions: [
@@ -4644,13 +4518,13 @@ const crmSeed = {
           <span style="font-size:16px">💼</span>
           <h4 class="conversion-bar-title">${c.title}</h4>
         </div>
-        <button class="conversion-bar-toggle" type="button" title="ย่อ/ขยายแถบ" aria-label="ย่อแถบ">_</button>
+        <button class="conversion-bar-toggle" type="button" title="ย่อ/ขยายแถบ" aria-label="ย่อแถบ" aria-expanded="true">ย่อ</button>
       </div>
       <div class="conversion-bar-body">
         <p class="conversion-bar-subtext">${c.sub}</p>
       </div>
       <div class="conversion-bar-actions">
-        <a class="btn primary small" href="/#estimator-form?interest=${c.interest}">ขอใบเสนอราคาระบบนี้</a>
+        <a class="btn primary small" href="/?interest=${c.interest}#contact">ขอใบเสนอราคาระบบนี้</a>
         <a class="btn outline small" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755">ทัก LINE ปรึกษาด่วน ↗</a>
       </div>
     `;
@@ -4660,8 +4534,9 @@ const crmSeed = {
     const toggleBtn = bar.querySelector('.conversion-bar-toggle');
     toggleBtn.addEventListener('click', () => {
       bar.classList.toggle('minimized');
-      toggleBtn.textContent = bar.classList.contains('minimized') ? '◻' : '_';
+      toggleBtn.textContent = bar.classList.contains('minimized') ? 'ขยาย' : 'ย่อ';
       toggleBtn.setAttribute('aria-label', bar.classList.contains('minimized') ? 'ขยายแถบ' : 'ย่อแถบ');
+      toggleBtn.setAttribute('aria-expanded', String(!bar.classList.contains('minimized')));
     });
   }
 
@@ -4734,9 +4609,9 @@ const crmSeed = {
 
   // Instant SPA Navigation
   function navigateTo(targetPath) {
-    if (targetPath === window.location.pathname) return;
-    window.history.pushState(null, '', targetPath);
-    handleRoute(targetPath);
+    // Full document navigation keeps homepage and demo shells consistent.
+    const destination = new URL(targetPath, window.location.origin);
+    if (destination.href !== window.location.href) window.location.assign(destination.href);
   }
 
   function handleRoute(currentPath) {
@@ -4782,7 +4657,7 @@ const crmSeed = {
         const shell = document.createElement('header');
         shell.className = 'demo-shell';
         shell.innerHTML = `
-          <a class="shell-back" href="/" aria-label="กลับพอร์ตโฟลิโอ">← กลับพอร์ตโฟลิโอ</a>
+          <a class="shell-back" href="/" aria-label="กลับหน้าแรก">← กลับหน้าแรก</a>
           <div class="shell-project">
             <span class="status-dot" aria-hidden="true"></span>
             <strong>${projects[currentPath]?.short || projects[currentPath]?.title || 'Demo'}</strong>
@@ -4828,8 +4703,6 @@ const crmSeed = {
     }
   });
 
-  window.addEventListener('popstate', () => {
-    handleRoute(window.location.pathname);
-  });
+  // Back/Forward restores full documents; no alternate homepage renderer.
 
 })();

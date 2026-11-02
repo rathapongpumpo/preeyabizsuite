@@ -1,0 +1,38 @@
+/* Shared presentation for the two featured prototypes. */
+#pos-print-root{position:absolute;left:-10000px;top:0;width:72mm;background:#fff;color:#111;font-family:'JetBrains Mono','IBM Plex Sans Thai',monospace;font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+#pos-print-root .pos-receipt{width:100%;max-width:none!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+.pos-receipt .receipt-item{gap:8px;align-items:flex-start}.pos-receipt .receipt-item>span:first-child{min-width:0;overflow-wrap:anywhere}.pos-receipt .receipt-item>span:last-child{white-space:nowrap;flex-shrink:0}
+#pos-print-root h2{font-size:17px!important}
+@media print{
+  body.pos-printing{margin:0!important;padding:0!important;min-width:0!important;background:#fff!important;color:#111!important}
+  body.pos-printing> :not(#pos-print-root){display:none!important}
+  body.pos-printing #pos-print-root{display:block!important;position:static!important;left:auto;top:auto;width:72mm!important;margin:0!important;padding:0!important}
+  #pos-print-root *{color:#111!important;background:transparent!important;box-shadow:none!important;text-shadow:none!important}
+  #pos-print-root .receipt-item{break-inside:avoid}
+}
+body[data-page=wms],body[data-page=smartpos]{background:#f7f8fa;color:#131820}
+body[data-page=wms] .app-shell,body[data-page=smartpos] .app-shell{max-width:1600px;margin:auto}
+body[data-page=wms] .app-shell,body[data-page=smartpos] .app-shell{width:100%;min-width:0}
+body[data-page=wms] .demo-content,body[data-page=smartpos] .demo-content{min-width:0}
+body[data-page=wms] .app-topbar-nav,body[data-page=smartpos] .app-topbar-nav{min-width:0;max-width:100%;overflow:auto}
+body[data-page=wms] .split>*,body[data-page=smartpos] .split>*{min-width:0}
+body[data-page=wms] .btn.primary,body[data-page=smartpos] .btn.primary{background:#3155f5;box-shadow:none}
+body[data-page=wms] .card,body[data-page=smartpos] .card{box-shadow:0 3px 10px #17223c04;border-color:#e2e6ee}
+.demo-guide{padding:24px 30px;background:#fff;border-block:1px solid #e2e6ee;display:flex;align-items:center;gap:30px}
+.demo-guide-copy{flex:1;min-width:220px}.demo-guide-copy strong{font-size:18px;font-weight:700;display:block;color:#131820}.demo-guide-copy p{font-size:13px;line-height:1.8;color:#687388;margin:5px 0 0}
+.demo-guide-steps{display:flex;gap:8px;flex-wrap:wrap}.demo-guide-steps button{display:flex;align-items:center;gap:9px;min-height:46px;padding:9px 14px;background:#f7f8fa;border:1px solid #e2e6ee;border-radius:9px;font:600 13px 'IBM Plex Sans Thai',sans-serif;cursor:pointer;color:#24324a}.demo-guide-steps button:hover{border-color:#3155f5;color:#3155f5}.demo-guide-steps b{background:#e8edff;color:#3155f5;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font:600 11px sans-serif}
+body[data-page=smartpos] .product-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+body[data-page=smartpos] .product-card{padding:0 0 14px;overflow:hidden;min-width:0;gap:0;box-shadow:0 3px 10px #17223c04}
+.menu-photo{display:block;aspect-ratio:1.3;width:100%;background-image:url('/assets/portfolio/cafe-menu-sprite.png');background-size:500% 200%;background-repeat:no-repeat}
+body[data-page=smartpos] .product-card h3{padding:0 14px;min-height:48px;font-weight:600;line-height:1.5}
+body[data-page=smartpos] .product-card>p,body[data-page=smartpos] .product-card>.summary-line{margin-inline:14px}
+body[data-page=smartpos] .product-card>.summary-line{gap:6px;flex-wrap:wrap}
+body[data-page=smartpos] .product-card .btn{min-height:38px;border-radius:7px;box-shadow:none;padding:7px 10px}
+body[data-page=smartpos] .product-card:hover{transform:none;border-color:#aebeff}
+body[data-page=wms] .table-wrap td{padding-block:15px}
+.trial-highlight{background:#edf2ff!important;outline:1px solid #3155f5;outline-offset:-1px}
+body[data-page=wms] .demo-conversion-bar,body[data-page=smartpos] .demo-conversion-bar{max-width:340px}
+body[data-page=wms] .demo-content,body[data-page=smartpos] .demo-content{padding-bottom:170px}
+@media(max-width:1150px){.demo-guide{align-items:flex-start;flex-direction:column;gap:14px}body[data-page=smartpos] .product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.demo-guide{padding:20px}.demo-guide-copy{min-width:0}.demo-guide-copy strong{font-size:16px}.demo-guide-steps{display:grid;grid-template-columns:1fr;width:100%}.demo-guide-steps button{min-height:44px;text-align:left}body[data-page=smartpos] .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}body[data-page=smartpos] .product-card h3{font-size:14px!important;padding-inline:11px;min-height:42px}body[data-page=smartpos] .product-card>p,body[data-page=smartpos] .product-card>.summary-line{margin-inline:11px}body[data-page=smartpos] .product-card .btn{font-size:12px}body[data-page=wms] .demo-content,body[data-page=smartpos] .demo-content{padding-bottom:200px}}
+@media(max-width:768px){body[data-page=wms] .demo-content,body[data-page=smartpos] .demo-content{padding-bottom:32px}}
