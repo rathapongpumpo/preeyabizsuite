@@ -4553,7 +4553,7 @@ const crmSeed = {
         <p class="conversion-bar-subtext">${c.sub}</p>
       </div>
       <div class="conversion-bar-actions">
-        <a class="btn primary small" href="/?interest=${c.interest}#contact">ขอใบเสนอราคาระบบนี้</a>
+        <a class="btn primary small" href="/?interest=${c.interest}#estimator-form">ขอใบเสนอราคาระบบนี้</a>
         <a class="btn outline small" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755">ทัก LINE ปรึกษาด่วน ↗</a>
       </div>
     `;

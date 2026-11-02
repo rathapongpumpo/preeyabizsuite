@@ -5,7 +5,7 @@
     return;
   }
   // Old bookmarks keep working without introducing another homepage.
-  const sectionAliases = { projects:'systems', featured:'systems', pricing:'services', process:'how-it-works', 'estimator-form':'contact', 'about-architect':'contact', about:'contact', guarantees:'how-it-works' };
+  const sectionAliases = { projects:'systems', featured:'systems', process:'how-it-works', 'about-architect':'contact', about:'contact', guarantees:'how-it-works' };
   function resolveOldSection() {
     const previous = location.hash.slice(1).split('?')[0];
     if (!sectionAliases[previous]) return;

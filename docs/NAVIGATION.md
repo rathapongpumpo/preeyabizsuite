@@ -1,5 +1,9 @@
 # Navigation — หน้าแรกเดียว
 
+## Current correction — pricing and estimator restored
+
+`/#pricing` is the real three-package price/comparison section again. `/#estimator-form` is the real multi-system estimator and quotation-brief form. Demo quote links use `/?interest=<system>#estimator-form`, which selects the requested system. `/#contact` remains LINE/email contact only. About is intentionally omitted per the user's instruction. See `ESTIMATOR_RESTORATION_2026-11-02.md`; the original navigation report below describes the earlier incomplete iteration.
+
 แก้วันที่ 2 พฤศจิกายน 2026 ตามปัญหาผู้ใช้กลับจากเดโมแล้วไปพบหน้าแรกคนละเวอร์ชัน
 
 ## เส้นทางปัจจุบัน
