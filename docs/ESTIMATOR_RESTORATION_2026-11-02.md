@@ -1,5 +1,7 @@
 # Restored selection, comparison and estimator — 2026-11-02
 
+Historical restoration record. Active pricing and the subsequent three-step UI are documented in [AFFORDABLE_PRICING_2026-11-02.md](AFFORDABLE_PRICING_2026-11-02.md).
+
 The homepage redesign had left the former portal renderer unreachable and redirected pricing/estimator bookmarks to generic sections. This restores those capabilities directly in the canonical homepage, keeping the existing hero and demo pages.
 
 ## Restored
