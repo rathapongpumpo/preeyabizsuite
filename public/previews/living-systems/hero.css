@@ -69,3 +69,10 @@ html{scroll-behavior:smooth;scroll-padding-top:28px}.scene-explainer{margin:0 0 
 .brand strong{font-size:20px;font-weight:750;letter-spacing:1.5px;white-space:nowrap}
 @media(max-width:1200px){.brand strong{font-size:17px;letter-spacing:1.1px}}
 @media(max-width:520px){.brand{gap:10px}.brand-mark{width:27px;height:33px}.brand strong{font-size:16px;letter-spacing:.9px}}
+/* Keep brand artwork subordinate to the workflow, with clear lanes around arrows. */
+.system-art .monogram-face{opacity:.16}
+.system-art .monogram-echo{display:none}
+.system-art .orbit{opacity:.22}
+.system-art .orbit-dots{opacity:.35}
+.route-guide{stroke-width:26}
+.route-base,.route-tip{stroke:#40577b;stroke-width:2.2}

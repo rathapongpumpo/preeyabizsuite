@@ -63,13 +63,13 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= pageMetadata($path) ?>
     <meta name="theme-color" content="#FFF9F2">
-    <link rel="icon" href="/assets/portfolio/favicon.svg?v=buzlike-2" type="image/svg+xml">
+    <link rel="icon" href="/assets/portfolio/favicon.svg?v=buzlike-3" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/app.css?v=buzlike-2"><link rel="stylesheet" href="/assets/featured-demos.css?v=buzlike-2">
-<link rel="stylesheet" href="/assets/demo-enhancements.css?v=buzlike-2">
-<script src="/assets/site-config.js?v=buzlike-2"></script>
+    <link rel="stylesheet" href="/assets/app.css?v=buzlike-3"><link rel="stylesheet" href="/assets/featured-demos.css?v=buzlike-3">
+<link rel="stylesheet" href="/assets/demo-enhancements.css?v=buzlike-3">
+<script src="/assets/site-config.js?v=buzlike-3"></script>
 </head>
 <body data-page="<?= htmlspecialchars($pageKey, ENT_QUOTES) ?>" data-route="<?= htmlspecialchars($path, ENT_QUOTES) ?>">
 <?php if ($pageKey !== 'not-found'): ?><div id="demo-loading" class="demo-load-status" role="status" aria-live="polite"><span data-load-message>กำลังโหลดตัวอย่างระบบ…</span><div class="demo-load-track" aria-hidden="true"></div><button type="button" data-load-retry onclick="location.reload()" hidden>โหลดใหม่</button></div><noscript><p>เดโมนี้ต้องใช้ JavaScript <a href="/">กลับหน้าแรกเพื่อติดต่อเรา</a></p></noscript><?php endif; ?>
@@ -134,15 +134,15 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     </div>
 <?php endif; ?>
 <script>window.DEMO_PROJECTS = <?= $projectJson ?: '{}' ?>;</script>
-<script src="/assets/demo-runtime.js?v=buzlike-2" defer onerror="const s=document.getElementById('demo-loading');if(s){s.classList.add('load-warning');s.querySelector('[data-load-message]').textContent='โหลดเดโมไม่สำเร็จ กรุณาโหลดใหม่';s.querySelector('[data-load-retry]').hidden=false;}"></script>
+<script src="/assets/demo-runtime.js?v=buzlike-3" defer onerror="const s=document.getElementById('demo-loading');if(s){s.classList.add('load-warning');s.querySelector('[data-load-message]').textContent='โหลดเดโมไม่สำเร็จ กรุณาโหลดใหม่';s.querySelector('[data-load-retry]').hidden=false;}"></script>
 <script src="/assets/vendor/jsbarcode-code128-3.12.3.min.js" defer></script>
 <script src="/assets/vendor/qrcode-generator-2.0.4.js" defer></script>
-<script src="/assets/demo-tools.js?v=buzlike-2" defer></script>
-<script src="/assets/dialog-focus.js?v=buzlike-2" defer></script>
-<script src="/assets/app.js?v=buzlike-2" defer></script>
+<script src="/assets/demo-tools.js?v=buzlike-3" defer></script>
+<script src="/assets/dialog-focus.js?v=buzlike-3" defer></script>
+<script src="/assets/app.js?v=buzlike-3" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>
-<script src="/assets/featured-demos.js?v=buzlike-2" defer></script>
+<script src="/assets/featured-demos.js?v=buzlike-3" defer></script>
 </body>
 </html>

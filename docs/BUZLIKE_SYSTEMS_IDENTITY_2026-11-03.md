@@ -1,5 +1,7 @@
 # BUZLIKE SYSTEMS — identity revision
 
+Latest visual correction: the hero monogram is now a faint watermark with clear arrow lanes; see `FLOW_CLARITY_2026-11-03.md`. The header mark and full brand name below remain unchanged.
+
 Published to https://buzlike.com/ on 2026-11-03 following the user's correction.
 
 - Full public name: **BUZLIKE SYSTEMS**, generated from `src/SiteConfig.json` across homepage, demo metadata, prepared inquiries, and sample receipts/invoices. Domain and email stay `buzlike.com` and `support@buzlike.com`.
