@@ -27,11 +27,18 @@ def tags(path, meta):
     return '\n'.join(rows)
 
 def generate():
+    # One vector source keeps the favicon, header and hero monogram consistent.
+    mark = (ROOT/'src/BrandMark.svg').read_text(encoding='utf-8')
+    paths = re.search(r'<svg[^>]*>(.*?)</svg>',mark,re.S)[1].strip()
+    favicon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#3155f5"/><g transform="translate(10.88 7.36) scale(.88)" fill="#fff">'+paths+'</g></svg>\n'
+    for name in ['assets/portfolio/favicon.svg','assets/icon.svg','favicon.svg']:
+        (ROOT/'public'/name).write_text(favicon,encoding='utf-8')
     # This is generated public data only: never put credentials in SiteConfig.
     (ROOT/'public/assets/site-config.js').write_text('// Generated from src/SiteConfig.json\nwindow.SITE_CONFIG = Object.freeze('+json.dumps(SITE, ensure_ascii=False)+');\n',encoding='utf-8')
     pages = json.loads((ROOT/'src/PageMetadata.json').read_text(encoding='utf-8'))
     home = ROOT/'public/index.html'
     text = home.read_text(encoding='utf-8')
+    text = re.sub(r'<symbol id="b-mark".*?</symbol>',lambda _:'<symbol id="b-mark" viewBox="0 0 48 56">'+paths+'</symbol>',text,flags=re.S)
     text = re.sub(r'(data-site-brand>)[^<]*',lambda m:m[1]+html.escape(SITE['brand']),text)
     text = re.sub(r'(data-site-descriptor>)[^<]*',lambda m:m[1]+html.escape(SITE['descriptor']),text)
     text = re.sub(r'(data-site-email>)[^<]*',lambda m:m[1]+html.escape(SITE['email']),text)

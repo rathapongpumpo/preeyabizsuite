@@ -1,5 +1,7 @@
 # BUZLIKE brand migration — implemented
 
+Latest user correction: the full public name is **BUZLIKE SYSTEMS**. The rounded B has been replaced by the angular two-part mark in `src/BrandMark.svg`; see `BUZLIKE_SYSTEMS_IDENTITY_2026-11-03.md` for the published revision.
+
 Approved by the user and deployed to https://buzlike.com/ on 2026-11-03. All four implementation slices below are complete. See `BUZLIKE_BRAND_DELIVERY_2026-11-03.md` for live verification and backup details. The proposal below records the agreed scope.
 
 Confirmed by the user: brand/domain `buzlike.com`; public contact email `support@buzlike.com`.
