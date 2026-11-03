@@ -1,0 +1,23 @@
+.mobile-contact-bar{display:none}
+.estimate-consent{display:flex;align-items:flex-start;gap:12px;margin-top:20px;font-size:14px;line-height:1.9;cursor:pointer}
+.estimate-consent input{flex-shrink:0;width:22px;height:22px;margin-top:3px;accent-color:var(--blue)}
+.estimate-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.estimate-manual{margin-top:18px;font-size:14px}
+.estimate-manual summary{cursor:pointer;color:var(--blue);min-height:44px;padding-block:10px;line-height:1.7}
+.estimate-manual[open] summary{margin-bottom:12px}
+.estimate-scope{margin-top:22px;border-top:1px solid var(--line);padding-top:14px;font-size:15px;line-height:1.9}
+.estimate-scope summary{cursor:pointer;color:var(--blue);min-height:44px;padding-block:10px;font-weight:600}
+.estimate-scope p{max-width:800px;color:#5f6879;margin:8px 0}
+#estimate-delivery-status[data-state]{padding:14px;border-radius:9px;background:#edf1ff;color:#203a8f;line-height:1.9;overflow-wrap:anywhere}
+#estimate-delivery-status[data-state=success]{background:#f0f9de;color:#304e11}
+#estimate-delivery-status[data-state=error],#estimate-delivery-status[data-state=warning]{background:#fff3de;color:#744b0a}
+.estimate-button:disabled{cursor:default;opacity:.65}
+@media(max-width:900px){
+  body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+  html{scroll-padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+  .mobile-contact-bar:not([hidden]){position:fixed;z-index:20;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:7px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 5px 26px #13182020}
+  .mobile-contact-bar a{min-height:48px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:8px;font-size:15px;font-weight:600;line-height:1.5}
+  .mobile-contact-bar a:first-child{background:var(--lime);color:var(--ink)}
+  .mobile-contact-bar a:last-child{background:var(--blue);color:white}
+  .mobile-contact-bar .icon{width:18px;height:18px}
+}

@@ -27,6 +27,8 @@ def tags(path, meta):
     return '\n'.join(rows)
 
 def generate():
+    estimate = json.loads((ROOT/'src/EstimateConfig.json').read_text(encoding='utf-8'))
+    (ROOT/'public/assets/estimate-config.js').write_text('// Generated from src/EstimateConfig.json\nwindow.ESTIMATE_CONFIG = Object.freeze('+json.dumps(estimate, ensure_ascii=False)+');\n',encoding='utf-8')
     # One vector source keeps the favicon, header and hero monogram consistent.
     mark = (ROOT/'src/BrandMark.svg').read_text(encoding='utf-8')
     paths = re.search(r'<svg[^>]*>(.*?)</svg>',mark,re.S)[1].strip()
