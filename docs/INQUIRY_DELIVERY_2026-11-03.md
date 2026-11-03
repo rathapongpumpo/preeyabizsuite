@@ -21,7 +21,7 @@ Storage is outside public_html: directory `var/` mode 0700, database/key mode 06
 
 1. Diagnostic `BUZ-TEST-908633F7`: sent to support@buzlike.com; the user confirmed receipt in the inbox.
 2. Real browser form request `BZ-261103-359F13C5F228`: customer fields and Thai notes submitted through the published form; a receipt was displayed and host mail transport accepted the notification. Reposting the same request generated no second lead/notification: database shows `queued`, `attempts=1`, `matching_leads=1`.
-3. Recipient confirmation for the actual form email was requested asynchronously; **still pending when this record was written**. Do not equate the queue state with verified inbox arrival for that second message.
+3. The recipient confirmed receipt of the actual form email by pasting its received contents. Reference `BZ-261103-359F13C5F228`, Thai contact name/notes, WMS/template selection, 15,000–25,000 baht estimate, 2–3 week timeline and Thai receipt time `03/11/2026 19:18:48` match the submitted request. This completes end-to-end delivery verification for this test through recipient confirmation; no mailbox access was used.
 4. UTF-8 subject/body round trips on the actual Hostinger PHP runtime passed. No mailbox password was requested/stored, and no unrelated mailbox contents were accessed.
 
 ## Checks
