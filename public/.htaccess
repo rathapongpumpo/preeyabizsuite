@@ -1,4 +1,7 @@
 RewriteEngine On
+# Canonical production host; local development and preview hosts stay usable.
+RewriteCond %{HTTP_HOST} ^www\.buzlike\.com$ [NC]
+RewriteRule ^ https://buzlike.com%{REQUEST_URI} [R=301,L,NE]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]

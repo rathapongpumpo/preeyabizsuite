@@ -26,7 +26,7 @@ final class ExternalProxy
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_CONNECTTIMEOUT => 8,
             CURLOPT_TIMEOUT => 20,
-            CURLOPT_USERAGENT => 'PreeyaDemoProxy/1.0',
+            CURLOPT_USERAGENT => 'BuzlikeDemoProxy/1.0',
             CURLOPT_HEADER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_CAINFO => __DIR__ . '/cacert.pem',

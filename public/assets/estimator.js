@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const site=window.SITE_CONFIG;
   const form=document.getElementById('project-estimator-form');if(!form)return;
   const get=id=>document.getElementById(id),key='preeya_estimator_draft_v1';
   const systems={wms:'คลังสินค้าและสต็อก',crm:'ลูกค้า งานขาย และสัญญา',pos:'หน้าร้าน POS และจอครัว',shipping:'ขนส่งและติดตามพัสดุ',storefront:'เว็บไซต์ ร้านค้า และระบบจอง',custom:'ระบบเฉพาะ / เชื่อมข้อมูล'};
@@ -37,10 +38,10 @@
     const tier=rates[model].find(x=>count<=x.count),range=`${number(tier.min)} – ${number(tier.max)}${tier.plus?'+':''}`;
     return {...tier,model,monthly,range,price:range+(monthly?' บาท/เดือน':' บาท')};
   }
-  function brief(){const q=quote();return `สรุปโจทย์ขอใบเสนอราคา — PREEYA SYSTEMS\n\nผู้ติดต่อ: ${get('est-contact-name').value.trim()}\nโทร / LINE: ${get('est-contact-tel').value.trim()}\nอีเมล: ${get('est-contact-email').value.trim()||'ไม่ระบุ'}\nระบบที่สนใจ: ${selection().map(x=>systems[x]).join(', ')}\nรูปแบบบริการ: ${models[q.model]}\nงบที่ตั้งไว้: ${budgets[get('est-budget').value]}${q.model==='retainer'?' (ต่อเดือน)':''}\nกรอบประเมิน: ${q.price}\nกรอบเวลา: ${q.time}\nรายละเอียด: ${get('est-contact-notes').value.trim()||'ขอคุยรายละเอียดเพิ่มเติม'}\n\nเป็นประมาณการเบื้องต้น ราคาจริงและเงื่อนไขยืนยันในใบเสนอราคา`;}
+  function brief(){const q=quote();return `สรุปโจทย์ขอใบเสนอราคา — ${site.brand}\n\nผู้ติดต่อ: ${get('est-contact-name').value.trim()}\nโทร / LINE: ${get('est-contact-tel').value.trim()}\nอีเมล: ${get('est-contact-email').value.trim()||'ไม่ระบุ'}\nระบบที่สนใจ: ${selection().map(x=>systems[x]).join(', ')}\nรูปแบบบริการ: ${models[q.model]}\nงบที่ตั้งไว้: ${budgets[get('est-budget').value]}${q.model==='retainer'?' (ต่อเดือน)':''}\nกรอบประเมิน: ${q.price}\nกรอบเวลา: ${q.time}\nรายละเอียด: ${get('est-contact-notes').value.trim()||'ขอคุยรายละเอียดเพิ่มเติม'}\n\nเป็นประมาณการเบื้องต้น ราคาจริงและเงื่อนไขยืนยันในใบเสนอราคา`;}
   function updateBrief(){
     get('brief-preview').value=brief();
-    get('estimate-email').href='mailto:r.pumpo@gmail.com?'+new URLSearchParams({subject:'ขอใบเสนอราคา — '+selection().map(x=>systems[x]).join(', '),body:brief()}).toString().replace(/\+/g,'%20');
+    get('estimate-email').href='mailto:'+site.email+'?'+new URLSearchParams({subject:'ขอใบเสนอราคา — '+selection().map(x=>systems[x]).join(', '),body:brief()}).toString().replace(/\+/g,'%20');
   }
   function update(){
     const chosen=selection(),q=quote();

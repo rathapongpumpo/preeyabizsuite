@@ -1,10 +1,13 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/SiteConfig.php';
+$site = siteConfig();
+
 return [
     '/' => [
-        'title' => 'Preeya | Systems & Full-Stack Engineering Showcase',
-        'short' => 'Preeya Portfolio',
+        'title' => $site['brand'] . ' | ' . $site['descriptor'],
+        'short' => $site['brand'],
         'description' => 'พอร์ตโฟลิโอพัฒนาระบบหลังบ้าน เว็บแอปพลิเคชัน และระบบจัดการธุรกิจ Enterprise',
         'audience' => 'เจ้าของธุรกิจ ผู้บริหาร และทีมพัฒนาที่ต้องการระบบที่ใช้งานได้จริง',
         'impact' => 'เห็นแนวทางหน้าจอ ฟังก์ชันการทำงาน และ Interactive Workflow ก่อนเริ่มงานจริง',

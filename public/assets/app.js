@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const site = window.SITE_CONFIG;
 
   // Marketing has one canonical entry. Old cached shells must load it too.
   if (['/', '/index.html', '/demo.html'].includes(location.pathname)) {
@@ -248,10 +249,10 @@
           <nav class="portal-nav" id="top">
             <div class="portal-nav-container">
               <div class="portal-nav-left">
-                <a class="portal-brand" href="/" aria-label="Preeya Systems">
+                <a class="portal-brand" href="/" aria-label="${site.brand}">
                   <span class="portal-brand-badge">P</span>
                   <div class="portal-brand-info">
-                    <span class="portal-brand-name">PREEYA SYSTEMS</span>
+                    <span class="portal-brand-name">${site.brand}</span>
                     <span class="portal-brand-tag">B2B Software Studio</span>
                   </div>
                 </a>
@@ -715,12 +716,12 @@
             <div class="architect-card">
               <div class="architect-avatar-box">
                 <div class="architect-avatar">P</div>
-                <strong style="display:block;font-size:16px;margin-bottom:4px">Preeya</strong>
+                <strong style="display:block;font-size:16px;margin-bottom:4px">${site.brand}</strong>
                 <span class="architect-role-tag">Lead Full-Stack & Systems</span>
               </div>
 
               <div class="architect-bio">
-                <h3>Preeya — Lead Full-Stack & Systems Engineer</h3>
+                <h3>${site.brand} — เว็บไซต์และระบบสำหรับธุรกิจ</h3>
                 <p>
                   นักพัฒนาระบบซอฟต์แวร์ที่เชี่ยวชาญการเปลี่ยนขั้นตอนการทำงานที่ซับซ้อนของธุรกิจให้กลายเป็นเว็บแอปพลิเคชันที่ใช้งานง่าย รวดเร็ว และตรวจสอบได้จริง โดยเน้นการออกแบบสถาปัตยกรรมระบบที่ดูแลรักษาง่าย (Maintainable Architecture) และสร้างผลลัพธ์ที่วัดผลได้ให้กับธุรกิจ
                 </p>
@@ -775,7 +776,7 @@
                 <div class="architect-action-links">
                   <a class="btn small primary" href="https://github.com/rathapongpumpo" target="_blank" rel="noreferrer">GitHub Profile ↗</a>
                   <a class="btn small outline" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755">ติดต่อผ่าน LINE OA ↗</a>
-                  <a class="btn small outline" href="mailto:r.pumpo@gmail.com">ส่งอีเมลคุยโจทย์ ↗</a>
+                  <a class="btn small outline" href="mailto:${site.email}">ส่งอีเมลคุยโจทย์ ↗</a>
                 </div>
               </div>
             </div>
@@ -966,10 +967,10 @@
                 <span>เปิดแชท ↗</span>
               </a>
 
-              <a class="contact-btn-card" href="mailto:r.pumpo@gmail.com">
+              <a class="contact-btn-card" href="mailto:${site.email}">
                 <div>
                   <small class="muted">ติดต่อทางอีเมล</small>
-                  <div>r.pumpo@gmail.com</div>
+                  <div>${site.email}</div>
                 </div>
                 <span>ส่งอีเมล ↗</span>
               </a>
@@ -978,7 +979,7 @@
 
           <!-- Footer -->
           <footer class="portal-footer">
-            <div>© ${new Date().getFullYear()} Preeya · Systems & Full-Stack Engineer</div>
+            <div>© ${new Date().getFullYear()} ${site.brand} · ${site.descriptor}</div>
             <div>Modern Engineering Standards · Enterprise Ready Architecture</div>
           </footer>
         </div>
@@ -1173,7 +1174,7 @@
               <div style="font-size:48px;margin-bottom:8px">📩</div>
               <h3 style="font-size:20px;font-weight:800;color:var(--primary);margin:0 0 8px">ได้รับข้อมูลความต้องการของคุณแล้ว</h3>
               <p style="color:var(--text);font-size:14px;line-height:1.6">
-                ขอบคุณ<strong>คุณ ${esc(inquiry.name)}</strong> ที่ให้ความสนใจในระบบของ Preeya Business Suite<br>
+                ขอบคุณ<strong>คุณ ${esc(inquiry.name)}</strong> ที่ให้ความสนใจในระบบของ ${site.brand}<br>
                 ทีมงานจะทำการวิเคราะห์โจทย์และติดต่อกลับทางเบอร์ <strong>${esc(inquiry.tel)}</strong> เพื่อนำเสนอรายละเอียดและใบเสนอราคาภายใน 24 ชม. ครับ
               </p>
               <div style="background:var(--subtle);padding:12px;border-radius:8px;font-size:12.5px;text-align:left;margin-top:14px">
@@ -1194,7 +1195,7 @@
           const model = formEl.querySelector('input[name="est-model"]:checked')?.closest('.estimator-option-box')?.querySelector('strong')?.innerText || 'ปรับแต่งจาก Suite';
           const estPrice = document.getElementById('calc-est-price')?.innerText || '35,000 - 75,000 บาท';
 
-          const brief = `📋 ข้อมูลขอใบเสนอราคา (Preeya Business Suite)
+          const brief = `📋 ข้อมูลขอใบเสนอราคา (${site.brand})
 • ผู้ติดต่อ: ${name} (โทร/LINE: ${tel})
 • ระบบที่สนใจ: ${checkedLabels.join(', ') || 'ระบบธุรกิจ'}
 • รูปแบบที่ต้องการ: ${model}
@@ -1356,11 +1357,11 @@ const crmSeed = {
       ['contract','เตรียมสัญญา',84], ['won','ปิดการขาย',100]
     ],
     deals: [
-      {id:'D-001',company:'Siam Fresh Mart',contact:'คุณเมย์',value:185000,stage:'proposal',probability:68,owner:'Preeya C.',source:'LINE',next:'ติดตามใบเสนอราคา'},
-      {id:'D-002',company:'Bangkok Clinic Group',contact:'คุณภัทร',value:260000,stage:'qualified',probability:52,owner:'Preeya C.',source:'Referral',next:'นัดเก็บ requirement'},
-      {id:'D-003',company:'North Star Logistics',contact:'คุณดล',value:420000,stage:'contract',probability:82,owner:'Preeya C.',source:'Website',next:'ส่งสัญญา'},
-      {id:'D-004',company:'Glow Spa Studio',contact:'คุณแอน',value:145000,stage:'new',probability:28,owner:'Preeya C.',source:'LINE',next:'โทรแนะนำบริการ'},
-      {id:'D-005',company:'SkillBridge Academy',contact:'คุณนัท',value:310000,stage:'won',probability:100,owner:'Preeya C.',source:'Existing',next:'เริ่มโครงการ'},
+      {id:'D-001',company:'Siam Fresh Mart',contact:'คุณเมย์',value:185000,stage:'proposal',probability:68,owner:'เจ้าหน้าที่ตัวอย่าง',source:'LINE',next:'ติดตามใบเสนอราคา'},
+      {id:'D-002',company:'Bangkok Clinic Group',contact:'คุณภัทร',value:260000,stage:'qualified',probability:52,owner:'เจ้าหน้าที่ตัวอย่าง',source:'Referral',next:'นัดเก็บ requirement'},
+      {id:'D-003',company:'North Star Logistics',contact:'คุณดล',value:420000,stage:'contract',probability:82,owner:'เจ้าหน้าที่ตัวอย่าง',source:'Website',next:'ส่งสัญญา'},
+      {id:'D-004',company:'Glow Spa Studio',contact:'คุณแอน',value:145000,stage:'new',probability:28,owner:'เจ้าหน้าที่ตัวอย่าง',source:'LINE',next:'โทรแนะนำบริการ'},
+      {id:'D-005',company:'SkillBridge Academy',contact:'คุณนัท',value:310000,stage:'won',probability:100,owner:'เจ้าหน้าที่ตัวอย่าง',source:'Existing',next:'เริ่มโครงการ'},
     ],
     quotes: {}, contracts: {},
     activities: [{deal:'D-001',text:'ส่งใบเสนอราคาเริ่มต้น',at:today()}],
@@ -1499,7 +1500,7 @@ const crmSeed = {
       s.reset();renderCrm();
     } });
     app.querySelector('[data-crm-add]')?.addEventListener('click', () => {
-      const next=s.data.deals.length+1; const d={id:id('D'),company:`New Demo Client ${next}`,contact:'คุณลูกค้า',value:235000,stage:'qualified',probability:50,owner:'Preeya C.',source:'Demo',next:'เก็บ requirement'};
+      const next=s.data.deals.length+1; const d={id:id('D'),company:`New Demo Client ${next}`,contact:'คุณลูกค้า',value:235000,stage:'qualified',probability:50,owner:'เจ้าหน้าที่ตัวอย่าง',source:'Demo',next:'เก็บ requirement'};
       s.data.deals.unshift(d); s.data.selected=d.id; s.data.view='pipeline'; s.data.activities.push({deal:d.id,text:'เพิ่มลูกค้าตัวอย่าง',at:today()}); saveRender(); toast('เพิ่มลูกค้าตัวอย่างแล้ว');
     });
     app.querySelectorAll('[data-select-deal]').forEach((el)=>el.addEventListener('click',()=>{s.data.selected=el.dataset.selectDeal;s.data.view='quote';saveRender();}));
@@ -1808,7 +1809,7 @@ const crmSeed = {
       modal('ใบแจ้งหนี้ค่าขนส่งนำเข้า (Commercial Shipping Invoice)', `
         <div class="receipt-slip shipping-invoice" style="background:#fff;color:#111;padding:24px;border-radius:12px;font-family:sans-serif;max-width:440px;margin:auto;border:1px solid #ddd">
           <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:12px;margin-bottom:12px">
-            <h2 style="margin:0;font-size:22px;color:var(--brand)">Preeya Express Logistics</h2>
+            <h2 style="margin:0;font-size:22px;color:var(--brand)">${site.brand} Shipping Demo</h2>
             <p style="margin:4px 0;font-size:12px">USA-Thailand Freight Forwarder & Customs Clearance</p>
             <p style="margin:0;font-size:12px">Invoice No: INV-${p.tracking} · Date: ${today()}</p>
           </div>
@@ -1847,11 +1848,11 @@ const crmSeed = {
       const list = s.data.packages.filter(x => x.customer === el.dataset.line);
       const primaryPkg = list[0] || {};
       const totalDue = list.reduce((a, x) => a + Number(x.shippingFee || 0) + Number(x.duty || 0), 0);
-      const textRaw = `[Preeya Shipping Notify]\nเรียนคุณ ${el.dataset.line}\nพัสดุนำเข้าจาก USA รวม ${list.length} รายการ:\n` +
+      const textRaw = `[${site.brand} Shipping Demo]\nเรียนคุณ ${el.dataset.line}\nพัสดุนำเข้าจาก USA รวม ${list.length} รายการ:\n` +
         list.map(x => `📦 ${x.tracking} (${x.method})\nสถานะ: ${shippingStatuses[x.status]}\nยอดชำระ: ${money((x.shippingFee || 0) + (x.duty || 0))}`).join('\n---\n') +
-        `\n\nตรวจสอบได้ที่: https://preeyabizsuite.vercel.app/usa-thai-shipping/customer`;
+        `\n\nตรวจสอบได้ที่: ${site.origin}/usa-thai-shipping/customer`;
 
-      modal('จำลองการแจ้งเตือนลูกค้าทาง LINE (LINE Flex Message Preview)', `
+      const wrap = modal('จำลองการแจ้งเตือนลูกค้าทาง LINE (LINE Flex Message Preview)', `
         <div class="line-phone-frame">
           <div class="line-chat-screen">
             <div style="font-size:11px;color:#fff;text-align:center;margin-bottom:8px;opacity:0.85">วันนี้ 14:32 น.</div>
@@ -1886,9 +1887,17 @@ const crmSeed = {
           </div>
         </div>
         <div style="margin-top:14px;text-align:center">
-          <button class="btn small" onclick="navigator.clipboard.writeText('${esc(textRaw).replace(/'/g, "\\'")}');toast('คัดลอกข้อความ LINE Notify สำเร็จ!')">📋 คัดลอกข้อความดิบ (Raw Message)</button>
+          <button class="btn small" type="button" data-copy-shipping>📋 คัดลอกข้อความดิบ (Raw Message)</button>
         </div>
       `);
+      wrap.querySelector('[data-copy-shipping]').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(textRaw);
+          toast('คัดลอกข้อความแล้ว ยังไม่ได้ส่ง LINE');
+        } catch {
+          toast('คัดลอกไม่สำเร็จ กรุณาอนุญาตการคัดลอกในเบราว์เซอร์แล้วลองใหม่');
+        }
+      });
     }));
   }
 
@@ -2365,7 +2374,7 @@ const crmSeed = {
       { id: 'IN-1002', poNumber: 'PO-2026-084', supplier: 'SUP-003 Pack & Print Co.', sku: 'ST-002', qty: 50, location: 'Zone C-02', status: 'Pending', date: '03 ส.ค. 2569' },
     ],
     outboundOrders: [
-      { id: 'OUT-2041', orderNo: 'ORD-8819', customer: 'Bangkok Logistics Co.', sku: 'EL-001', qty: 4, status: 'Dispatched', picker: 'Preeya C.', date: '02 ส.ค. 2569' },
+      { id: 'OUT-2041', orderNo: 'ORD-8819', customer: 'Bangkok Logistics Co.', sku: 'EL-001', qty: 4, status: 'Dispatched', picker: 'เจ้าหน้าที่ตัวอย่าง', date: '02 ส.ค. 2569' },
       { id: 'OUT-2042', orderNo: 'ORD-8824', customer: 'Siam Retail Group', sku: 'FU-001', qty: 2, status: 'Picking', picker: 'Somchai N.', date: '03 ส.ค. 2569' },
     ],
     suppliers: [
@@ -2374,7 +2383,7 @@ const crmSeed = {
       { id: 'SUP-003', name: 'Pack & Print Logistics Supply', contact: 'คุณพิมพ์ใจ', phone: '081-992-3344', email: 'order@packprint.co.th', rating: '4.8 ★', leadTime: '1-2 วัน' },
     ],
     logs: [
-      { id: 'LOG-1', type: 'INBOUND', sku: 'EL-003', qty: 12, location: 'Zone A-03', note: 'รับสินค้าตาม PO-2026-078', date: '01 ส.ค. 2569 10:15', user: 'Preeya C.' },
+      { id: 'LOG-1', type: 'INBOUND', sku: 'EL-003', qty: 12, location: 'Zone A-03', note: 'รับสินค้าตาม PO-2026-078', date: '01 ส.ค. 2569 10:15', user: 'เจ้าหน้าที่ตัวอย่าง' },
       { id: 'LOG-2', type: 'OUTBOUND', sku: 'EL-001', qty: 4, location: 'Zone A-01', note: 'จ่ายสินค้าตามคำสั่งซื้อ ORD-8819', date: '02 ส.ค. 2569 14:30', user: 'Somchai N.' },
     ]
   };
@@ -2887,7 +2896,7 @@ const crmSeed = {
           location: item.location,
           note: delta > 0 ? 'ปรับเพิ่มสต็อกด้วยมือ' : 'ปรับลด/เบิกจ่ายด้วยมือ',
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-          user: 'Preeya C.'
+          user: 'เจ้าหน้าที่ตัวอย่าง'
         });
         save();
         toast(`อัปเดตสต็อก ${item.sku} คงเหลือ ${item.stock} ชิ้น`);
@@ -2950,7 +2959,7 @@ const crmSeed = {
           location: order.location,
           note: `รับเข้าตาม ${order.poNumber} จาก ${order.supplier}`,
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-          user: 'Preeya C.'
+          user: 'เจ้าหน้าที่ตัวอย่าง'
         });
         save();
         toast(`ตรวจรับสินค้า ${order.sku} เข้า ${order.location} สำเร็จ (+ ${order.qty} ชิ้น)`);
@@ -3147,7 +3156,7 @@ const crmSeed = {
           location: loc,
           note: `รับสินค้าเข้าจาก ${sup}`,
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-          user: 'Preeya C.'
+          user: 'เจ้าหน้าที่ตัวอย่าง'
         });
 
         m.remove();
@@ -3210,7 +3219,7 @@ const crmSeed = {
           sku: sku,
           qty: qty,
           status: 'Dispatched',
-          picker: 'Preeya C.',
+          picker: 'เจ้าหน้าที่ตัวอย่าง',
           date: today()
         });
 
@@ -3222,7 +3231,7 @@ const crmSeed = {
           location: item.location,
           note: `เบิกจ่ายให้ ${customer} (${note})`,
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-          user: 'Preeya C.'
+          user: 'เจ้าหน้าที่ตัวอย่าง'
         });
 
         m.remove();
@@ -3282,7 +3291,7 @@ const crmSeed = {
             location: newLoc,
             note: `ย้ายโซนจาก ${oldLoc} ➔ ${newLoc} (${reason})`,
             date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-            user: 'Preeya C.'
+            user: 'เจ้าหน้าที่ตัวอย่าง'
           });
           m.remove();
           save();
@@ -3376,7 +3385,7 @@ const crmSeed = {
           location: newSku.location,
           note: 'ลงทะเบียน SKU ใหม่เข้าสู่คลังสินค้า',
           date: today() + ' ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-          user: 'Preeya C.'
+          user: 'เจ้าหน้าที่ตัวอย่าง'
         });
 
         m.remove();
@@ -3835,7 +3844,7 @@ const crmSeed = {
       const wrap = modal('ใบเสร็จรับเงินอย่างย่อ (Thermal Slip Receipt)', `
         <div class="receipt-slip pos-receipt" style="background:#fff;color:#111;padding:20px;border-radius:12px;font-family:'JetBrains Mono', 'IBM Plex Sans Thai', 'Sarabun', monospace;max-width:360px;margin:auto">
           <div style="text-align:center;border-bottom:1px dashed #333;padding-bottom:12px;margin-bottom:12px">
-            <h2 style="margin:0;font-size:20px">Preeya Cafe & Bistro</h2>
+            <h2 style="margin:0;font-size:20px">${site.brand} Cafe Demo</h2>
             <p style="margin:4px 0;font-size:12px">ใบเสร็จตัวอย่าง · การชำระเงินจำลอง</p>
             <p style="margin:0;font-size:12px">เลขออเดอร์: ${orderId} · โต๊ะ: ${s.data.selectedTable}</p>
             <p style="margin:0;font-size:11px">วันที่: ${today()} ${newOrder.at}</p>
