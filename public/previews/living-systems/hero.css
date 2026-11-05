@@ -78,5 +78,6 @@ html{scroll-behavior:smooth;scroll-padding-top:28px}.scene-explainer{margin:0 0 
 .route-base,.route-tip{stroke:#40577b;stroke-width:2.2}
 
 /* The demo introduction directly follows the interactive hero. */
+.developer-reference{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;border-top:1px solid var(--line);padding-top:22px;margin:30px 0 0;font-size:14px;color:#626c80;line-height:1.8}
 .selected-works{border-top:1px solid var(--line);padding-top:56px}
 @media(max-width:700px){.selected-works{padding-top:36px}}

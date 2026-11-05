@@ -4297,7 +4297,7 @@ const crmSeed = {
             <span class="badge primary" style="font-size:11px">LIVE STOREFRONT DEMO</span>
             <span style="font-size:13.5px;font-weight:700">OAI Apparel · Next.js Modern Storefront</span>
           </div>
-          <button class="btn small primary" id="btn-trigger-checkout" type="button">🛒 ตะกร้าสินค้า & สั่งซื้อ (Simulated Checkout) →</button>
+          <div class="storefront-checkout-entry"><button class="btn small primary" id="btn-trigger-checkout" type="button">ลองตัวอย่างสั่งซื้อจำลอง →</button><small>ใช้ข้อมูลตัวอย่าง แยกจากตะกร้าหน้าร้าน</small></div>
         </div>
         <iframe class="external-frame" src="${source}" title="OAI Apparel Storefront" style="height:calc(100vh - 105px)"></iframe>
       `;
@@ -4473,7 +4473,9 @@ const crmSeed = {
   }
 
   // Priority 2.1: Floating Conversion Bar (<DemoConversionBar />)
+  let disposeConversionBar = () => {};
   function renderConversionBar(currentPath) {
+    disposeConversionBar();
     const existing = document.querySelector('.demo-conversion-bar');
     if (existing) existing.remove();
 
@@ -4526,8 +4528,10 @@ const crmSeed = {
     };
 
     const c = configs[currentPath] || configs['/warehouse-management'];
+    const docked = currentPath === '/business-suite' || currentPath === '/e-signature';
     const bar = document.createElement('aside');
-    bar.className = 'demo-conversion-bar';
+    bar.className = 'demo-conversion-bar' + (docked ? ' conversion-docked minimized' : '');
+    document.body.classList.toggle('has-docked-conversion', docked);
     bar.setAttribute('aria-label', 'แถบติดต่อและขอใบเสนอราคา');
     bar.innerHTML = `
       <div class="conversion-bar-header">
@@ -4535,7 +4539,8 @@ const crmSeed = {
           <span style="font-size:16px">💼</span>
           <h4 class="conversion-bar-title">${c.title}</h4>
         </div>
-        <button class="conversion-bar-toggle" type="button" title="ย่อ/ขยายแถบ" aria-label="ย่อแถบ" aria-expanded="true">ย่อ</button>
+        ${docked ? `<a class="btn primary small conversion-quick-quote" href="/?interest=${c.interest}#estimator-form">ขอใบเสนอราคาระบบนี้</a>` : ''}
+        <button class="conversion-bar-toggle" type="button" title="ย่อ/ขยายแถบ" aria-label="${docked ? 'ขยายช่องทางติดต่อ' : 'ย่อแถบ'}" aria-expanded="${!docked}">${docked ? 'ติดต่อเพิ่ม' : 'ย่อ'}</button>
       </div>
       <div class="conversion-bar-body">
         <p class="conversion-bar-subtext">${c.sub}</p>
@@ -4548,11 +4553,22 @@ const crmSeed = {
 
     document.body.appendChild(bar);
 
+    // Keep the scrollable demo above the fixed contact area, including on
+    // small screens, so signing controls never sit beneath the bar.
+    const reserveSpace = () => {
+      const height = bar.getBoundingClientRect().height;
+      if (docked && height > 0) document.body.style.setProperty('--demo-contact-space', `${Math.ceil(height) + 40}px`);
+    };
+    const observer = docked ? new ResizeObserver(reserveSpace) : null;
+    observer?.observe(bar);
+    reserveSpace();
+    disposeConversionBar = () => { observer?.disconnect(); document.body.style.removeProperty('--demo-contact-space'); };
+
     const toggleBtn = bar.querySelector('.conversion-bar-toggle');
     toggleBtn.addEventListener('click', () => {
       bar.classList.toggle('minimized');
-      toggleBtn.textContent = bar.classList.contains('minimized') ? 'ขยาย' : 'ย่อ';
-      toggleBtn.setAttribute('aria-label', bar.classList.contains('minimized') ? 'ขยายแถบ' : 'ย่อแถบ');
+      toggleBtn.textContent = bar.classList.contains('minimized') ? (docked ? 'ติดต่อเพิ่ม' : 'ขยาย') : 'ย่อ';
+      toggleBtn.setAttribute('aria-label', bar.classList.contains('minimized') ? (docked ? 'ขยายช่องทางติดต่อ' : 'ขยายแถบ') : 'ย่อแถบ');
       toggleBtn.setAttribute('aria-expanded', String(!bar.classList.contains('minimized')));
     });
   }

@@ -3877,11 +3877,37 @@ html[data-theme="dark"] .topbar-status-badge {
   }
 }
 body:has(.modal-backdrop) .demo-conversion-bar { display: none; }
-body[data-page=crm] .demo-conversion-bar,
-body[data-page=esign] .demo-conversion-bar { position:static; width:auto; max-width:650px; margin:24px auto; }
-@media(max-width:768px){body[data-page=crm] .demo-conversion-bar,body[data-page=esign] .demo-conversion-bar{margin:16px 12px 24px}}
+body.has-docked-conversion { overflow: hidden; }
+.has-docked-conversion .demo-frame { display: flex; flex-direction: column; height: 100dvh; min-height: 0; padding-bottom: calc(var(--demo-contact-space, 110px) + env(safe-area-inset-bottom, 0px)); }
+.has-docked-conversion .demo-shell { flex-shrink: 0; }
+.has-docked-conversion .demo-content { flex: 1; min-height: 0; overflow: auto; scroll-padding-block: 24px; }
+.demo-conversion-bar.conversion-docked {
+  position: fixed;
+  width: min(360px, calc(100vw - 32px));
+  max-width: 360px;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  margin: 0;
+  transition: none;
+}
+.conversion-docked.minimized { padding: 8px; }
+.conversion-quick-quote { display: none; }
+.conversion-docked.minimized .conversion-bar-header > div { display: none !important; }
+.conversion-docked.minimized .conversion-quick-quote { display: inline-flex; flex: 1; min-height: 44px; justify-content: center; }
+.conversion-docked .conversion-bar-toggle { white-space: nowrap; }
+.conversion-docked .conversion-bar-actions { flex-wrap: wrap; }
+.conversion-docked .conversion-bar-actions .btn { min-height: 44px; white-space: normal; }
+body:has(#app input:focus, #app textarea:focus, #app select:focus, #signature-pad:active, .info-popover:not([hidden]), .detail-modal-overlay) .conversion-docked { visibility: hidden; }
+@media print {
+  .demo-conversion-bar { display: none !important; }
+  body.has-docked-conversion { overflow: visible; }
+  .has-docked-conversion .demo-frame { display: block; height: auto; padding-bottom: 0; }
+  .has-docked-conversion .demo-content { overflow: visible; }
+}
 
 /* Pricing Grid */
+.storefront-checkout-entry { display: grid; gap: 4px; }
+.storefront-checkout-entry small { font-size: 11px; color: #cbd5e1; line-height: 1.6; }
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
