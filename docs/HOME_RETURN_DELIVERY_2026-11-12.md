@@ -2,6 +2,22 @@
 
 Published to https://buzlike.com/ and verified in Chromium on desktop and mobile viewports.
 
+## Follow-up correction: expanded list lost after a replaced document
+
+The user reported that returning still lost the position of the expanded “ตัวอย่างเพิ่มเติมอีก 4 ระบบ” list. A live reproduction of home → CRM → refresh → return showed `y=2224, open=true` becoming `y=0, open=false`. The first verification covered ordinary same-document returns but did not check returning **after** refreshing the demo.
+
+- Home snapshots now include the expanded/collapsed state of details and scroll coordinates in tab-local sessionStorage and the existing history state. No customer form values are added to this snapshot.
+- Returning from a standalone/refreshed demo restores the snapshot after the actual home document and fonts are ready. The browser's scroll restoration is suppressed only temporarily and returned to its original setting; user interaction cancels delayed restoration.
+- A second reproduced case was browser Back after refreshing a same-document history entry: the address became the home URL while the standalone CRM PHP document remained visible. The standalone handler now loads the actual destination in that case and applies the saved home state. Normal hosted returns retain the existing homepage document and do not reload it.
+- Previous-release snapshots and standalone visits have a contextual fallback that expands the additional-systems list. When no previous coordinates exist, an exact historical pixel position cannot be recovered; subsequent visits record the full state.
+- Script cache version is `home-return-2` in all homepage/PHP/static entries.
+
+Follow-up checks: **132 local and 132 live checks passed** (65 four-system return cases, 8 hash/anchor cases, and 59 normal navigation regressions). The four additional demos were tested at 390/1440 px with the web return button, browser Back, refresh-then-return, and refresh-then-Back, checking the expanded list and exact coordinates again after settling. Hash cases include `#systems` and `#estimator-form`. The normal live sequence still records exactly one main-frame homepage request. Local repetition of the initial reproduction retained `y=2881, open=true` before and after return.
+
+Follow-up evidence is in the same ignored directory: `repro-reload.txt` (before correction), `fixed-reload-local.txt`, `resilience-local.txt`, `resilience-live.txt`, `hash-resilience-local.txt`, `hash-resilience-live.txt`, `core-v2-local.txt`, `core-v2-live.txt`, and `live-v2-restored-mobile.png`. The live restored-list screenshot was opened and inspected.
+
+Follow-up deployment replaced four public files after prior-content and new-hash verification. Staging: `/home/u271733843/buzlike-releases/20261112-home-return-v2`; backup: `/home/u271733843/buzlike-backups/20261112-032253-before-home-return-v2`. Private inquiry data and other websites were untouched. The sections below record the original release.
+
 ## Behavior
 
 - Starting from the homepage, opening a system keeps the actual homepage document, form elements, expanded details and scroll coordinates alive. The selected demo opens in a full-viewport same-origin iframe using the existing demo shell and its existing scripts/styles.

@@ -5,6 +5,15 @@
   const path = url => url.pathname.replace(/\/+$/, '') || '/';
   const eligible = event => event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey;
   const namespace = 'buzlikeNavigation';
+  const cacheKey = 'buzlike_home_return_v2', pendingKey = 'buzlike_pending_home_return_v2';
+  const read = key => { try { return JSON.parse(sessionStorage.getItem(key) || 'null'); } catch { return null; } };
+  const write = (key, value) => { try { sessionStorage.setItem(key, JSON.stringify(value)); } catch { /* History state still works when storage is unavailable. */ } };
+  const homePoint = value => {
+    if (!value || !Number.isFinite(value.x) || !Number.isFinite(value.y) || value.x < 0 || value.y < 0 || typeof value.url !== 'string') return null;
+    try { const url = new URL(value.url, origin); if (url.origin !== origin || path(url) !== '/') return null; } catch { return null; }
+    if (value.stamp && Date.now() - value.stamp > 86400000) return null;
+    return value;
+  };
   const landing = !!document.querySelector('.site-header') && !!document.getElementById('systems');
 
   // Demo scripts keep their own document and lifecycle. Only the owning
@@ -19,11 +28,17 @@
         const url = new URL(target, location.href);
         if (url.origin !== origin || !(path(url) === '/' || demos.has(path(url)))) return false;
         if (!hosted()) {
-          // Old/direct demo visits can still use the browser's cached home
-          // entry when the preceding document really was this site's home.
-          if (path(url) === '/' && !url.search && !url.hash && document.referrer && history.length > 1) {
-            const previous = new URL(document.referrer);
-            if (previous.origin === origin && path(previous) === '/') { history.back(); return true; }
+          if (path(url) === '/' && !url.search && (!url.hash || url.hash === '#top')) {
+            const additional = ['/business-suite','/e-signature','/usa-thai-shipping','/usa-thai-shipping/admin','/usa-thai-shipping/customer','/ecommerce-storefront','/tilt-signal-arcade-bar'].includes(path(new URL(location.href)));
+            const home = homePoint(history.state?.[namespace]?.home) || homePoint(read(cacheKey)) || {url:'/', x:0, y:0, stamp:Date.now(), focusMore:additional};
+            if (!Array.isArray(home.details) && additional) home.moreOpen = true;
+            write(pendingKey, home);
+            if (document.referrer && history.length > 1) {
+              const previous = new URL(document.referrer);
+              if (previous.origin === origin && path(previous) === '/') { history.back(); return true; }
+            }
+            location.assign(home.url);
+            return true;
           }
           return false;
         }
@@ -32,15 +47,49 @@
       }
     };
     if (hosted()) parent.postMessage({type:'buzlike:ready', url:location.href, title:document.title}, origin);
+    else {
+      const initial = location.pathname + location.search;
+      addEventListener('popstate', () => {
+        if (location.pathname + location.search === initial) return;
+        if (path(new URL(location.href)) === '/') {
+          const home = homePoint(history.state?.[namespace]?.home) || homePoint(read(cacheKey));
+          if (home) write(pendingKey, home);
+        }
+        // Refreshing a same-document demo entry can leave its PHP document
+        // attached to the older home URL on Back. Fetch the actual home only
+        // when its original document has already been replaced.
+        location.reload();
+      });
+    }
     return;
   }
 
   let view = null, frame = null, point = null, opener = null, background = [], overflow = '', timer = null;
   const homeTitle = document.title;
-  const saved = () => ({url:location.pathname + location.search + location.hash, x:scrollX, y:scrollY});
+  const saved = () => ({url:location.pathname + location.search + location.hash, x:scrollX, y:scrollY, stamp:Date.now(), details:[...document.querySelectorAll('main details')].map(el => el.open), moreOpen:document.querySelector('.other-works')?.open || false});
   const state = (kind, home, url) => ({...(history.state || {}), [namespace]:{kind, home, url}});
   const moveTo = position => scrollTo({left:position.x, top:position.y, behavior:'instant'});
-  const restore = position => { moveTo(position); requestAnimationFrame(() => moveTo(position)); };
+  let restoring = false, restoreId = 0;
+  const defaultScrollRestoration = history.scrollRestoration;
+  const restore = position => {
+    if (!homePoint(position)) return;
+    const id = ++restoreId;
+    restoring = true;
+    history.scrollRestoration = 'manual';
+    for (const [index, element] of [...document.querySelectorAll('main details')].entries()) if (typeof position.details?.[index] === 'boolean') element.open = position.details[index];
+    const more = document.querySelector('.other-works');
+    if (more && typeof position.moreOpen === 'boolean') more.open = position.moreOpen;
+    const move = () => {
+      if (position.focusMore) document.querySelector('.other-works')?.scrollIntoView({behavior:'instant', block:'start'});
+      else moveTo(position);
+    };
+    move();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (id !== restoreId) return;
+      move(); restoring = false; history.scrollRestoration = defaultScrollRestoration;
+      write(cacheKey, saved());
+    }));
+  };
   const isOwnFrame = source => !!frame && frame.contentWindow === source;
   window.BuzlikeNavigation = {owns:isOwnFrame};
 
@@ -131,6 +180,7 @@
     if (!demos.has(path(url))) return false;
     if (!view) {
       point = saved();
+      write(cacheKey, point);
       history.replaceState(state('home', point, point.url), '', location.href);
     }
     history.pushState(state('demo', point, url.href), '', url.href);
@@ -163,6 +213,47 @@
     if (demos.has(path(url)) && entry?.kind === 'demo') open(url, entry.home);
     else if (path(url) === '/' && view) close(entry?.home || point);
   });
+
+  // Preserve the expanded list and coordinates even if the browser replaces
+  // the top document (refresh, cache miss, or a standalone demo visit).
+  const remember = () => { if (!view && !restoring && location.pathname === '/') write(cacheKey, saved()); };
+  let rememberTimer;
+  addEventListener('scroll', () => { clearTimeout(rememberTimer); rememberTimer = setTimeout(remember, 120); }, {passive:true});
+  document.addEventListener('toggle', remember, true);
+  addEventListener('pagehide', () => {
+    if (!view && !restoring && location.pathname === '/') {
+      const home = saved(); write(cacheKey, home);
+      history.replaceState(state('home', home, home.url), '', location.href);
+    }
+  });
+  addEventListener('pageshow', event => {
+    if (!event.persisted || view) return;
+    const home = homePoint(read(pendingKey));
+    try { sessionStorage.removeItem(pendingKey); } catch { /* Storage may be unavailable. */ }
+    if (home) restore(home);
+  });
+  const pending = homePoint(read(pendingKey));
+  try { sessionStorage.removeItem(pendingKey); } catch { /* Storage may be unavailable. */ }
+  const entry = homePoint(history.state?.[namespace]?.home), cached = homePoint(read(cacheKey));
+  const navigationType = performance.getEntriesByType('navigation')[0]?.type;
+  const returning = pending || (navigationType === 'back_forward' || navigationType === 'reload') && (cached || entry);
+  if (returning) {
+    const matching = cached?.url === location.pathname + location.search + location.hash ? cached : null;
+    const home = pending || (navigationType === 'back_forward' ? entry || matching : matching || entry);
+    if (home) {
+      // Compatibility with coordinates recorded by the previous release.
+      if (!Array.isArray(home.details) && home.moreOpen === undefined) home.moreOpen = true;
+      let cancelled = false;
+      for (const type of ['wheel','touchstart','pointerdown','keydown']) addEventListener(type, () => {
+        cancelled = true;
+        if (restoring) { restoreId++; restoring = false; history.scrollRestoration = defaultScrollRestoration; }
+      }, {once:true, passive:true});
+      const settle = () => { if (!cancelled && !view) requestAnimationFrame(() => { if (!cancelled && !view) restore(home); }); };
+      restore(home);
+      addEventListener('pageshow', settle, {once:true});
+      document.fonts.ready.then(settle);
+    }
+  }
 
   document.addEventListener('keydown', event => {
     if (!view || event.key !== 'Tab' || view.classList.contains('is-ready')) return;
