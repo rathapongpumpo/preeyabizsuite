@@ -4616,8 +4616,8 @@ const crmSeed = {
 
   // Instant SPA Navigation
   function navigateTo(targetPath) {
-    // Full document navigation keeps homepage and demo shells consistent.
     const destination = new URL(targetPath, window.location.origin);
+    if (window.BuzlikeNavigation?.navigate(destination.href)) return;
     if (destination.href !== window.location.href) window.location.assign(destination.href);
   }
 
@@ -4698,11 +4698,12 @@ const crmSeed = {
 
   // Intercept all internal navigation clicks
   document.addEventListener('click', (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     const a = e.target.closest('a');
     if (!a) return;
     const href = a.getAttribute('href');
     if (!href) return;
-    if (a.target === '_blank' || a.hasAttribute('download')) return;
+    if (a.target && a.target !== '_self' || a.hasAttribute('download')) return;
     if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:') || href.startsWith('http://') || href.startsWith('https://')) return;
     if (href.startsWith('/')) {
       e.preventDefault();

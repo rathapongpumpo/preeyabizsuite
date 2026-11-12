@@ -139,12 +139,13 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     </div>
 <?php endif; ?>
 <script>window.DEMO_PROJECTS = <?= $projectJson ?: '{}' ?>;</script>
+<script src="/assets/site-navigation.js?v=home-return-1" defer></script>
 <script src="/assets/demo-runtime.js?v=buzlike-3" defer onerror="const s=document.getElementById('demo-loading');if(s){s.classList.add('load-warning');s.querySelector('[data-load-message]').textContent='โหลดเดโมไม่สำเร็จ กรุณาโหลดใหม่';s.querySelector('[data-load-retry]').hidden=false;}"></script>
 <script src="/assets/vendor/jsbarcode-code128-3.12.3.min.js" defer></script>
 <script src="/assets/vendor/qrcode-generator-2.0.4.js" defer></script>
 <script src="/assets/demo-tools.js?v=buzlike-3" defer></script>
 <script src="/assets/dialog-focus.js?v=buzlike-3" defer></script>
-<script src="/assets/app.js?v=contact-warranty-1" defer></script>
+<script src="/assets/app.js?v=home-return-1" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>

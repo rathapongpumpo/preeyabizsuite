@@ -119,6 +119,16 @@
     const clean=new URL(location.href);clean.searchParams.delete('interest');clean.searchParams.delete('model');history.replaceState(null,'',clean);showStep(1);
   });
   for(const target of document.querySelectorAll('[data-plan-start]'))target.textContent=number(rates[target.dataset.planStart][0].min);
+  addEventListener('buzlike:home-intent',event=>{
+    if(sending)return;
+    const current=new URL(event.detail.url),choices=(current.searchParams.get('interest')||'').split(',').filter(x=>Object.hasOwn(systems,x));
+    const model=current.searchParams.get('model');
+    if(!choices.length&&!Object.hasOwn(models,model))return;
+    changed();ready=false;furthest=1;
+    if(choices.length)for(const input of form.querySelectorAll('[name="est-systems"]'))input.checked=choices.includes(input.value);
+    if(Object.hasOwn(models,model))form.querySelector(`[name="est-model"][value="${model}"]`).checked=true;
+    showStep(1);
+  });
   addEventListener('hashchange',()=>{
     const current=new URL(location.href),parts=current.hash.slice(1).split('?');if(parts.length<2)return;
     const parameters=new URLSearchParams(parts.slice(1).join('?')),choices=(parameters.get('interest')||'').split(',').filter(x=>Object.hasOwn(systems,x));
