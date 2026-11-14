@@ -4419,3 +4419,14 @@ html[data-theme="dark"] .hero-status-pill {
     display: none !important;
   }
 }
+
+/* Keep the POS product one click away without covering demo controls. */
+.conversion-docked.minimized .conversion-quick-product { display: inline-flex; flex: 1; min-height: 44px; justify-content: center; }
+.conversion-pos .conversion-bar-actions { flex-wrap: wrap; }
+.conversion-pos .conversion-bar-actions > a:last-child { flex-basis: 100%; }
+body .demo-conversion-bar.conversion-pos .btn.conversion-product,
+body .demo-conversion-bar.conversion-pos .btn.conversion-quick-product { background: #ff9a55; border-color: #cb7136; color: #131820; box-shadow: none; }
+body .demo-conversion-bar.conversion-pos .btn.conversion-product:hover,
+body .demo-conversion-bar.conversion-pos .btn.conversion-quick-product:hover { background: #ffab73; }
+.conversion-pos:not(.minimized) .conversion-quick-product { display: none; }
+.conversion-pos-label { padding: 4px; color: #854014; background: #fff5ec; border-radius: 4px; font-size: 10px; font-weight: 700; }

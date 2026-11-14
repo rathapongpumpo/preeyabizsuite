@@ -42,9 +42,13 @@
   }
   function update(){
     const chosen=selection(),q=quote();
+    const hasPOS=chosen.includes('pos');
+    get('estimate-pos-options').hidden=!hasPOS;
+    get('estimate-pos-price-note').hidden=!hasPOS;
+    if(step===1&&!sending&&!receipt)get('estimate-next').textContent=hasPOS?'ต่อไป: ประเมินค่าพัฒนา →':'ต่อไป: รูปแบบงาน →';
     form.querySelector('[name="est-systems"]').setCustomValidity(chosen.length?'':'กรุณาเลือกอย่างน้อย 1 ระบบ');
     get('calc-est-price').textContent=q.range;get('calc-est-unit').textContent=q.monthly?'บาท / เดือน':'บาท / โปรเจกต์';get('calc-est-timeline').textContent=q.time;
-    get('estimate-mobile-price').textContent=chosen.length?`${q.price} · ${q.time}`:'เลือกระบบเพื่อดูกรอบงบประมาณ';
+    get('estimate-mobile-price').textContent=chosen.length?`${hasPOS?'ค่าจ้างพัฒนา ':''}${q.price} · ${q.time}`:'เลือกระบบเพื่อดูกรอบงบประมาณ';
     get('estimate-selection-status').textContent=chosen.length?`เลือกแล้ว ${chosen.length} ระบบ`:'ยังไม่ได้เลือกระบบ';
     get('estimate-summary-count').textContent=chosen.length?`เลือกแล้ว ${chosen.length} ระบบ`:'ยังไม่ได้เลือกระบบ';
     const list=get('estimate-selected-list');list.replaceChildren();
@@ -73,7 +77,8 @@
   form.addEventListener('input',()=>{if(sending)return;changed();for(const id of ['est-contact-name','est-contact-tel'])get(id).setCustomValidity('');get('estimate-step-error').textContent='';update();});
   form.addEventListener('change',()=>{if(!sending){changed();update();}});
   document.addEventListener('click',event=>{
-    if(sending&&event.target.closest('[data-estimate-step],[data-set-model]')){event.preventDefault();return;}
+    if(sending&&event.target.closest('[data-estimate-step],[data-set-model],[data-pos-development]')){event.preventDefault();return;}
+    if(event.target.closest('[data-pos-development]')){if(canLeaveFirst())showStep(2,true);return;}
     const plan=event.target.closest('[data-set-model]');
     if(plan&&Object.hasOwn(models,plan.dataset.setModel)){form.querySelector(`[name="est-model"][value="${plan.dataset.setModel}"]`).checked=true;showStep(selection().length?2:1);}
     const target=event.target.closest('[data-estimate-step]');if(target&&!target.disabled){const next=Number(target.dataset.estimateStep);if(next>1&&!canLeaveFirst())return;showStep(next,true);}

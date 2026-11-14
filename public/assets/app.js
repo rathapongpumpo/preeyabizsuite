@@ -4497,8 +4497,8 @@ const crmSeed = {
       },
       '/pos-system-smart': {
         interest: 'pos',
-        title: 'สนใจระบบหน้าร้าน POS & จอครัว KDS?',
-        sub: 'ปรับเมนูและขั้นตอนสำหรับร้านอาหารหรือคาเฟ่ ตามขอบเขตที่ตกลง'
+        title: 'เลือกทางต่อสำหรับร้านของคุณ',
+        sub: 'เดโมนี้ใช้ข้อมูลจำลอง · BUZLIKE POS อยู่ช่วงนำร่องตามคำเชิญ ผู้สนใจลงทะเบียนรอได้'
       },
       '/usa-thai-shipping': {
         interest: 'shipping',
@@ -4528,25 +4528,26 @@ const crmSeed = {
     };
 
     const c = configs[currentPath] || configs['/warehouse-management'];
-    const docked = currentPath === '/business-suite' || currentPath === '/e-signature';
+    const isPOS = currentPath === '/pos-system-smart';
+    const docked = isPOS || currentPath === '/business-suite' || currentPath === '/e-signature';
     const bar = document.createElement('aside');
-    bar.className = 'demo-conversion-bar' + (docked ? ' conversion-docked minimized' : '');
+    bar.className = 'demo-conversion-bar' + (docked ? ' conversion-docked minimized' : '') + (isPOS ? ' conversion-pos' : '');
     document.body.classList.toggle('has-docked-conversion', docked);
-    bar.setAttribute('aria-label', 'แถบติดต่อและขอใบเสนอราคา');
+    bar.setAttribute('aria-label', isPOS ? 'เลือกผลิตภัณฑ์ POS หรือจ้างพัฒนาระบบ' : 'แถบติดต่อและขอใบเสนอราคา');
     bar.innerHTML = `
       <div class="conversion-bar-header">
         <div style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:16px">💼</span>
+          ${isPOS ? '<span class="conversion-pos-label">POS</span>' : '<span style="font-size:16px">💼</span>'}
           <h4 class="conversion-bar-title">${c.title}</h4>
         </div>
-        ${docked ? `<a class="btn primary small conversion-quick-quote" href="/?interest=${c.interest}#estimator-form">ขอใบเสนอราคาระบบนี้</a>` : ''}
+        ${isPOS ? '<a class="btn primary small conversion-quick-product" href="https://pos.buzlike.com/" target="_blank" rel="noopener" aria-label="ดู BUZLIKE POS (เปิดแท็บใหม่)">ดู BUZLIKE POS ↗</a>' : docked ? `<a class="btn primary small conversion-quick-quote" href="/?interest=${c.interest}#estimator-form">ขอใบเสนอราคาระบบนี้</a>` : ''}
         <button class="conversion-bar-toggle" type="button" title="ย่อ/ขยายแถบ" aria-label="${docked ? 'ขยายช่องทางติดต่อ' : 'ย่อแถบ'}" aria-expanded="${!docked}">${docked ? 'ติดต่อเพิ่ม' : 'ย่อ'}</button>
       </div>
       <div class="conversion-bar-body">
         <p class="conversion-bar-subtext">${c.sub}</p>
       </div>
       <div class="conversion-bar-actions">
-        <a class="btn primary small" href="/?interest=${c.interest}#estimator-form">ขอใบเสนอราคาระบบนี้</a>
+        ${isPOS ? '<a class="btn primary small conversion-product" href="https://pos.buzlike.com/" target="_blank" rel="noopener" aria-label="ดู BUZLIKE POS (เปิดแท็บใหม่)">ดู BUZLIKE POS ↗</a><a class="btn outline small conversion-pos-custom" href="/?interest=pos#estimator-form">จ้างพัฒนา POS ตามโจทย์</a>' : `<a class="btn primary small" href="/?interest=${c.interest}#estimator-form">ขอใบเสนอราคาระบบนี้</a>`}
         <a class="btn outline small" href="https://line.me/R/ti/p/@486fpcll" target="_blank" rel="noreferrer" style="border-color:#06C755;color:#06C755">ทัก LINE ปรึกษาด่วน ↗</a>
       </div>
     `;

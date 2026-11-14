@@ -1,4 +1,29 @@
 /* Product discovery extends the homepage; the POS application stays separate. */
+.estimate-pos-options {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid #ead8c9;
+  border-radius: 12px;
+  background: #fff8f2;
+}
+.estimate-pos-options h3 { margin: 0 0 18px; font-size: 19px; font-weight: 600; line-height: 1.6; }
+.estimate-pos-paths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.estimate-pos-paths > div { display: flex; flex-direction: column; align-items: flex-start; }
+.estimate-pos-paths h4 { margin: 0; font-size: 16px; line-height: 1.7; }
+.estimate-pos-paths p { margin: 8px 0 16px; font-size: 14px; line-height: 1.9; color: #594e46; }
+.estimate-pos-paths .pos-product-primary, .estimate-pos-paths .pos-product-secondary { margin-top: auto; }
+.estimate-pos-paths .pos-product-secondary { border: 1px solid #b99073; padding: 11px 14px; color: #7c3611; background: transparent; }
+.estimate-pos-paths .icon { width: 16px; height: 16px; flex: none; }
+.estimate-pos-price-note { margin: 14px 0; padding: 12px; border-left: 3px solid #b75b26; background: #fff8f2; color: #7c3611; font-size: 13px; line-height: 1.9; }
+.estimate-pos-options[hidden], .estimate-pos-price-note[hidden] { display: none; }
+@media (max-width: 1100px) {
+  .estimate-pos-paths { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .estimate-pos-paths > div + div { border-top: 1px solid #ead8c9; padding-top: 20px; }
+}
+@media (max-width: 520px) {
+  .estimate-pos-options { padding: 18px; }
+  .estimate-pos-paths .pos-product-primary, .estimate-pos-paths .pos-product-secondary { width: 100%; }
+}
 .desktop-nav > a[href="#buzlike-pos"] { display: inline-flex; align-items: center; min-height: 44px; }
 .hero-pos-link {
   display: inline-flex;
