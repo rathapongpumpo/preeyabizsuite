@@ -1,23 +1,24 @@
-/* Three clear entry paths; preserve the existing scene and its flow geometry. */
-.hero-copy h1 { font-size: clamp(44px, 5.2vw, 82px); line-height: 1.28; margin-bottom: 20px; }
-.hero-copy .intro { margin-bottom: 24px; }
-.home-entry-prompt { margin: 0 0 12px; color: #515d70; font-size: 14px; line-height: 1.7; }
-.hero-actions.home-entry-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+/* One responsive composition for the copy, entry actions and live scene. */
+.hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: clamp(24px, 3.5vw, 56px); padding: 28px 5.5% 48px; min-height: 0; max-width: 1536px; }
+.hero .hero-copy { align-self: center; padding: 0; min-width: 0; }
+.hero-copy h1 { font-size: clamp(40px, 4.65vw, 70px); line-height: 1.25; letter-spacing: -2.2px; margin-bottom: 22px; }
+.hero-copy .intro { font-size: clamp(16px, 1.3vw, 19px); line-height: 1.9; margin-bottom: 22px; letter-spacing: 0; }
+.home-entry-prompt { margin: 0 0 10px; color: #515d70; font-size: 14px; line-height: 1.7; }
+.hero-actions.home-entry-actions { display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; align-items: stretch; }
 .home-entry-action {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 18px;
-  min-height: 88px;
+  gap: 20px;
+  padding: 13px 18px;
+  min-height: 52px;
   border: 1px solid;
-  border-radius: 10px;
+  border-radius: 8px;
   transition: background-color .15s ease, border-color .15s ease;
 }
 .home-entry-action span { min-width: 0; }
-.home-entry-action strong { display: block; font-size: 17px; font-weight: 600; line-height: 1.6; }
-.home-entry-action small { display: block; margin-top: 3px; font-size: 13px; line-height: 1.7; }
-.home-entry-action .icon { width: 19px; height: 19px; flex: none; }
+.home-entry-action strong { display: block; font-size: 15px; font-weight: 500; line-height: 1.6; }
+.home-entry-action .icon { width: 17px; height: 17px; flex: none; }
 .home-entry-pos { background: #fff3e9; border-color: #dfb493; color: #77350f; }
 .home-entry-pos:hover { background: #ffe7d5; border-color: #c7814b; }
 .home-entry-development { background: #3155f5; border-color: #3155f5; color: #fff; }
@@ -35,26 +36,49 @@
   text-underline-offset: 5px;
 }
 .home-entry-consult .icon { width: 16px; height: 16px; flex: none; }
+.hero .hero-system { width: 100%; min-width: 0; }
+.hero .scene-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.hero .scene-explainer { flex: 1 1 260px; margin: 0; font-size: 14px; line-height: 1.6; }
+.hero .scene-explainer > span { display: block; max-width: none; font-size: 11px; line-height: 1.8; }
+.hero .flow-toggle { margin: 0; inline-size: auto; min-height: 36px; block-size: 36px; font-size: 11px; }
+.hero .system-canvas { height: 520px; margin-top: 16px; }
+.hero .inventory-panel, .hero .report-panel { top: auto; bottom: 12px; }
 @media (min-width: 901px) {
-  .hero .hero-copy { align-self: start; padding-top: 24px; }
+  .hero .kitchen-panel { top: 16%; }
 }
+.hero .system-caption { margin: 12px 0 0; padding: 6px 0 6px 14px; }
+.hero .system-caption p { margin: 0 0 4px; font-size: 11px; line-height: 1.7; }
+.selected-works .case-preview img[src$="wms-actual.png"] { aspect-ratio: 1254 / 850; }
+.selected-works .case-preview img[src$="pos-actual.png"] { aspect-ratio: 1360 / 1161; }
 @media (min-width: 901px) and (max-width: 1100px) {
-  .home-entry-action { padding: 14px 12px; gap: 8px; }
-  .home-entry-action strong { font-size: 15px; }
-  .home-entry-action small { font-size: 12px; }
+  .hero { gap: 24px; padding-inline: 4%; }
+  .hero-copy h1 { font-size: 4.6vw; letter-spacing: -1.5px; }
+  .home-entry-action { padding: 12px 14px; gap: 12px; }
+  .home-entry-action strong { font-size: 14px; }
+  .hero .scene-heading { gap: 4px; }
 }
 @media (max-width: 900px) {
-  .hero-copy h1 { font-size: clamp(32px, 8.9vw, 60px); line-height: 1.35; margin-bottom: 17px; }
-  .hero-copy .intro { margin-bottom: 20px; }
+  .hero { gap: 32px; padding: 20px 6% 36px; }
+  .hero .hero-copy { max-width: 620px; width: 100%; }
+  .hero-copy h1 { font-size: clamp(32px, 7.2vw, 52px); line-height: 1.35; letter-spacing: -1.3px; margin-bottom: 18px; }
+  .hero-copy .intro { max-width: 36em; font-size: 16px; margin-bottom: 20px; }
   .home-entry-prompt { text-align: left; }
-  .home-entry-action { padding: 16px; min-height: 84px; }
+  .hero .hero-system { max-width: 620px; }
+  .hero .system-canvas { height: 540px; }
 }
 @media (max-width: 520px) {
-  .hero-actions.home-entry-actions { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-  .home-entry-action { min-height: 78px; padding: 13px 16px; }
-  .home-entry-action strong { font-size: 16px; }
-  .home-entry-action small { font-size: 12px; }
+  .hero-actions.home-entry-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .home-entry-action { min-height: 50px; padding: 12px; gap: 8px; }
+  .home-entry-action strong { font-size: 13px; }
   .home-entry-consult { font-size: 14px; }
+  .hero .scene-heading { align-items: flex-start; }
+  .hero .scene-explainer { flex-basis: 100%; }
+  .hero .system-canvas { height: 520px; }
+  .hero .system-caption { margin-top: 10px; }
+}
+@media (min-width: 901px) and (max-height: 800px) {
+  .hero { padding-top: 18px; padding-bottom: 32px; }
+  .hero .system-canvas { height: 464px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .home-entry-action { transition: none; }

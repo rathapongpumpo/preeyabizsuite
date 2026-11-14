@@ -2,6 +2,8 @@
 
 Published to https://buzlike.com/ on 14 November 2026. Implements recommendation 2 from the visitor-convenience review.
 
+Layout was subsequently corrected after user feedback; [the layout repair](LAYOUT_REPAIR_DELIVERY_2026-11-14.md) supersedes the original hero sizing and card-style actions below while retaining the same destinations.
+
 ## Delivered behavior
 
 The hero now asks “คุณอยากเริ่มจากอะไร?” and offers:
