@@ -1,0 +1,61 @@
+/* Three clear entry paths; preserve the existing scene and its flow geometry. */
+.hero-copy h1 { font-size: clamp(44px, 5.2vw, 82px); line-height: 1.28; margin-bottom: 20px; }
+.hero-copy .intro { margin-bottom: 24px; }
+.home-entry-prompt { margin: 0 0 12px; color: #515d70; font-size: 14px; line-height: 1.7; }
+.hero-actions.home-entry-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+.home-entry-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px;
+  min-height: 88px;
+  border: 1px solid;
+  border-radius: 10px;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.home-entry-action span { min-width: 0; }
+.home-entry-action strong { display: block; font-size: 17px; font-weight: 600; line-height: 1.6; }
+.home-entry-action small { display: block; margin-top: 3px; font-size: 13px; line-height: 1.7; }
+.home-entry-action .icon { width: 19px; height: 19px; flex: none; }
+.home-entry-pos { background: #fff3e9; border-color: #dfb493; color: #77350f; }
+.home-entry-pos:hover { background: #ffe7d5; border-color: #c7814b; }
+.home-entry-development { background: #3155f5; border-color: #3155f5; color: #fff; }
+.home-entry-development:hover { background: #2344d5; border-color: #2344d5; }
+.home-entry-consult {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 12px;
+  color: #3155f5;
+  font-size: 15px;
+  line-height: 1.8;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.home-entry-consult .icon { width: 16px; height: 16px; flex: none; }
+@media (min-width: 901px) {
+  .hero .hero-copy { align-self: start; padding-top: 24px; }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .home-entry-action { padding: 14px 12px; gap: 8px; }
+  .home-entry-action strong { font-size: 15px; }
+  .home-entry-action small { font-size: 12px; }
+}
+@media (max-width: 900px) {
+  .hero-copy h1 { font-size: clamp(32px, 8.9vw, 60px); line-height: 1.35; margin-bottom: 17px; }
+  .hero-copy .intro { margin-bottom: 20px; }
+  .home-entry-prompt { text-align: left; }
+  .home-entry-action { padding: 16px; min-height: 84px; }
+}
+@media (max-width: 520px) {
+  .hero-actions.home-entry-actions { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .home-entry-action { min-height: 78px; padding: 13px 16px; }
+  .home-entry-action strong { font-size: 16px; }
+  .home-entry-action small { font-size: 12px; }
+  .home-entry-consult { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-entry-action { transition: none; }
+}
