@@ -211,6 +211,19 @@
 .product-card--lawyer .pos-product-primary:hover { background: #204bb4; }
 .product-card--lawyer .pos-product-secondary { border-color: #cad8fb; }
 .product-card--lawyer .pos-product-preview img { object-fit: contain; background: #f7f9fc; border-color: #d9e3f4; box-shadow: 0 18px 40px -24px #214fb733; }
+.product-card--warehouse {
+  --pos-accent: #0a6655;
+  --pos-muted: #49665e;
+  background: #f2faf7;
+  border-color: #cfe5dd;
+}
+.product-card--warehouse .pos-product-brand { font-family: var(--font); letter-spacing: -.4px; }
+.product-card--warehouse .pos-product-status { background: #e7f5ee; border-color: #c5e2d4; color: var(--pos-accent); }
+.product-card--warehouse .pos-product-description { color: #415f55; }
+.product-card--warehouse .pos-product-primary { background: #147a66; border-color: #106654; color: white; }
+.product-card--warehouse .pos-product-primary:hover { background: #106654; }
+.product-card--warehouse .pos-product-secondary { border-color: #c5e2d4; }
+.product-card--warehouse .pos-product-preview img { object-fit: contain; background: #f5f7fb; border-color: #cfe5dd; box-shadow: 0 18px 40px -24px #0a665533; }
 @media (min-width: 901px) and (max-width: 1200px) {
   .desktop-nav { gap: 16px; font-size: 13px; }
   .pos-product-card { gap: 24px; }

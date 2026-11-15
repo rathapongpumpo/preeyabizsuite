@@ -77,6 +77,17 @@
   form.addEventListener('input',()=>{if(sending)return;changed();for(const id of ['est-contact-name','est-contact-tel'])get(id).setCustomValidity('');get('estimate-step-error').textContent='';update();});
   form.addEventListener('change',()=>{if(!sending){changed();update();}});
   document.addEventListener('click',event=>{
+    const interestLink=event.target.closest('a[data-estimate-interest]');
+    if(interestLink&&!event.defaultPrevented&&event.button===0&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey&&!interestLink.hasAttribute('download')&&(!interestLink.target||interestLink.target==='_self')){
+      const destination=new URL(interestLink.href,location.href),interest=interestLink.dataset.estimateInterest;
+      if(destination.origin!==location.origin||destination.pathname!=='/'||!Object.hasOwn(systems,interest)||destination.searchParams.get('interest')!==interest)return;
+      event.preventDefault();if(sending)return;
+      history.pushState(null,'',destination);
+      dispatchEvent(new CustomEvent('buzlike:home-intent',{detail:{url:destination.href}}));
+      get('estimator-form').scrollIntoView({behavior:'instant'});
+      const heading=get('estimate-title');heading.tabIndex=-1;heading.focus({preventScroll:true});
+      return;
+    }
     if(sending&&event.target.closest('[data-estimate-step],[data-set-model],[data-pos-development]')){event.preventDefault();return;}
     if(event.target.closest('[data-pos-development]')){if(canLeaveFirst())showStep(2,true);return;}
     const plan=event.target.closest('[data-set-model]');
