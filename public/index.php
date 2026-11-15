@@ -72,7 +72,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="/assets/app.css?v=crm-optional-1"><link rel="stylesheet" href="/assets/featured-demos.css?v=buzlike-3">
+    <link rel="stylesheet" href="/assets/app.css?v=crm-optional-1"><link rel="stylesheet" href="/assets/demo-notice.css?v=demo-context-2"><link rel="stylesheet" href="/assets/featured-demos.css?v=buzlike-3">
 <link rel="stylesheet" href="/assets/demo-enhancements.css?v=buzlike-3">
 <script src="/assets/site-config.js?v=buzlike-3"></script>
 </head>
@@ -90,12 +90,13 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     </main>
 <?php else: ?>
     <div class="demo-frame">
+        <div class="demo-context">
         <header class="demo-shell">
             <a class="shell-back" href="/" aria-label="กลับหน้าแรก">← <span>กลับหน้าแรก</span></a>
             <div class="shell-project">
                 <span class="status-dot" aria-hidden="true"></span>
                 <strong><?= htmlspecialchars($project['short'] ?? $project['title'], ENT_QUOTES) ?></strong>
-                <span class="badge" style="font-size:11px;margin-left:6px">Prototype Demo</span>
+                <span class="badge" style="font-size:11px;margin-left:6px">เดโม / ต้นแบบ</span>
             </div>
             <div class="shell-actions">
                 <button class="btn small" id="project-info-button" type="button" aria-expanded="false">ℹ️ รายละเอียดระบบ</button>
@@ -135,6 +136,11 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
                 <a class="btn primary small" style="width:100%;text-align:center" href="https://lin.ee/YjK8Ji8" target="_blank" rel="noreferrer">คุยเรื่องพัฒนาระบบลักษณะนี้ ↗</a>
             </div>
         </header>
+        <aside id="demo-prototype-notice" class="demo-notice" aria-labelledby="demo-prototype-title">
+            <strong id="demo-prototype-title">เดโม / ต้นแบบสำหรับทดลอง · ไม่ใช่ระบบพร้อมใช้งาน</strong>
+            <p>ใช้ทดลองแนวทางเท่านั้น หน้าตา ฟังก์ชัน และขั้นตอนของระบบจริงจะปรับตามความต้องการและขอบเขตที่ตกลง</p>
+        </aside>
+        </div>
         <main id="app" class="demo-content" aria-live="polite"></main>
     </div>
 <?php endif; ?>
@@ -145,7 +151,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
 <script src="/assets/vendor/qrcode-generator-2.0.4.js" defer></script>
 <script src="/assets/demo-tools.js?v=buzlike-3" defer></script>
 <script src="/assets/dialog-focus.js?v=buzlike-3" defer></script>
-<script src="/assets/app.js?v=crm-optional-1" defer></script>
+<script src="/assets/app.js?v=demo-context-1" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>

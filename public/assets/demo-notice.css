@@ -1,0 +1,14 @@
+/* Shared context for interactive prototypes; separate from real product cards. */
+body:has(.demo-context):not(.has-docked-conversion) { overflow-x: clip; overflow-y: visible; }
+.demo-context { position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
+.demo-context .demo-shell { position: relative; top: auto; }
+.demo-notice { padding: 12px 20px; border-bottom: 1px solid #cad9f4; background: #edf3ff; color: #20385e; text-align: left; }
+.demo-notice strong { display: block; font-size: 14px; line-height: 1.5; font-weight: 700; }
+.demo-notice p { margin: 4px 0 0; font-size: 13px; line-height: 1.65; color: #344b6d; }
+.demo-notice--home { margin: 0 0 28px; padding: 18px 22px; border: 1px solid #cad9f4; border-radius: 12px; }
+.demo-notice--home strong { font-size: 16px; }
+.demo-notice--home p { font-size: 14px; }
+@media(max-width:600px) {
+  .demo-notice { padding: 10px 14px; }
+  .demo-notice--home { padding: 16px; }
+}

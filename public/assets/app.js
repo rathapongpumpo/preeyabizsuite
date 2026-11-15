@@ -54,7 +54,7 @@
     const demoBadge = document.createElement('span');
     demoBadge.className = 'badge';
     demoBadge.style.fontSize = '11px';
-    demoBadge.textContent = 'Interactive Showcase';
+    demoBadge.textContent = 'เดโม / ต้นแบบ';
     projectName.append(status, title, demoBadge);
 
     const shellActions = document.createElement('div');
@@ -76,6 +76,25 @@
     app.replaceWith(frame);
     frame.append(shell, app);
     app.className = 'demo-content';
+  }
+
+  // Static route pages use the same persistent context as the PHP template.
+  const demoShell = document.querySelector('.demo-shell');
+  if (demoShell && !document.getElementById('demo-prototype-notice')) {
+    const context = document.createElement('div');
+    context.className = 'demo-context';
+    const notice = document.createElement('aside');
+    notice.id = 'demo-prototype-notice';
+    notice.className = 'demo-notice';
+    notice.setAttribute('aria-labelledby', 'demo-prototype-title');
+    const title = document.createElement('strong');
+    title.id = 'demo-prototype-title';
+    title.textContent = 'เดโม / ต้นแบบสำหรับทดลอง · ไม่ใช่ระบบพร้อมใช้งาน';
+    const copy = document.createElement('p');
+    copy.textContent = 'ใช้ทดลองแนวทางเท่านั้น หน้าตา ฟังก์ชัน และขั้นตอนของระบบจริงจะปรับตามความต้องการและขอบเขตที่ตกลง';
+    notice.append(title, copy);
+    demoShell.replaceWith(context);
+    context.append(demoShell, notice);
   }
 
   const clone = (value) => JSON.parse(JSON.stringify(value));
