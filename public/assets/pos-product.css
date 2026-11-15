@@ -224,6 +224,18 @@
 .product-card--warehouse .pos-product-primary:hover { background: #106654; }
 .product-card--warehouse .pos-product-secondary { border-color: #c5e2d4; }
 .product-card--warehouse .pos-product-preview img { object-fit: contain; background: #f5f7fb; border-color: #cfe5dd; box-shadow: 0 18px 40px -24px #0a665533; }
+.product-card--crm {
+  --pos-accent: #5237a6;
+  --pos-muted: #5c5070;
+  background: #f7f3ff;
+  border-color: #ded3f2;
+}
+.product-card--crm .pos-product-status { background: #eee7fb; border-color: #d8c8ef; color: var(--pos-accent); }
+.product-card--crm .pos-product-description { color: #554765; }
+.product-card--crm .pos-product-primary { background: #6040b5; border-color: #5237a6; color: white; }
+.product-card--crm .pos-product-primary:hover { background: #5237a6; }
+.product-card--crm .pos-product-secondary { border-color: #d8c8ef; }
+.product-card--crm .pos-product-preview img { object-fit: contain; background: #f5f7fb; border-color: #ded3f2; box-shadow: 0 18px 40px -24px #5237a633; }
 @media (min-width: 901px) and (max-width: 1200px) {
   .desktop-nav { gap: 16px; font-size: 13px; }
   .pos-product-card { gap: 24px; }
