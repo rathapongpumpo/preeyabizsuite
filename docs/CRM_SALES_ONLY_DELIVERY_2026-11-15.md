@@ -1,5 +1,7 @@
 # Remove contract/signing from the sales offering
 
+> Superseded by `CRM_OPTIONAL_CONTRACT_DELIVERY_2026-11-15.md`. Removing the contract module from CRM was an overbroad interpretation of the user's request. The corrected implementation retains CRM and restores contract/signing as an optional step, without a separate product listing. The implementation and validation below describe the historical release only.
+
 Published on 15 November 2026 following the user's decision to stop offering the contract system.
 
 The homepage CRM description, estimator, demo details, metadata, conversion bar and preview now describe customer tracking, Pipeline, quotations and closing sales. CRM retains three tabs: overview, Pipeline and quotation. The contract tab, signing handoff and signature badges were removed from that customer journey. Approving a quotation enables closing the deal directly.
