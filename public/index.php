@@ -145,7 +145,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
 <script src="/assets/vendor/qrcode-generator-2.0.4.js" defer></script>
 <script src="/assets/demo-tools.js?v=buzlike-3" defer></script>
 <script src="/assets/dialog-focus.js?v=buzlike-3" defer></script>
-<script src="/assets/app.js?v=pos-paths-1" defer></script>
+<script src="/assets/app.js?v=crm-sales-1" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>
