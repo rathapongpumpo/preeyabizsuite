@@ -55,6 +55,12 @@
     }
     const a={x:pos.x+pos.w+2,y:pos.y+pos.h*.52};
     const b={x:kitchen.x-5,y:kitchen.y+kitchen.h*.54};
+    // Nearly aligned cards use one horizontal lane instead of a tiny elbow.
+    const laneTop=Math.max(pos.y,kitchen.y)+12;
+    const laneBottom=Math.min(pos.y+pos.h,kitchen.y+kitchen.h)-12;
+    if(Math.abs(a.y-b.y)<=24&&laneTop<=laneBottom){
+      a.y=b.y=Math.max(laneTop,Math.min(laneBottom,(a.y+b.y)/2));
+    }
     const top={x:kitchen.x+kitchen.w*.5,y:kitchen.y+kitchen.h+2};
     const bottom={x:stock.x+stock.w*.5,y:stock.y-5};
     const sharedY=Math.max(stock.y,report.y)+Math.min(stock.h,report.h)*.55;
