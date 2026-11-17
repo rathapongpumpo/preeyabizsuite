@@ -8,6 +8,11 @@ require_once dirname(__DIR__) . '/src/PageMetadata.php';
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $path = rtrim($path, '/') ?: '/';
 
+if ($path === '/admin' || str_starts_with($path, '/admin/')) {
+    require_once dirname(__DIR__) . '/src/InquiryAdminEndpoint.php';
+    handleInquiryAdmin($path);
+}
+
 if ($path === '/api/inquiries') {
     require_once dirname(__DIR__) . '/src/InquiryEndpoint.php';
     handleInquiryEndpoint();
