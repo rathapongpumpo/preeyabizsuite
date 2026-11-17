@@ -74,6 +74,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="/assets/app.css?v=crm-optional-1"><link rel="stylesheet" href="/assets/demo-notice.css?v=demo-context-2"><link rel="stylesheet" href="/assets/featured-demos.css?v=buzlike-3">
 <link rel="stylesheet" href="/assets/demo-enhancements.css?v=buzlike-3">
+<link rel="stylesheet" href="/assets/crm.css?v=crm-workspace-1">
 <script src="/assets/site-config.js?v=buzlike-3"></script>
 </head>
 <body data-page="<?= htmlspecialchars($pageKey, ENT_QUOTES) ?>" data-route="<?= htmlspecialchars($path, ENT_QUOTES) ?>">
@@ -151,7 +152,7 @@ $projectJson = json_encode($registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SL
 <script src="/assets/vendor/qrcode-generator-2.0.4.js" defer></script>
 <script src="/assets/demo-tools.js?v=buzlike-3" defer></script>
 <script src="/assets/dialog-focus.js?v=buzlike-3" defer></script>
-<script src="/assets/app.js?v=demo-context-1" defer></script>
+<script src="/assets/app.js?v=crm-workspace-1" defer></script>
 <?php if ($pageKey === 'esign'): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
 <?php endif; ?>

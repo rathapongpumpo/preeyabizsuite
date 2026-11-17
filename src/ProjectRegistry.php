@@ -47,7 +47,7 @@ return [
         'highlights' => ['Kanban Pipeline', 'Quotation Builder', 'Optional Contract & Signing', 'Sales Metrics'],
         'quick_try' => '1. เลือกดีลและเปิดใบเสนอราคา 2. เลือกว่าจะใช้สัญญาหรือไม่ 3. อนุมัติใบเสนอราคา แล้วปิดการขายได้ทันที หรือเปิดสัญญาเพื่อลงนามก่อนปิดดีล',
         'constraints' => 'ต้นแบบเก็บข้อมูลและลายเซ็นในเบราว์เซอร์นี้ ยังไม่มีฐานข้อมูลกลาง บัญชีผู้ใช้ การส่งเอกสารจริง หรือการลงนามข้ามเครื่อง',
-        'preview_image' => '/assets/demo-previews/business-suite-workflow.webp',
+        'preview_image' => '/assets/portfolio/crm-workspace.webp',
         'visible' => true,
         'featured' => true,
         'accent' => 'coral',

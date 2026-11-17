@@ -1427,7 +1427,7 @@ const crmSeed = {
     }
     if (!crmLocationApplied) {
       const params = new URLSearchParams(location.search), dealId = params.get('deal');
-      if (s.data.deals.some(d => d.id === dealId)) { s.data.selected = dealId; if (['contract','quote','pipeline'].includes(params.get('tab'))) s.data.view = params.get('tab'); s.save(); }
+      if (s.data.deals.some(d => d.id === dealId)) { s.data.selected = dealId; if (['overview','contract','quote','pipeline'].includes(params.get('tab'))) s.data.view = params.get('tab'); s.save(); }
       crmLocationApplied = true;
     }
     const signedDeal = d => signatureFor(d.id, s.data.contracts[d.id]?.id);
@@ -1437,42 +1437,23 @@ const crmSeed = {
     const canClose = d => s.data.quotes[d.id]?.status==='approved' && (!needsContract(d)||!!signedDeal(d));
     const current = () => s.data.deals.find((x) => x.id === s.data.selected) || s.data.deals[0];
     const saveRender = () => { s.save(); renderCrm(); };
-    const top = () => appHeader('Sales Flow CRM', 'ลูกค้า ใบเสนอราคา และสัญญาเมื่อจำเป็น — อยู่ในระบบเดียวกัน',
-      [['overview','ภาพรวม'],['pipeline','Pipeline'],['quote','ใบเสนอราคา'],['contract','สัญญา']], s.data.view,
-      `<button class="btn small" data-crm-add>+ เพิ่มลูกค้าตัวอย่าง</button><button class="btn small danger" data-crm-reset>รีเซ็ต</button>`);
+    const icon = (name,size=18) => `<svg class="icon" width="${size}" height="${size}" aria-hidden="true"><use href="#icon-${esc(name)}"/></svg>`;
+    const initials = d => d.company.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+    const clientRow = d => `<button class="deal-card crm-client-row" type="button" data-select-deal="${esc(d.id)}" aria-pressed="${d.id===s.data.selected}"><span class="crm-avatar" aria-hidden="true">${esc(initials(d))}</span><span class="crm-client-text"><strong>${esc(d.company)}</strong><small>${esc(d.contact)} · ${esc(stageMap[d.stage][1])}</small></span><span class="crm-client-value">${money(d.value)}<small>เปิดดีล ↗</small></span></button>`;
+    const top = () => `<aside class="app-topbar crm-sidebar"><div class="crm-sidebar-brand"><span class="crm-brand-icon" aria-hidden="true">${icon('layers',22)}</span><div><small>BUZLIKE SYSTEMS</small><h1>Sales Flow CRM</h1></div></div><p class="crm-nav-label">พื้นที่ทำงาน</p><nav class="app-topbar-nav" aria-label="Demo Navigation"><div class="tabs">${[['overview','ภาพรวม','layout-dashboard'],['pipeline','Pipeline','layers'],['quote','ใบเสนอราคา','chart-column'],['contract','สัญญา','handshake']].map(([key,label,glyph])=>`<button type="button" class="tab ${s.data.view===key?'active':''}" data-tab="${key}" ${s.data.view===key?'aria-current="page"':''}>${icon(glyph,18)}<span>${label}</span></button>`).join('')}</div></nav><div class="crm-sidebar-note"><span>พื้นที่ทดลอง</span><strong>ดูแนวทางก่อนเริ่มงานจริง</strong><p>ข้อมูลจำลองสำหรับทดลอง<br>ปรับพัฒนาตามธุรกิจของคุณ</p></div></aside>`;
 
     function overview() {
-      const open = s.data.deals.filter((x) => x.stage !== 'won');
-      const openValue = open.reduce((a,x) => a + x.value, 0);
-      const weighted = open.reduce((a,x) => a + x.value * x.probability / 100, 0);
-      const won = s.data.deals.filter((x) => x.stage === 'won').reduce((a,x) => a + x.value, 0);
-      return `<div class="page-pad">
-        <section class="card crm-start"><div><h2>ทดลองงานขายตั้งแต่เสนอราคาจนปิดดีล</h2><p>เลือกดีล ดูใบเสนอราคา แล้วเลือกว่าจะใช้สัญญาหรือไม่ ทุกขั้นตอนใช้ข้อมูลจำลองในเบราว์เซอร์นี้</p></div><button class="btn primary" data-tab="quote">เริ่มทดลองงานขาย →</button></section>
-        <div class="grid cols-4">
-          ${[['Open pipeline',money(openValue),'ดีลที่ยังไม่ปิด'],['Weighted',money(weighted),'ตาม probability'],['Won value',money(won),'ยอดปิดการขาย'],['Deals',s.data.deals.length,'รายการทั้งหมด']].map(([a,b,c]) => `<article class="card stat-card"><small>${a}</small><strong>${b}</strong><small>${c}</small></article>`).join('')}
-        </div>
-        <div class="grid cols-2" style="margin-top:16px">
-          <section class="card"><div class="card-head"><h2>Stage summary</h2>${badge('Realtime')}</div>
-            ${stages.map(([key,label]) => { const deals=s.data.deals.filter(x=>x.stage===key); return `<div class="summary-line"><span>${label}</span><strong>${deals.length} · ${money(deals.reduce((a,x)=>a+x.value,0))}</strong></div>`; }).join('')}
-          </section>
-          <section class="card"><div class="card-head"><h2>ดีลที่ควรตามก่อน</h2></div>
-            ${[...open].sort((a,b)=>b.value-a.value).slice(0,4).map((d)=>`<button class="deal-card" style="width:100%;text-align:left" data-select-deal="${d.id}"><h4>${esc(d.company)}</h4><p>${esc(stageMap[d.stage][1])} · ${money(d.value)} · ${d.probability}%</p></button>`).join('')}
-          </section>
-        </div></div>`;
+      const open=s.data.deals.filter(x=>x.stage!=='won'),openValue=open.reduce((a,x)=>a+x.value,0),weighted=open.reduce((a,x)=>a+x.value*x.probability/100,0);
+      const closed=s.data.deals.filter(x=>x.stage==='won'),won=closed.reduce((a,x)=>a+x.value,0),priorities=[...open].sort((a,b)=>b.value-a.value).slice(0,4);
+      const values=stages.map(([key])=>s.data.deals.filter(d=>d.stage===key).reduce((n,d)=>n+d.value,0)),maxValue=Math.max(1,...values);
+      return `<div class="page-pad crm-overview"><section class="crm-start crm-overview-hero"><div><span class="crm-overline">SALES WORKSPACE · ข้อมูลตัวอย่าง</span><h2>${open.length?`มี ${open.length} ดีลที่รอติดตาม`:'ทุกดีลปิดการขายแล้ว'}</h2><p>เห็นภาพรวมลูกค้าและโอกาสขาย แล้วเลือกดีลเพื่อเดินหน้าขั้นตอนถัดไป</p><div class="crm-hero-actions"><button class="btn primary" data-tab="quote">เริ่มทดลองงานขาย ${icon('handshake',16)}</button><button class="btn" data-tab="pipeline">ดูบอร์ด Pipeline →</button></div></div><div class="crm-hero-summary"><div class="crm-win-ring" role="img" aria-label="ปิดการขายแล้ว ${closed.length} จาก ${s.data.deals.length} ดีล" style="--won-share:${s.data.deals.length?closed.length/s.data.deals.length*100:0}%"><span><strong>${s.data.deals.length}</strong><small>ดีลทั้งหมด</small></span></div><p><i aria-hidden="true"></i> ปิดแล้ว ${closed.length} · ติดตาม ${open.length}</p></div></section>
+        <div class="crm-metrics">${[['มูลค่าที่กำลังติดตาม',money(openValue),'รวมดีลที่ยังไม่ปิด','layers'],['คาดการณ์มูลค่า',money(weighted),'ถ่วงน้ำหนักตามโอกาสปิด','chart-column'],['ปิดการขายแล้ว',money(won),`${closed.length} ดีลที่สำเร็จ`,'handshake'],['ลูกค้าในระบบ',s.data.deals.length,'รายชื่อลูกค้าตัวอย่าง','users']].map(([label,value,detail,glyph],i)=>`<article class="card crm-metric"><div><span>${label}</span><i aria-hidden="true">${icon(glyph,18)}</i></div><strong>${value}</strong><small>${detail}</small><span class="crm-metric-index">0${i+1}</span></article>`).join('')}</div>
+        <div class="crm-overview-panels"><section class="card crm-panel"><div class="crm-panel-title"><div><p class="crm-overline">PIPELINE VALUE</p><h2>มูลค่าตามขั้นตอน</h2></div><span class="crm-subtle-tag">${s.data.deals.length} ดีล</span></div><div class="crm-stage-bars">${stages.map(([key,label],i)=>{const deals=s.data.deals.filter(d=>d.stage===key);return `<div class="crm-stage-summary" data-stage-tone="${key}"><div><span>${label} <small>${deals.length} ดีล</small></span><strong>${money(values[i])}</strong></div><div class="crm-bar-track" aria-hidden="true"><span style="width:${values[i]/maxValue*100}%"></span></div></div>`}).join('')}</div></section>
+        <section class="card crm-panel"><div class="crm-panel-title"><div><p class="crm-overline">NEXT OPPORTUNITIES</p><h2>ดีลที่ควรติดตาม</h2></div><button class="btn small" data-tab="pipeline">ดูทั้งหมด →</button></div><p class="crm-panel-hint">เรียงจากมูลค่าดีลที่ยังไม่ปิดการขาย</p><div class="crm-client-list">${priorities.map(clientRow).join('')||'<p class="crm-empty">ไม่มีดีลที่รอติดตาม เริ่มเพิ่มลูกค้าตัวอย่างได้ด้านบน</p>'}</div></section></div></div>`;
     }
 
     function pipeline() {
-      return `<div class="page-pad"><div class="pipeline-wrap"><div class="pipeline">
-        ${stages.map(([key,label,prob]) => `<section class="stage" data-stage="${key}">
-          <div class="stage-head"><span>${label}</span>${badge(`${s.data.deals.filter(x=>x.stage===key).length} ดีล`)}</div>
-          ${s.data.deals.filter((x)=>x.stage===key).map((d)=>`<article class="deal-card" draggable="true" data-deal="${d.id}">
-            <h4>${esc(d.company)}</h4><p>${esc(d.contact)} · ${esc(d.next)}</p>
-            ${signedDeal(d) ? '<span class="badge success" data-signature-status>ลงนามแล้ว (Signed)</span>' : ''}
-            <div class="summary-line"><strong>${money(d.value)}</strong><span>${d.probability}%</span></div>
-            <div class="progress"><span style="width:${d.probability}%"></span></div>
-          </article>`).join('')}
-        </section>`).join('')}
-      </div></div></div>`;
+      return `<div class="page-pad crm-board"><div class="crm-board-intro"><p>ลากการ์ดเพื่อย้ายขั้นตอน หรือแตะเพื่อเปิดใบเสนอราคา</p><span class="crm-subtle-tag">${s.data.deals.length} ดีลในบอร์ด</span></div><div class="pipeline-wrap"><div class="pipeline">${stages.map(([key,label])=>{const deals=s.data.deals.filter(d=>d.stage===key);return `<section class="stage" data-stage="${key}"><div class="stage-head"><span><i aria-hidden="true"></i>${label}</span><b>${deals.length}</b></div><p class="crm-stage-value">${money(deals.reduce((sum,d)=>sum+d.value,0))}</p>${deals.map(d=>`<article class="deal-card crm-board-deal" draggable="true" tabindex="0" role="button" aria-label="เปิดดีล ${esc(d.company)}" data-deal="${esc(d.id)}"><div class="crm-deal-top"><span class="crm-avatar" aria-hidden="true">${esc(initials(d))}</span><span class="crm-deal-reference">${esc(d.id)}</span></div><h4>${esc(d.company)}</h4><p>${esc(d.contact)}</p><strong class="crm-deal-amount">${money(d.value)}</strong><div class="crm-deal-next">${esc(d.next)}</div>${signedDeal(d)?'<span class="badge success" data-signature-status>ลงนามแล้ว (Signed)</span>':''}<div class="crm-deal-footer"><span>โอกาสปิด ${d.probability}%</span><span aria-hidden="true">↗</span></div><div class="progress"><span style="width:${d.probability}%"></span></div></article>`).join('')||'<p class="crm-empty-stage">ยังไม่มีดีลในขั้นตอนนี้</p>'}</section>`}).join('')}</div></div></div>`;
     }
 
     function workflow() {
@@ -1487,20 +1468,20 @@ const crmSeed = {
       if (!q) { q = { status:'draft', discount:4, items:[['Discovery & UX',1,Math.round(d.value*.18)],['Development',1,Math.round(d.value*.62)],['Testing & Launch',1,Math.round(d.value*.24)]] }; s.data.quotes[d.id] = q; }
       const subtotal = q.items.reduce((a,x)=>a+x[1]*x[2],0);
       const total = subtotal * (1 - q.discount/100);
-      return `<div class="page-pad split">
-        <section class="card"><div class="card-head"><div><p class="eyebrow">Quote ${esc(d.id)}</p><h2>${esc(d.company)}</h2></div>${badge(({draft:'ร่าง',sent:'ส่งแล้ว (จำลอง)',approved:'อนุมัติแล้ว'})[q.status]||q.status,q.status==='approved'?'success':'warning')}</div>
+      return `<div class="page-pad split crm-quote">
+        <section class="card crm-quote-document"><div class="card-head"><div><p class="eyebrow">ใบเสนอราคาตัวอย่าง · ${esc(d.id)}</p><h2>${esc(d.company)}</h2><p class="crm-document-contact">ผู้ติดต่อ ${esc(d.contact)} · ${esc(d.owner)}</p></div>${badge(({draft:'ร่าง',sent:'ส่งแล้ว (จำลอง)',approved:'อนุมัติแล้ว'})[q.status]||q.status,q.status==='approved'?'success':'warning')}</div>
           <fieldset class="crm-contract-choice"><legend>ดีลนี้ต้องใช้สัญญาหรือไม่?</legend>
             <label><input type="radio" name="crm-contract-mode" value="optional" ${!needsContract(d)?'checked':''} ${signedDeal(d)||d.stage==='won'?'disabled':''}><span>ไม่ใช้สัญญา<small>อนุมัติใบเสนอราคาแล้วปิดการขายได้</small></span></label>
             <label><input type="radio" name="crm-contract-mode" value="required" ${needsContract(d)?'checked':''} ${signedDeal(d)||d.stage==='won'?'disabled':''}><span>ต้องลงนามสัญญา<small>สร้างสัญญาจากใบเสนอราคาที่อนุมัติ</small></span></label>
             ${signedDeal(d)?'<p>ลงนามแล้ว หากต้องแก้ไขให้ยกเลิกลายเซ็นสาธิตของเอกสารนี้ก่อน</p>':''}
           </fieldset>
-          <div class="table-wrap"><table><thead><tr><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>รวม</th></tr></thead><tbody>${q.items.map(x=>`<tr><td>${esc(x[0])}</td><td>${x[1]}</td><td>${money(x[2])}</td><td>${money(x[1]*x[2])}</td></tr>`).join('')}</tbody></table></div>
-          <div style="max-width:360px;margin:16px 0 0 auto"><div class="summary-line"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-line"><span>Discount ${q.discount}%</span><strong>-${money(subtotal*q.discount/100)}</strong></div><div class="summary-line total"><span>Total</span><strong>${money(total)}</strong></div></div>
+          <div class="table-wrap"><table><thead><tr><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>รวม</th></tr></thead><tbody>${q.items.map(x=>`<tr><td data-label="รายการ">${esc(x[0])}</td><td data-label="จำนวน">${x[1]}</td><td data-label="ราคาต่อหน่วย">${money(x[2])}</td><td data-label="รวมรายการ">${money(x[1]*x[2])}</td></tr>`).join('')}</tbody></table></div>
+          <div class="crm-quote-totals"><div class="summary-line"><span>ยอดก่อนส่วนลด</span><strong>${money(subtotal)}</strong></div><div class="summary-line"><span>ส่วนลด ${q.discount}%</span><strong>-${money(subtotal*q.discount/100)}</strong></div><div class="summary-line total"><span>ยอดสุทธิ</span><strong>${money(total)}</strong></div></div>
 
           <div class="form-actions"><button class="btn" data-quote-status="sent" ${signedDeal(d)||d.stage==='won'?'disabled':''}>จำลองส่งใบเสนอราคา</button><button class="btn primary" data-quote-status="approved" ${q.status==='approved'||d.stage==='won'?'disabled':''}>อนุมัติใบเสนอราคา</button>${q.status==='approved'&&needsContract(d)?'<button class="btn" data-tab="contract">ไปดูสัญญา →</button>':''}<button class="btn" data-close-deal ${!canClose(d)||d.stage==='won'?'disabled':''}>${d.stage==='won'?'ปิดการขายแล้ว':needsContract(d)?'ปิดการขายหลังลงนาม':'ปิดการขายสำเร็จ'}</button></div>
           <p class="muted crm-demo-note">ต้นแบบสาธิต · ทดลองได้ในเบราว์เซอร์นี้ ไม่มีการส่งเอกสารหรืออีเมลให้ลูกค้าจริง</p>
         </section>
-        <aside class="card sidebar-card"><h3>เลือกลูกค้า</h3>${s.data.deals.map(x=>`<button class="deal-card" style="width:100%;text-align:left;margin-top:8px" data-select-deal="${x.id}"><h4>${esc(x.company)}</h4><p>${money(x.value)} · ${esc(stageMap[x.stage][1])}</p></button>`).join('')}</aside>
+        <aside class="card sidebar-card crm-customer-sidebar"><p class="crm-overline">YOUR CUSTOMERS</p><h3>เลือกลูกค้า</h3><p class="crm-panel-hint">สลับดูใบเสนอราคาของแต่ละดีล</p>${s.data.deals.map(clientRow).join('')}</aside>
       </div>`;
     }
 
@@ -1510,7 +1491,7 @@ const crmSeed = {
       const required=needsContract(d);
       const doc = s.data.contracts[d.id], signed = signedDeal(d);
       const signUrl = doc && required && q?.status==='approved' ? `/e-signature?from=crm&deal=${encodeURIComponent(d.id)}&doc=${encodeURIComponent(doc.id)}` : '';
-      return `<div class="page-pad split"><section class="card"><p class="eyebrow">สัญญาภายใน CRM</p><h2>${esc(d.company)}</h2>
+      return `<div class="page-pad split crm-contract"><section class="card crm-contract-document"><p class="eyebrow">สัญญาภายใน CRM</p><h2>${esc(d.company)}</h2>
         <div class="grid cols-2"><div><p class="muted">ผู้ติดต่อ</p><strong>${esc(d.contact)}</strong></div><div><p class="muted">มูลค่าตาม${doc?'ใบเสนอราคาที่อนุมัติ':'ดีล'}</p><strong data-contract-total>${money(doc?.total ?? d.value)}</strong></div><div><p class="muted">ผู้ดูแล</p><strong>${esc(d.owner)}</strong></div><div><p class="muted">เลขสัญญา</p><strong data-contract-id>${esc(doc?.id || 'ยังไม่มีสัญญา')}</strong></div></div>
         <div class="notice" style="margin-top:20px">
           ${signed ? `<strong data-signature-status>ลงนามแล้ว (Signed)</strong><p>ผู้ลงนาม: ${esc(signed.signerName)} · ${esc(new Date(signed.signedAt).toLocaleString('th-TH'))}</p><img src="${esc(signed.image)}" alt="ลายเซ็นที่บันทึกในสัญญานี้" style="display:block;max-width:100%;max-height:110px;background:#fff;border:1px solid var(--line);border-radius:8px"><button class="btn small" data-view-crm-audit type="button" style="margin-top:12px">ดูบันทึกการลงนาม</button>` : `<strong data-signature-status>${!required?'ดีลนี้ไม่ใช้สัญญา':q?.status!=='approved'?'รออนุมัติใบเสนอราคา':doc?'รอลงนาม':'พร้อมสร้างสัญญา'}</strong><p>${!required?'กลับใบเสนอราคาเพื่อปิดการขาย หรือเปลี่ยนเป็นใช้สัญญาได้':q?.status!=='approved'?'อนุมัติใบเสนอราคาก่อน เพื่อสร้างสัญญาที่อ้างอิงลูกค้าและยอดเงินเดียวกัน':'เปิดสัญญาเพื่อตรวจรายการและลงนาม สถานะจะปรากฏเฉพาะดีลนี้'}</p>`}
@@ -1520,15 +1501,19 @@ const crmSeed = {
           ${signUrl?`<a class="btn primary" data-open-esign href="${esc(signUrl)}">${signed?'เปิดดูสัญญาที่ลงนามแล้ว':'เปิดสัญญาเพื่อลงนาม'} →</a>`:required&&q?.status==='approved'?'<button class="btn primary" data-create-contract>สร้างสัญญาจากใบเสนอราคา</button>':'<button class="btn primary" data-tab="quote">กลับใบเสนอราคา →</button>'}
           <button class="btn" data-close-deal ${d.stage==='won'||!canClose(d)?'disabled':''}>${d.stage==='won'?'ปิดการขายแล้ว':required?'ปิดการขายหลังลงนาม':'ปิดการขายสำเร็จ'}</button>
         </div>
-      </section><aside class="card sidebar-card"><h3>Activity ล่าสุด</h3>${[...s.data.activities.filter(x=>x.deal===d.id),...(signed?[{text:`ลงนามสัญญา ${signed.docId} โดย ${signed.signerName}`,at:new Date(signed.signedAt).toLocaleString('th-TH')}]:[])].slice(-12).reverse().map(a=>`<div class="timeline-item"><strong>${esc(a.text)}</strong><p class="muted">${esc(a.at)}</p></div>`).join('') || '<p class="muted">ยังไม่มีกิจกรรม</p>'}</aside></div>`;
+      </section><aside class="card sidebar-card"><p class="crm-overline">DEAL ACTIVITY</p><h3>กิจกรรมของดีลนี้</h3>${[...s.data.activities.filter(x=>x.deal===d.id),...(signed?[{text:`ลงนามสัญญา ${signed.docId} โดย ${signed.signerName}`,at:new Date(signed.signedAt).toLocaleString('th-TH')}]:[])].slice(-12).reverse().map(a=>`<div class="timeline-item"><strong>${esc(a.text)}</strong><p class="muted">${esc(a.at)}</p></div>`).join('') || '<p class="muted">ยังไม่มีกิจกรรม</p>'}</aside></div>`;
     }
 
-    app.innerHTML = `<div class="app-shell">${top()}${['quote','contract'].includes(s.data.view)?workflow():''}${({overview,pipeline,quote,contract}[s.data.view] || overview)()}</div>`;
+    const viewText={overview:['ภาพรวมงานขาย','ดูสถานะและเลือกดีลที่ต้องการติดตาม'],pipeline:['บอร์ดงานขาย','ดูความคืบหน้าของลูกค้าในแต่ละขั้นตอน'],quote:['ใบเสนอราคา','ตรวจรายการ เลือกใช้สัญญา แล้วเดินหน้าปิดการขาย'],contract:['สัญญาและการลงนาม','ดูเอกสารและสถานะที่เชื่อมกับดีลนี้']}[s.data.view]||['ภาพรวมงานขาย','ดูสถานะและติดตามลูกค้า'];
+    app.innerHTML = `<div class="app-shell crm-workspace" data-view="${esc(s.data.view)}">${top()}<div class="crm-main"><header class="crm-view-heading"><div><p class="crm-overline">WORKSPACE / ${esc(s.data.view.toUpperCase())}</p><h2>${viewText[0]}</h2><p>${viewText[1]}</p></div><div class="app-actions"><button class="btn primary" data-crm-add>+ เพิ่มลูกค้าตัวอย่าง</button><button class="btn crm-reset" data-crm-reset>รีเซ็ต</button></div></header>${['quote','contract'].includes(s.data.view)?`<label class="crm-client-select">ดีลที่กำลังดู<select class="select" data-crm-client>${s.data.deals.map(d=>`<option value="${esc(d.id)}" ${d.id===s.data.selected?'selected':''}>${esc(d.company)}</option>`).join('')}</select></label>${workflow()}`:''}${({overview,pipeline,quote,contract}[s.data.view] || overview)()}</div></div>`;
+
     app.dataset.crmSelected = s.data.selected;
     app.querySelector('[data-view-crm-audit]')?.addEventListener('click', () => {
       const record = signedDeal(current());
       if (record) modal('บันทึกการลงนาม — CRM', signatureAudit(record));
     });
+    app.querySelector('[data-crm-client]')?.addEventListener('change',e=>{if(s.data.deals.some(d=>d.id===e.target.value)){s.data.selected=e.target.value;saveRender();}});
+    app.querySelectorAll('[data-deal]').forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();s.data.selected=el.dataset.deal;s.data.view='quote';saveRender();}}));
     app.querySelectorAll('[data-tab]').forEach((el) => el.addEventListener('click', () => { s.data.view=el.dataset.tab; saveRender(); }));
     app.querySelector('[data-crm-reset]')?.addEventListener('click', () => { if(confirm('คืนค่าดีลตัวอย่างที่ไม่มีสัญญา? ดีลที่มีเอกสารและลายเซ็นจะถูกเก็บไว้')) {
       const retained=s.data.deals.filter(d=>s.data.contracts[d.id]);
