@@ -15,9 +15,9 @@ function adminBadge(string $status): string { return '<span class="status status
 function adminShell(string $title, string $content, ?array $owner = null, string $error = '', string $flash = ''): never {
     ?><!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="robots" content="noindex,nofollow,noarchive"><title><?= adminEscape($title) ?> | BUZLIKE SYSTEMS</title>
-    <link rel="icon" type="image/svg+xml" href="/assets/portfolio/favicon.svg?v=buzlike-3"><link rel="stylesheet" href="/assets/inquiry-admin.css?v=inquiry-admin-1"></head>
+    <link rel="icon" type="image/svg+xml" href="/assets/portfolio/favicon.svg?v=buzlike-3"><link rel="stylesheet" href="/assets/inquiry-admin.css?v=inquiry-backup-1"></head>
     <body><a class="skip" href="#main">ข้ามไปเนื้อหา</a><header class="admin-header"><a class="wordmark" href="/admin/inquiries">BUZLIKE<span>SYSTEMS / OWNER WORKSPACE</span></a>
-    <?php if ($owner): ?><nav aria-label="เมนูหลังบ้าน"><a href="/admin/inquiries">คำขอลูกค้า</a><a href="/admin/password">เปลี่ยนรหัสผ่าน</a><form method="post" action="/admin/logout"><?= adminFormToken() ?><button class="text-button" type="submit">ออกจากระบบ</button></form></nav><?php else: ?><a class="website-link" href="/">กลับเว็บไซต์ ↗</a><?php endif; ?></header>
+    <?php if ($owner): ?><nav aria-label="เมนูหลังบ้าน"><a href="/admin/inquiries">คำขอลูกค้า</a><a href="/admin/backups">สำรองข้อมูล</a><a href="/admin/password">เปลี่ยนรหัสผ่าน</a><form method="post" action="/admin/logout"><?= adminFormToken() ?><button class="text-button" type="submit">ออกจากระบบ</button></form></nav><?php else: ?><a class="website-link" href="/">กลับเว็บไซต์ ↗</a><?php endif; ?></header>
     <main id="main" class="<?= $owner ? 'workspace' : 'auth-layout' ?>"><?php if ($error): ?><div class="notice notice--error" role="alert"><?= adminEscape($error) ?></div><?php endif; ?><?php if ($flash): ?><div class="notice notice--success" role="status"><?= adminEscape($flash) ?></div><?php endif; ?><?= $content ?></main>
     <footer class="admin-footer">พื้นที่สำหรับเจ้าของเว็บไซต์ · เวลาประเทศไทย<?php if ($owner): ?> · <?= adminEscape($owner['email']) ?><?php endif; ?></footer></body></html><?php exit;
 }
@@ -35,7 +35,7 @@ function handleInquiryAdmin(string $path): never {
         if (!$https && !$local) { adminRedirect(siteConfig()['origin'] . '/admin/login'); }
         $method = $_SERVER['REQUEST_METHOD'] ?? '';
         if (!in_array($method, ['GET', 'POST'], true)) { header('Allow: GET, POST'); throw new InquiryProblem(405, 'วิธีเรียกใช้งานไม่ถูกต้อง'); }
-        $known = in_array($path, ['/admin', '/admin/login', '/admin/logout', '/admin/password', '/admin/inquiries'], true) || preg_match('#\A/admin/inquiries/BZ-\d{6}-[A-F0-9]{12}\z#', $path);
+        $known = in_array($path, ['/admin', '/admin/login', '/admin/logout', '/admin/password', '/admin/inquiries', '/admin/backups'], true) || preg_match('#\A/admin/inquiries/BZ-\d{6}-[A-F0-9]{12}\z#', $path);
         if (!$known) { throw new InquiryProblem(404, 'ไม่พบหน้าที่ต้องการ'); }
         $directory = dirname(__DIR__) . '/var';
         $store = new InquiryAdminStore($directory);
@@ -88,6 +88,26 @@ function handleInquiryAdmin(string $path): never {
         }
         if (!$owner) { adminRedirect('/admin/login'); }
         if ($owner['must_change'] && $path !== '/admin/password') { adminRedirect('/admin/password'); }
+        if ($path === '/admin/backups') {
+            $backup = new InquiryBackup($directory);
+            if ($method === 'POST') {
+                if (!is_string($_POST['action'] ?? null) || !in_array($_POST['action'], ['backup', 'drill'], true)) { throw new InquiryProblem(422, 'กรุณาเลือกคำสั่งที่ถูกต้อง'); }
+                try {
+                    if ($_POST['action'] === 'backup') { $backup->run('manual'); $_SESSION['flash'] = 'สำรองข้อมูลเรียบร้อยแล้ว'; }
+                    else { $backup->drill(); $_SESSION['flash'] = 'ทดสอบกู้คืนสำเร็จในพื้นที่แยก ข้อมูลจริงไม่ได้ถูกเปลี่ยน'; }
+                    adminRedirect('/admin/backups');
+                } catch (Throwable) { http_response_code(503); $error = 'ดำเนินการไม่สำเร็จ สำเนาเดิมยังคงอยู่ กรุณาตรวจพื้นที่และไฟล์กุญแจบนโฮสต์'; }
+            }
+            $status = $backup->status();
+            $backupAttention = !empty($status['last_error']) || !empty($status['drill_failed']);
+            ob_start(); ?><section class="page-heading"><div><p class="eyebrow">DATA RECOVERY</p><h1>สำรองข้อมูล<span class="accent">.</span></h1><p class="muted">คำขอลูกค้า บันทึกติดตาม ประวัติ และบัญชีผู้ดูแล</p></div><span class="status <?= $backupAttention ? 'status--lost' : 'status--won' ?>"><?= $backupAttention ? 'ควรตรวจสอบ' : (empty($status['last_success']) ? 'ยังไม่มีสำเนา' : 'มีสำเนาสำรอง') ?></span></section>
+            <?php if (!empty($status['last_error'])): ?><div class="notice notice--error" role="alert">การสำรองครั้งล่าสุดมีข้อผิดพลาดเมื่อ <?= adminTime($status['last_error_at']) ?> น. กรุณาตรวจสอบและกดสำรองอีกครั้ง</div><?php endif; ?>
+            <div class="backup-summary"><section class="panel detail-panel"><p class="eyebrow">LATEST BACKUP</p><h2>สำรองสำเร็จล่าสุด</h2><p class="backup-time"><?= adminTime($status['last_success'] ?? null) ?></p><p class="muted">เก็บบน Hostinger ของเว็บนี้ · เข้ารหัส AES-256-GCM</p><form method="post" action="/admin/backups"><?= adminFormToken() ?><input type="hidden" name="action" value="backup"><button type="submit" class="button primary">สำรองตอนนี้ ↗</button></form></section><section class="panel detail-panel"><p class="eyebrow">RESTORE CHECK</p><h2>ทดสอบกู้คืนล่าสุด</h2><p class="backup-time"><?= adminTime($status['last_drill'] ?? null) ?></p><p class="muted"><?= !empty($status['drill_failed']) ? 'การทดสอบล่าสุดไม่ผ่าน กรุณาตรวจสอบสำเนาและกุญแจ' : 'กู้ลงพื้นที่ชั่วคราว ตรวจฐานข้อมูล แล้วลบพื้นที่ทดสอบ' ?></p><form method="post" action="/admin/backups"><?= adminFormToken() ?><input type="hidden" name="action" value="drill"><button type="submit" class="button secondary">ทดสอบกู้คืนสำเนา</button></form></section></div>
+            <section class="panel detail-panel backup-policy"><h2>ระบบสำรองทำงานอย่างไร</h2><ul><li>สำรองอัตโนมัติหลังรับคำขอ บันทึกการติดตาม หรือเปลี่ยนบัญชีผู้ดูแล</li><li>เก็บสำเนาประจำวันย้อนหลัง 14 วัน และสำเนาการเปลี่ยนแปลงล่าสุดไม่เกิน 24 ชุดภายในช่วงเดียวกัน</li><li>เมื่อเปิดเว็บ ระบบจะตรวจสำเนาของวันนี้ หากยังไม่มีจะสร้างให้</li><li>สำเนาและกุญแจอยู่ในพื้นที่ส่วนตัวนอก public_html ของ Hostinger ยังไม่มีสำเนานอกโฮสต์</li><li>ข้อมูลคำขอเก็บในระบบหลัก 90 วัน ข้อมูลที่ถูกลบอาจยังอยู่ในสำเนาอีก 14 วัน โดยล้างสำเนาเก่าเมื่อรอบสำรองทำงาน</li></ul></section>
+            <section class="panel detail-panel backup-policy"><h2>ตั้งเวลาเพิ่มผ่าน Hostinger</h2><p class="muted">หากต้องการสำรองทุกวันแม้ไม่มีคนเปิดเว็บ ให้เพิ่ม Cron Job แบบ PHP ใน hPanel ด้วยไฟล์นี้</p><code class="cron-path"><?= adminEscape(__DIR__ . '/BackupInquiries.php') ?></code><p class="muted">ตั้งเวลา UTC 20:00 ทุกวัน = 03:00 น. ประเทศไทย · นาที 0 / ชั่วโมง 20 / วัน เดือน วันในสัปดาห์ เป็น *</p><p class="muted">เรียกผ่านงานตั้งเวลาล่าสุด: <?= adminTime($status['last_cron'] ?? null) ?><?= empty($status['last_cron']) ? ' · ยังไม่พบการเรียก' : ' · เวลานี้บอกการเรียกไฟล์ ไม่ยืนยันว่าได้ติดตั้งรอบเวลาแล้ว' ?></p></section>
+            <section class="panel detail-panel backup-policy"><h2>สำเนาที่เก็บอยู่ · <?= count($status['files']) ?> ไฟล์</h2><p class="muted">แสดงเฉพาะชื่อและขนาดไฟล์ กุญแจถอดรหัสไม่แสดงผ่านเว็บ</p><?php if (!$status['files']): ?><p class="muted">ยังไม่มีไฟล์สำรอง</p><?php else: ?><ul class="backup-files"><?php foreach (array_reverse($status['files']) as $file): ?><li><code><?= adminEscape($file['name']) ?></code><span><?= number_format($file['bytes'] / 1024, 1) ?> KB</span></li><?php endforeach; ?></ul><?php endif; ?></section><?php
+            adminShell('สำรองข้อมูล', ob_get_clean(), $owner, $error, $flash);
+        }
         if ($path === '/admin/password') {
             if ($method === 'POST') {
                 try {

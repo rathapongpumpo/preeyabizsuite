@@ -8,3 +8,5 @@ $db = new PDO('sqlite:' . $path, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_
 $db->exec('PRAGMA busy_timeout=5000'); $db->exec('PRAGMA secure_delete=ON');
 $q = $db->prepare('DELETE FROM inquiries WHERE created < ?'); $q->execute([time() - 90 * 86400]);
 $q = $db->prepare('DELETE FROM inquiry_limits WHERE started < ?'); $q->execute([time() - 86400]);
+require_once __DIR__ . '/InquiryBackup.php';
+InquiryBackup::automatic(dirname(__DIR__) . '/var', 'change');

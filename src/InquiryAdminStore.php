@@ -7,8 +7,10 @@ final class InquiryAdminStore {
     public const STATUSES = ['new' => 'ใหม่', 'contacted' => 'ติดต่อแล้ว', 'quoting' => 'กำลังเสนอราคา', 'won' => 'ปิดงานแล้ว', 'lost' => 'ไม่ดำเนินการ'];
     private PDO $db;
     private string $secret;
+    private string $directory;
 
     public function __construct(string $directory) {
+        $this->directory = $directory;
         // Reuse the original schema, key and 90-day retention policy, without submitting mail.
         new InquiryService($directory);
         $this->secret = (string) file_get_contents($directory . '/inquiry.key');
@@ -63,6 +65,7 @@ final class InquiryAdminStore {
             $this->db->exec('DELETE FROM admin_login_limits');
             $this->db->exec('COMMIT');
         } catch (Throwable $e) { $this->db->exec('ROLLBACK'); throw $e; }
+        InquiryBackup::automatic($this->directory, 'change');
     }
 
     public function authenticate(string $email, string $password, string $ip): ?array {
@@ -93,6 +96,7 @@ final class InquiryAdminStore {
         $q = $this->db->prepare('UPDATE admin_account SET password_hash=?,version=?,must_change=0 WHERE singleton=1 AND version=?');
         $q->execute([password_hash($next, PASSWORD_DEFAULT), bin2hex(random_bytes(16)), $version]);
         if ($q->rowCount() !== 1) { throw new InquiryProblem(409, 'ข้อมูลบัญชีเปลี่ยนแล้ว กรุณาเข้าสู่ระบบใหม่'); }
+        InquiryBackup::automatic($this->directory, 'change');
         return $this->account();
     }
 
@@ -133,12 +137,14 @@ final class InquiryAdminStore {
         if (!isset(self::STATUSES[$status]) || !mb_check_encoding($note, 'UTF-8') || mb_strlen($note) > 4000 || preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $note)) {
             throw new InquiryProblem(422, 'เลือกสถานะที่ถูกต้อง และบันทึกไม่เกิน 4,000 ตัวอักษร');
         }
+        $changed = false;
         $this->db->exec('BEGIN IMMEDIATE');
         try {
             $row = $this->detail($id);
             if (!$row) { throw new InquiryProblem(404, 'ไม่พบคำขอนี้ อาจพ้นระยะเก็บข้อมูลแล้ว'); }
             if ((int) $row['version'] !== $version) { throw new InquiryProblem(409, 'รายการนี้ถูกแก้ไขจากอีกหน้าแล้ว กรุณาคัดลอกบันทึกที่ยังไม่ได้บันทึก แล้วโหลดข้อมูลล่าสุดก่อนแก้ไข'); }
             if ($row['status'] !== $status || $row['note'] !== $note) {
+                $changed = true;
                 $q = $this->db->prepare('INSERT INTO inquiry_followups VALUES(?,?,?,?,?) ON CONFLICT(inquiry_id) DO UPDATE SET status=excluded.status,note=excluded.note,updated=excluded.updated,version=excluded.version');
                 $q->execute([$id, $status, $note, time(), $version + 1]);
                 $q = $this->db->prepare('INSERT INTO inquiry_activity(inquiry_id,status,note_changed,actor,created) VALUES(?,?,?,?,?)');
@@ -146,5 +152,6 @@ final class InquiryAdminStore {
             }
             $this->db->exec('COMMIT');
         } catch (Throwable $e) { $this->db->exec('ROLLBACK'); throw $e; }
+        if ($changed) { InquiryBackup::automatic($this->directory, 'change'); }
     }
 }

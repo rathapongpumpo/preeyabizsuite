@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/SiteConfig.php';
+require_once __DIR__ . '/InquiryBackup.php';
 
 final class InquiryProblem extends RuntimeException {
     public function __construct(public int $status, string $message) { parent::__construct($message); }
@@ -11,7 +12,9 @@ final class InquiryService {
     private Closure $sender;
     private string $secret;
     private array $estimate;
+    private string $directory;
     public function __construct(string $directory, ?Closure $sender = null) {
+        $this->directory = $directory;
         if (!is_dir($directory) && !mkdir($directory, 0700, true) && !is_dir($directory)) {
             throw new RuntimeException('Inquiry storage unavailable');
         }
@@ -36,9 +39,11 @@ final class InquiryService {
         $this->db->exec('CREATE TABLE IF NOT EXISTS inquiry_limits (bucket TEXT PRIMARY KEY, started INTEGER NOT NULL, hits INTEGER NOT NULL)');
         // Shared hosting may not expose a writable cron. Purge expired data on every API use too.
         $q = $this->db->prepare('DELETE FROM inquiries WHERE created < ?'); $q->execute([time() - 90 * 86400]);
+        $expired = $q->rowCount();
         $q = $this->db->prepare('DELETE FROM inquiry_limits WHERE started < ?'); $q->execute([time() - 86400]);
         $this->estimate = json_decode((string) file_get_contents(__DIR__ . '/EstimateConfig.json'), true, 512, JSON_THROW_ON_ERROR);
         $this->sender = $sender ?? self::sendMail(...);
+        if ($expired > 0) { InquiryBackup::automatic($directory, 'change'); }
     }
 
     public function limit(string $ip, string $kind, int $maximum, int $window): void {
@@ -119,11 +124,13 @@ final class InquiryService {
             $q = $this->db->prepare('DELETE FROM inquiry_limits WHERE started < ?'); $q->execute([$now - 86400]);
             $this->db->exec('COMMIT');
         } catch (Throwable $error) { $this->db->exec('ROLLBACK'); throw $error; }
+        InquiryBackup::automatic($this->directory, 'change');
         try { $sent = (bool) ($this->sender)($id, $this->message($id, $payload), $payload['email']); }
         catch (Throwable) { $sent = false; }
         $state = $sent ? 'queued' : 'failed';
         $q = $this->db->prepare('UPDATE inquiries SET mail_state=?,mail_updated=? WHERE id=?'); $q->execute([$state, time(), $id]);
         if (!$sent) { error_log('BUZLIKE inquiry notification failed: ' . $id); }
+        InquiryBackup::automatic($this->directory, 'change');
         return $this->receipt($id, $state);
     }
 

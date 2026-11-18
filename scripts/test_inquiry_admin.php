@@ -67,6 +67,5 @@ try {
     echo json_encode(['checks' => $checks], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL;
 } finally {
     $q = $newStore = $store = $service = $db = null;
-    foreach (glob($directory . '/*') ?: [] as $file) { @unlink($file); }
-    @rmdir($directory);
+    require_once __DIR__ . '/cleanup_test_storage.php'; cleanupTestStorage($directory);
 }
