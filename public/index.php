@@ -8,8 +8,7 @@ require_once dirname(__DIR__) . '/src/PageMetadata.php';
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $path = rtrim($path, '/') ?: '/';
 
-require_once dirname(__DIR__) . '/src/InquiryBackup.php';
-InquiryBackup::automatic(dirname(__DIR__) . '/var');
+// Daily snapshots belong to BackupInquiries.php (CLI), never visitor page loads.
 
 if ($path === '/admin' || str_starts_with($path, '/admin/')) {
     require_once dirname(__DIR__) . '/src/InquiryAdminEndpoint.php';

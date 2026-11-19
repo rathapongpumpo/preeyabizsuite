@@ -1,5 +1,7 @@
 # Inquiry backups — 18 November 2026
 
+**19 November update:** The request-driven daily fallback described in this historical delivery record has been removed. Page loads and read-triggered expiry cleanup no longer start snapshots. Significant writes still create backups; independent daily copies require the existing `BackupInquiries.php` CLI job in hPanel. See `REQUEST_BACKUP_ISOLATION_2026-11-19.md` for the fix and validation.
+
 Published at https://buzlike.com/admin/backups. The user explicitly selected **Hostinger-only backups for now**, without an external storage connection. This release adds private recovery copies for the website's actual inquiry database, follow-ups, history and owner account, separate from all product-demo/browser storage and the POS/lawyer applications.
 
 ## Delivered behavior

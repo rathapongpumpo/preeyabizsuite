@@ -39,11 +39,10 @@ final class InquiryService {
         $this->db->exec('CREATE TABLE IF NOT EXISTS inquiry_limits (bucket TEXT PRIMARY KEY, started INTEGER NOT NULL, hits INTEGER NOT NULL)');
         // Shared hosting may not expose a writable cron. Purge expired data on every API use too.
         $q = $this->db->prepare('DELETE FROM inquiries WHERE created < ?'); $q->execute([time() - 90 * 86400]);
-        $expired = $q->rowCount();
         $q = $this->db->prepare('DELETE FROM inquiry_limits WHERE started < ?'); $q->execute([time() - 86400]);
         $this->estimate = json_decode((string) file_get_contents(__DIR__ . '/EstimateConfig.json'), true, 512, JSON_THROW_ON_ERROR);
         $this->sender = $sender ?? self::sendMail(...);
-        if ($expired > 0) { InquiryBackup::automatic($directory, 'change'); }
+        // Reads may expire old rows, but snapshots run only after explicit writes or CLI maintenance.
     }
 
     public function limit(string $ip, string $kind, int $maximum, int $window): void {

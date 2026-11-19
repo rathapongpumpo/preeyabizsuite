@@ -64,5 +64,7 @@ php -S 127.0.0.1:8080 -t public router.php
 - ข้อมูลอายุเกิน 90 วันถูกล้างเมื่อ API ทำงานครั้งถัดไป; มีคำสั่ง CLI `php src/PruneInquiries.php` สำหรับดูแลเพิ่มเติม ไม่มีคำรับประกันเวลาลบที่แน่นอนบนหน้าเว็บ
 - ราคา/ประเภทงานส่วนกลาง: `src/EstimateConfig.json` แล้วรัน `python scripts/sync_site_entrypoints.py` เพื่อสร้าง client config และ sync entrypoints
 - ทดสอบ backend โดยไม่ส่งเมลจริงหรือแตะฐานข้อมูลลูกค้า: `php scripts/test_inquiries.php` (สร้างฐานข้อมูลทดสอบใน temporary directory)
+- การเปิดหน้าเว็บไม่สร้างสำรองข้อมูล สำรองหลังบันทึกคำขอและข้อมูลสำคัญยังทำงาน; สำรองรายวันต้องตั้ง PHP Cron Job เรียก `src/BackupInquiries.php` ผ่าน hPanel
+- ทดสอบว่าหน้าเว็บเข้าได้แม้ backup ล็อกและไม่มีสำรองของวันนี้: `python scripts/test_public_backup_isolation.py` (ข้อมูลจำลองและเซิร์ฟเวอร์ PHP แยก)
 
 ผลส่งมอบและขอบเขตการทดสอบ: `docs/INQUIRY_DELIVERY_2026-11-03.md`
