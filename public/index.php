@@ -9,6 +9,8 @@ $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $path = rtrim($path, '/') ?: '/';
 
 // Daily snapshots belong to BackupInquiries.php (CLI), never visitor page loads.
+require_once dirname(__DIR__) . '/src/AgentEndpoint.php';
+handleAgentRequest($path);
 
 if ($path === '/admin' || str_starts_with($path, '/admin/')) {
     require_once dirname(__DIR__) . '/src/InquiryAdminEndpoint.php';
@@ -19,12 +21,6 @@ if ($path === '/api/inquiries') {
     require_once dirname(__DIR__) . '/src/InquiryEndpoint.php';
     handleInquiryEndpoint();
 }
-
-if ($path === '/') {
-    readfile(__DIR__ . '/index.html');
-    exit;
-}
-
 
 if (preg_match('#^/external/(ecommerce|tilt)(/.*)?$#', $path, $match)) {
     ExternalProxy::handle($match[1], $match[2] ?? '/');

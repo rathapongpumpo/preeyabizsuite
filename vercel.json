@@ -24,6 +24,26 @@
       "destination": "/index.html"
     },
     {
+      "source": "/about",
+      "destination": "/info-pages/about.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/info-pages/contact.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/info-pages/pricing.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/info-pages/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/info-pages/terms.html"
+    },
+    {
       "source": "/warehouse-management",
       "destination": "/route-pages/warehouse-management.html"
     },

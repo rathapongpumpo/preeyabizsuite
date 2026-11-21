@@ -4,6 +4,7 @@ import json
 import re
 from datetime import date
 from pathlib import Path
+from generate_agent_resources import INFO_PAGES, CONFIG as AGENT_CONFIG, head as agent_head, footer as info_footer, generate as generate_agent_resources
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = json.loads((ROOT/'src/SiteConfig.json').read_text(encoding='utf-8'))
@@ -24,7 +25,8 @@ def tags(path, meta):
     twitter = {'card':'summary_large_image','title':meta['title'],'description':meta['description'],
                'image':image,'image:alt':og['image:alt']}
     rows += [f'<meta name="twitter:{key}" content="{e(value)}">' for key,value in twitter.items()]
-    return '\n'.join(rows)
+    extra = agent_head(path, meta['title'])
+    return '\n'.join(rows) + ('\n' + extra if extra else '')
 
 def generate():
     estimate = json.loads((ROOT/'src/EstimateConfig.json').read_text(encoding='utf-8'))
@@ -38,6 +40,7 @@ def generate():
     # This is generated public data only: never put credentials in SiteConfig.
     (ROOT/'public/assets/site-config.js').write_text('// Generated from src/SiteConfig.json\nwindow.SITE_CONFIG = Object.freeze('+json.dumps(SITE, ensure_ascii=False)+');\n',encoding='utf-8')
     pages = json.loads((ROOT/'src/PageMetadata.json').read_text(encoding='utf-8'))
+    pages.update({path:{'title':title+' | {brand}','description':description,'index':True} for path,(title,description) in INFO_PAGES.items()})
     home = ROOT/'public/index.html'
     text = home.read_text(encoding='utf-8')
     text = re.sub(r'<symbol id="b-mark".*?</symbol>',lambda _:'<symbol id="b-mark" viewBox="0 0 48 56">'+paths+'</symbol>',text,flags=re.S)
@@ -52,6 +55,10 @@ def generate():
     else:
         text = re.sub(r'\s*<meta name="description"[^>]+>', '',text,count=1)
         text = re.sub(r'<title>.*?</title>',lambda _:block,text,count=1,flags=re.S)
+    def information_links(match):
+        value=re.sub(r'<!-- INFORMATION LINKS -->.*?<!-- /INFORMATION LINKS -->','',match[0],flags=re.S)
+        return value.replace('</footer>','<!-- INFORMATION LINKS -->'+info_footer()+'<!-- /INFORMATION LINKS --></footer>')
+    text=re.sub(r'<footer class="page-footer">.*?</footer>',information_links,text,flags=re.S)
     home.write_text(text,encoding='utf-8')
     template = ROOT/'public/demo.html'
     text = template.read_text(encoding='utf-8')
@@ -70,20 +77,20 @@ def generate():
     text = re.sub(r'<!-- PAGE METADATA -->.*?<!-- /PAGE METADATA -->',lambda _:'<!-- PAGE METADATA -->\n'+tags('/demo.html',fallback)+'\n<!-- /PAGE METADATA -->',text,flags=re.S)
     template.write_text(text,encoding='utf-8')
     out = ROOT/'public/route-pages';out.mkdir(exist_ok=True)
-    rules=[]
+    rules=generate_agent_resources(tags)
     for path,meta in pages.items():
-        if path=='/':continue
+        if path=='/' or path in INFO_PAGES:continue
         filename = path.strip('/').replace('/','--')+'.html'
         page=re.sub(r'<!-- PAGE METADATA -->.*?<!-- /PAGE METADATA -->',lambda _:'<!-- PAGE METADATA -->\n'+tags(path,meta)+'\n<!-- /PAGE METADATA -->',text,flags=re.S)
         (out/filename).write_text(page,encoding='utf-8')
         rules += [{'source':path,'destination':'/route-pages/'+filename}]
     configpath=ROOT/'vercel.json';config=json.loads(configpath.read_text(encoding='utf-8'))
-    remaining=[r for r in config['rewrites'] if not r['destination'].startswith('/route-pages/')]
+    remaining=[r for r in config['rewrites'] if not r['destination'].startswith(('/route-pages/','/info-pages/'))]
     insertion=next(i for i,r in enumerate(remaining) if r['source']=='/(.*)')
     config['rewrites']=remaining[:insertion]+rules+remaining[insertion:]
     configpath.write_text(json.dumps(config,indent=2)+'\n',encoding='utf-8')
     urls='\n'.join(f'  <url><loc>{BASE}{path}</loc><lastmod>{date.today().isoformat()}</lastmod></url>' for path,meta in pages.items() if meta['index'])
     (ROOT/'public/sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls+'\n</urlset>\n',encoding='utf-8')
-    (ROOT/'public/robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: '+BASE+'/sitemap.xml\n',encoding='utf-8')
+    (ROOT/'public/robots.txt').write_text('User-agent: *\nAllow: /\nDisallow: /admin\nContent-Signal: '+AGENT_CONFIG['contentSignal']+'\n\nSitemap: '+BASE+'/sitemap.xml\n',encoding='utf-8')
 
 if __name__=='__main__':generate()

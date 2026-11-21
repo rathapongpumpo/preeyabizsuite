@@ -1,0 +1,26 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "com.buzlike/public-information",
+  "version": "1.0.0",
+  "description": "Read public BUZLIKE services, indicative project prices and contact information.",
+  "title": "BUZLIKE SYSTEMS public information",
+  "websiteUrl": "https://buzlike.com/",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://buzlike.com/mcp"
+    }
+  ],
+  "_meta": {
+    "com.buzlike/protocolVersions": [
+      "2025-11-25",
+      "2025-06-18",
+      "2025-03-26"
+    ],
+    "com.buzlike/capabilities": {
+      "tools": {},
+      "resources": {}
+    },
+    "com.buzlike/serverCardStatus": "experimental"
+  }
+}

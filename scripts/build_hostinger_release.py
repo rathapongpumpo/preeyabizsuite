@@ -26,7 +26,7 @@ def build(base_url: str, output: Path, preview: bool) -> None:
                 if directory == 'public' and relative.parts[0] == 'route-pages':
                     continue  # Hostinger serves these routes through index.php.
                 data = source.read_bytes()
-                if source.suffix.lower() in {'.html', '.php', '.json', '.xml', '.txt', '.js'}:
+                if source.suffix.lower() in {'.html', '.php', '.json', '.xml', '.txt', '.js', '.md'}:
                     text = data.decode('utf-8').replace(source_origin, base_url)
                     if preview:
                         text = text.replace('content="index, follow"', 'content="noindex, follow"')
